@@ -1,0 +1,26 @@
+version: '3.1'
+services:
+  mysqldb:
+    image: mysql:8.4
+    restart: always
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3308:3306'
+    networks:
+      - carex-mysql-net
+    expose:
+      # Opens port 3306 on the container
+      - '3308'
+    environment:
+      MYSQL_DATABASE: carex
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: root
+    volumes:
+      - carex-mysql:/var/lib/mysql
+
+networks:
+  carex-mysql-net:
+
+volumes:
+    carex-mysql:

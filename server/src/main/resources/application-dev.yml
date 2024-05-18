@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: CareX
+  datasource:
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3308/carex
+    hikari:
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maxLifetime: 1800000
+
+  jpa:
+    generate-ddl: true
+    show-sql: false
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: false
+log4j:
+  logger:
+    org:
+      hibernate:
+        SQL: debug
+        type: 'trace '
+  logging:
+    level:
+      org:
+        hibernate:
+          type:
+            descriptor:
+              sql:
+                BasicBinder: TRACE
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+          nodeValue: TRACE
+        SQL: DEBUG
+    root: INFO
+security:
+  ignore:
+    paths: /swagger-ui,/v3/api-docs,/api/v1/auth
+server:
+  port: '8080'
+app:
+  security:
+    enabled: false
