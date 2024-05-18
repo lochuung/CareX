@@ -9,9 +9,14 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <p>Base API URL: {apiUrl}</p>
+        {children}
+      </body>
     </html>
   );
 }
