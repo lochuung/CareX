@@ -22,8 +22,6 @@ services:
     ports:
       # <Port exposed> : < MySQL Port running inside container>
       - '3308:3306'
-    networks:
-      - carex-mysql-net
     expose:
       # Opens port 3306 on the container
       - '3308'
@@ -34,9 +32,6 @@ services:
       MYSQL_PASSWORD: root
     volumes:
       - carex-mysql:/var/lib/mysql
-
-networks:
-  carex-mysql-net:
 
 volumes:
     carex-mysql:
