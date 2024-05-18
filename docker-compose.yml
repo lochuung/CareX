@@ -1,0 +1,56 @@
+version: '3.1'
+services:
+  carex-api:
+    image: carex-api
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - carex-mysql-net
+    depends_on:
+      - mysqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/carex
+      SPRING_DATASOURCE_USERNAME: dev
+      SPRING_DATASOURCE_PASSWORD: root
+    volumes:
+      - /app/logs
+  carex-web:
+    image: carex-web
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - carex-api
+    environment:
+      REACT_APP_API_URL: http://localhost:8080
+    volumes:
+      - /app/logs
+  mysqldb:
+    image: mysql:8.4
+    restart: always
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    networks:
+      - carex-mysql-net
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    environment:
+      MYSQL_DATABASE: carex
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: root
+    volumes:
+      - carex-mysql:/var/lib/mysql
+
+networks:
+  carex-mysql-net:
+
+volumes:
+    carex-mysql:
