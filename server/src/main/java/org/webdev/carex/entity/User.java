@@ -30,6 +30,8 @@ public class User extends BaseEntity {
 
     private String password;
 
+    private boolean enabled;
+
     @ColumnDefault(value = "0")
     private BigDecimal point;
 
