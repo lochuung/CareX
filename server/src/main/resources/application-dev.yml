@@ -19,6 +19,9 @@ spring:
     properties:
       hibernate:
         format_sql: false
+  swagger-ui:
+    operationsSorter: method
+    path: /swagger-ui/index.html
 log4j:
   logger:
     org:
