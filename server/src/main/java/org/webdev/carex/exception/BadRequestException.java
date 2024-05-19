@@ -1,12 +1,10 @@
 package org.webdev.carex.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
+@EqualsAndHashCode(callSuper = false)
 @Slf4j
 @Data
 @AllArgsConstructor
