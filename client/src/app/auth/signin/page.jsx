@@ -6,6 +6,7 @@ import Link from "next/link";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { signin } from "@/app/utils/Images";
+import { Input } from "@/components/ui/input";
 
 const SignInPage = () => {
   const loginSchema = yup.object().shape({
@@ -56,18 +57,13 @@ const SignInPage = () => {
 
             <form onSubmit={formik.handleSubmit} className="space-y-4">
               {/* Email */}
-              <label className=" text-gray-800 input input-bordered flex items-center gap-2">
-                Email
-                <input
-                  onChange={formik.handleChange}
-                  value={formik.values.email}
-                  id="email"
-                  name="email"
-                  type="email"
-                  className="grow"
-                  placeholder="abc@gmail.com"
-                />
-              </label>
+              <Input onChange={formik.handleChange}
+                label="Email"
+                value={formik.values.email}
+                name="email"
+                type="email"
+                className = "email-input"
+                placeholder="abc@gmail.com"/>
 
               {/* Error email */}
               {formik.touched.email && formik.errors.email ? (
@@ -77,18 +73,14 @@ const SignInPage = () => {
               ) : null}
 
               {/* Password */}
-              <label className=" text-gray-800 input input-bordered flex items-center gap-2">
-                Password
-                <input
-                  onChange={formik.handleChange}
-                  value={formik.values.password}
-                  id="password"
-                  name="password"
-                  type="password"
-                  className="grow"
-                  placeholder="abc@"
-                />
-              </label>
+              <Input onChange={formik.handleChange}
+                value={formik.values.password}
+                label="Password"
+                name="password"
+                type="password"
+                className = "password-input"
+                placeholder="********"
+              />
 
               {/* Error password */}
               {formik.touched.password && formik.errors.password ? (
