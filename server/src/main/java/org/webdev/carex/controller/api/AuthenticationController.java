@@ -1,5 +1,6 @@
 package org.webdev.carex.controller.api;
 
+import io.swagger.annotations.ApiOperation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -7,53 +8,59 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.webdev.carex.dto.auth.AuthenticationRequest;
+import org.webdev.carex.dto.auth.AuthenticationResponse;
 import org.webdev.carex.dto.auth.RegisterRequest;
 import org.webdev.carex.dto.auth.VerifyRequest;
 import org.webdev.carex.dto.ResponseDto;
 import org.webdev.carex.service.authen.AuthenticationService;
+import io.swagger.annotations.Api;
 
 import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @CrossOrigin("*")
+@Api(value = "Authentication APIs")
 public class AuthenticationController {
 
     @Autowired
     private AuthenticationService service;
 
+
+    @ApiOperation(value = "Register a new user")
+
     @PostMapping("/register")
-    public ResponseEntity<Object> register(
+    public ResponseEntity<ResponseDto<Object>> register(
             @RequestBody RegisterRequest request
     ) throws MessagingException {
         return ResponseEntity.ok(
-                ResponseDto.success(service.register(request))
+                service.register(request)
         );
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<Object> verify(
+    public ResponseEntity<ResponseDto<Object>> verify(
             @RequestBody VerifyRequest request
     ) {
         return ResponseEntity.ok(
-                ResponseDto.success(service.verify(request))
+                service.verify(request)
         );
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<ResponseDto<AuthenticationResponse>> authenticate(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(
                 ResponseDto.success(service.authenticate(request))
         );
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<Object> refreshToken(
+    public ResponseEntity<ResponseDto<AuthenticationResponse>> refreshToken(
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
         return ResponseEntity.ok(
-                service.refreshToken(request, response)
+                ResponseDto.success(service.refreshToken(request, response))
         );
     }
 }
