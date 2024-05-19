@@ -8,9 +8,13 @@ import { useFormik } from "formik";
 import ImageSlider from "@/components/ImageSlider";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-const SignUpPage = () => {
+import { DatePicker } from "@/components/ui/datetimepicker";
+import { Label } from "@/components/ui/label";
+import { format } from "date-fns"
+const SignUpPage = (props) => {
     const loginSchema = yup.object().shape({
+        username: yup.string().required("Username is required"),
+        //dateofbirth: yup.date().required("Date of birth is required"),
         email: yup.string().email("Invalid email").required("Email is required"),
         password: yup
             .string()
@@ -20,19 +24,22 @@ const SignUpPage = () => {
             .string()
             .oneOf([yup.ref('password'), null], 'Your passwords do not match.')
   });
+;
 const formik = useFormik({
     initialValues: {
+        username: "",
         email: "",
         password: "",
         passwordConfirmation: "",
+        dateofbirth: new Date(),
     },
     validationSchema: loginSchema,
     onSubmit: (values) => {
         // Handle your form submission here
-        console.log(values);
+        //console.log(values);
+        alert(JSON.stringify(values, null, 2))
     },
 });
-
   return (
     <div>
         {/* Thông báo */}
@@ -62,6 +69,40 @@ const formik = useFormik({
                     </h1>
 
                     <form onSubmit={formik.handleSubmit} className="space-y-6">
+                        {/* Name */}   
+                        <Input onChange={formik.handleChange}
+                            label="Fullname"
+                            value={formik.values.username}
+                            name="username"
+                            type="text"
+                            className = "username-input"
+                            placeholder="Harry Potter"/>
+                        {/* Error username */}
+                        {formik.touched.username && formik.errors.username ? (
+                            <div className="text-red-500 text-sm">
+                            {formik.errors.username}
+                            </div>
+                        ) : null}
+
+                        {/* DateOfBirth */}  
+                        {/* <DatePicker/> */}
+                        {/* <Input onChange={formik.handleChange}
+                            label="Date of Birth"
+                            value={formik.values.dateofbirth}
+                            name="dateofbirth"
+                            type="date"
+                            className = "dateofbirth-input"
+                            placeholder=""/> */}
+                        <DatePicker date={formik.values.dateofbirth} setDate={(value)=> {
+                            formik.setFieldValue("dateofbirth", format(value, "P"))
+                        }}/>
+                        {/* <Field name="date" timezone={DefaultTz} component={DatePicker} /> */}
+                        {/* Error date of birth */}
+                        {/* {formik.touched.dateofbirth && formik.errors.dateofbirth ? (
+                            <div className="text-red-500 text-sm">
+                            {formik.errors.dateofbirth}
+                            </div>
+                        ) : null} */}
                         {/* Email */}
                         <Input onChange={formik.handleChange}
                             label="Email"
