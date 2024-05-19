@@ -21,6 +21,8 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String fullName;
+
     @Column(unique = true)
     private String email;
 
@@ -29,6 +31,8 @@ public class User extends BaseEntity {
     private LocalDate birthday;
 
     private String password;
+
+    private boolean enabled;
 
     @ColumnDefault(value = "0")
     private BigDecimal point;
