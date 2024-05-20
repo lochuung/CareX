@@ -1,6 +1,5 @@
 package org.webdev.carex.controller.api;
 
-import io.swagger.annotations.ApiOperation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +14,6 @@ import org.webdev.carex.dto.ResponseDto;
 import org.webdev.carex.dto.response.post.PostResponseDto;
 import org.webdev.carex.service.PostService;
 import org.webdev.carex.service.authen.AuthenticationService;
-import io.swagger.annotations.Api;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,17 +21,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/auth")
 @CrossOrigin("*")
-@Api(value = "Authentication APIs")
 public class AuthenticationController {
 
     @Autowired
     private AuthenticationService service;
-
-    @Autowired
-    private PostService postService;
-
-
-    @ApiOperation(value = "Register a new user")
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDto<Object>> register(
@@ -68,16 +59,5 @@ public class AuthenticationController {
         return ResponseEntity.ok(
                 ResponseDto.success(service.refreshToken(request, response))
         );
-    }
-
-    //Get post
-    @GetMapping("/post/{id}")
-    public ResponseEntity<ResponseDto<PostResponseDto>> getPost(@PathVariable Long id) {
-        return ResponseEntity.ok().body(postService.getPost(id));
-    }
-    //Get all post
-    @GetMapping("/post/all")
-    public ResponseEntity<ResponseDto<List<PostResponseDto>>> getAllPosts() {
-        return ResponseEntity.ok().body(postService.getAllPost());
     }
 }
