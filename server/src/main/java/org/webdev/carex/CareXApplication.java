@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.webdev.carex.service.PostService;
 import org.webdev.carex.service.UserService;
 import org.webdev.carex.service.WorkshopService;
 import org.webdev.carex.service.YogaService;
@@ -19,11 +20,12 @@ public class CareXApplication {
 	}
 
 	@Bean
-	CommandLineRunner runner(UserService userService, YogaService yogaService, WorkshopService workshopService) {
+	CommandLineRunner runner(UserService userService, YogaService yogaService, WorkshopService workshopService, PostService postService) {
 		return args -> {
 			userService.createData();
 			yogaService.createData();
 			workshopService.createWorkshop();
+			postService.createPost();
 		};
 	}
 }

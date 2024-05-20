@@ -14,50 +14,44 @@ import org.webdev.carex.service.PostService;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
-@CrossOrigin("*")
 public class PostController {
     //Service
     private final PostService postService;
     //------POST API------//
-    //Create post
-    @PostMapping("/post/create")
-    public ResponseEntity<ResponseDto<PostResponseDto>> createPost(@RequestBody PostRequestDto postCreateRequestDto) {
-        return ResponseEntity.ok().body(postService.createPost(postCreateRequestDto));
-    }
     //Get post
-    @GetMapping("/post/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<PostResponseDto>> getPost(@PathVariable Long id) {
         return ResponseEntity.ok().body(postService.getPost(id));
     }
     //Get all post
-    @GetMapping("/post/all")
+    @GetMapping
     public ResponseEntity<ResponseDto<List<PostResponseDto>>> getAllPosts() {
         return ResponseEntity.ok().body(postService.getAllPost());
     }
     //Edit post
-    @PutMapping("/post/{id}/edit")
+    @PutMapping("/{id}/edit")
     public ResponseEntity<ResponseDto<PostResponseDto>> editPost(@PathVariable Long id, @RequestBody PostRequestDto postEditRequestDto) {
         return ResponseEntity.ok().body(postService.editPost(id, postEditRequestDto));
     }
     //Delete post
-    @DeleteMapping("/post/{id}/delete")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<ResponseDto<String>> deletePost(@PathVariable Long id, @RequestBody PostDeleteRequestDto postDeleteRequestDto) {
         return ResponseEntity.ok().body(postService.deletePost(id, postDeleteRequestDto));
     }
     //Check is like?
-    @PostMapping("/post/isLiked")
+    @PostMapping("/isLiked")
     public ResponseEntity<ResponseDto<Boolean>> isLiked(@RequestBody PostLikeRequestDto postLikeRequestDto) {
         return ResponseEntity.ok().body(postService.isLiked(postLikeRequestDto));
     }
     //Like post
-    @PostMapping("/post/like")
+    @PostMapping("/like")
     public ResponseEntity<ResponseDto<PostLikeResponseDto>> likePost(@RequestBody PostLikeRequestDto postLikeRequestDto) {
         return ResponseEntity.ok().body(postService.likePost(postLikeRequestDto));
     }
     //Unlike post
-    @PostMapping("/post/unlike")
+    @PostMapping("/unlike")
     public ResponseEntity<ResponseDto<PostLikeResponseDto>> unlikePost(@RequestBody PostLikeRequestDto postUnlikeRequestDto) {
         return ResponseEntity.ok().body(postService.unlikePost(postUnlikeRequestDto));
     }
