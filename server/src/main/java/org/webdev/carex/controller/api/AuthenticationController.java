@@ -60,15 +60,4 @@ public class AuthenticationController {
                 ResponseDto.success(service.refreshToken(request, response))
         );
     }
-
-    //Get post
-    @GetMapping("/post/{id}")
-    public ResponseEntity<ResponseDto<PostResponseDto>> getPost(@PathVariable Long id) {
-        return ResponseEntity.ok().body(postService.getPost(id));
-    }
-    //Get all post
-    @GetMapping("/post/all")
-    public ResponseEntity<ResponseDto<List<PostResponseDto>>> getAllPosts() {
-        return ResponseEntity.ok().body(postService.getAllPost());
-    }
 }

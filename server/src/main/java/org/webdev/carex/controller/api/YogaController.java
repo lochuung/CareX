@@ -12,7 +12,7 @@ import org.webdev.carex.service.YogaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/yoga")
+@RequestMapping("/api/v1/yoga-workouts")
 @AllArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class YogaController {
