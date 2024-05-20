@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 public class PostLikeResponseDto {
+    private Long postId;
     private Long totalLike;
 }
