@@ -17,6 +17,8 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String title;
+
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private User author;

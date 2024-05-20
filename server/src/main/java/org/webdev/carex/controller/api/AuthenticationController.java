@@ -1,6 +1,5 @@
 package org.webdev.carex.controller.api;
 
-import io.swagger.annotations.ApiOperation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,22 +11,20 @@ import org.webdev.carex.dto.auth.AuthenticationResponse;
 import org.webdev.carex.dto.auth.RegisterRequest;
 import org.webdev.carex.dto.auth.VerifyRequest;
 import org.webdev.carex.dto.ResponseDto;
+import org.webdev.carex.dto.response.post.PostResponseDto;
+import org.webdev.carex.service.PostService;
 import org.webdev.carex.service.authen.AuthenticationService;
-import io.swagger.annotations.Api;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @CrossOrigin("*")
-@Api(value = "Authentication APIs")
 public class AuthenticationController {
 
     @Autowired
     private AuthenticationService service;
-
-
-    @ApiOperation(value = "Register a new user")
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDto<Object>> register(
