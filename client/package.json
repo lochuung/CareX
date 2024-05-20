@@ -23,11 +23,13 @@
     "react": "^18",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
+    "react-icons": "^5.2.1",
     "react-slick": "^0.30.2",
     "slick-carousel": "^1.8.1",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "daisyui": "^4.11.1",
