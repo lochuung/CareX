@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 @CrossOrigin("*")
 @Api(value = "USER APIs")
-public class UserController {
+public class PostController {
     //Service
     private final PostService postService;
     private final WorkshopService workshopService;
