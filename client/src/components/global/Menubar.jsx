@@ -3,6 +3,21 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { FiHome, FiSettings } from "react-icons/fi";
 import { GrWorkshop, GrYoga } from "react-icons/gr";
+import { MdDashboard } from "react-icons/md";
+import { FaBloggerB, FaUser } from "react-icons/fa";
+import { useStore } from "@/store/store";
+import {
+  AppstoreOutlined,
+  CalendarOutlined,
+  LinkOutlined,
+  MailOutlined,
+  SettingOutlined,
+  HomeOutlined,
+  WechatWorkOutlined,
+  UserOutlined,
+  BookOutlined,
+} from "@ant-design/icons";
+import { Menu } from "antd";
 const Menubar = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -17,27 +32,84 @@ const Menubar = () => {
     { name: "Yoga", icon: <GrYoga />, link: "/yoga" },
     { name: "Cài đặt", icon: <FiSettings />, link: "/settings" },
   ];
+
+  const adminItems = [
+    {
+      key: "/admin/home",
+      icon: <HomeOutlined />,
+      label: "Dashboard",
+    },
+    {
+      key: "/admin/workshops",
+      icon: <WechatWorkOutlined />,
+      label: "Workshop Management",
+    },
+
+    {
+      key: "/admin/users",
+      icon: <UserOutlined />,
+      label: "User Management",
+    },
+
+    {
+      key: "/admin/blogs",
+      icon: <BookOutlined />,
+      label: "Blog Management",
+    },
+  ];
+
+  const userItems = [
+    {
+      key: "/home",
+      icon: <HomeOutlined />,
+      label: "Trang chủ",
+    },
+    {
+      key: "/workshops",
+      icon: <WechatWorkOutlined />,
+      label: "Workshop",
+    },
+
+    {
+      key: "/yoga",
+      icon: <UserOutlined />,
+      label: "Yoga",
+    },
+
+    {
+      key: "/food",
+      icon: <BookOutlined />,
+      label: "Gợi ý bữa ăn",
+    },
+
+    {
+      key: "/setting",
+      icon: <BookOutlined />,
+      label: "Cài đặt",
+    },
+  ];
+
+  const { role } = useStore();
+
+  const menu = role === "admin" ? adminItems : userItems;
   return (
-    <div>
+    <div className="fixed h-screen">
       <div className="text-center flex p-3 justify-center">
         <h1 className="text-blue-500 font-bold text-3xl">CareX</h1>
       </div>
 
-      <div className="flex flex-col gap-3 px-4 mt-4">
-        {menuUser?.map((item) => (
-          <div
-            onClick={() => router.push(`${item?.link}`)}
-            className={`flex items-center gap-3 px-4 py-2 rounded-md  cursor-pointer  ${
-              pathname.includes(item?.link)
-                ? "bg-blue-500 text-white hover:bg-blue-600"
-                : "bg-gray-100 text-gray-800 hover:bg-blue-100"
-            }`}
-            key={item?.name}
-          >
-            {item?.icon}
-            <span className=" font-semibold">{item?.name}</span>
-          </div>
-        ))}
+      <div className="flex flex-col gap-3 px-4 mt-4 h-full">
+        <Menu
+          onClick={({ key }) => router.push(key)}
+          style={{
+            width: 256,
+            height: "calc(100%-40px)",
+          }}
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["sub1"]}
+          mode="inline"
+          items={menu}
+        />
       </div>
     </div>
   );
