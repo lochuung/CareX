@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostLikeRequestDto {
     private Long postId;
-    private String username;
+    private String fullName;
 }

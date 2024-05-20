@@ -1,5 +1,6 @@
-package org.webdev.carex.controller;
+package org.webdev.carex.controller.api;
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +12,11 @@ import org.webdev.carex.dto.response.post.PostLikeResponseDto;
 import org.webdev.carex.dto.response.post.PostResponseDto;
 import org.webdev.carex.service.PostService;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
+@CrossOrigin("*")
+@Api(value = "USER APIs")
 public class UserController {
     //Service
     private final PostService postService;
@@ -24,16 +25,6 @@ public class UserController {
     @PostMapping("/post/create")
     public ResponseEntity<ResponseDto<PostResponseDto>> createPost(@RequestBody PostRequestDto postCreateRequestDto) {
         return ResponseEntity.ok().body(postService.createPost(postCreateRequestDto));
-    }
-    //Get post
-    @GetMapping("/post/{id}")
-    public ResponseEntity<ResponseDto<PostResponseDto>> getPost(@PathVariable Long id) {
-        return ResponseEntity.ok().body(postService.getPost(id));
-    }
-    //Get all post
-    @GetMapping("/post/all")
-    public ResponseEntity<ResponseDto<List<PostResponseDto>>> getAllPosts() {
-        return ResponseEntity.ok().body(postService.getAllPost());
     }
     //Edit post
     @PutMapping("/post/{id}/edit")

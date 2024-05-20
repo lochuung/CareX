@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class PostDeleteRequestDto {
-    private String username;
+    private String fullName;
 }

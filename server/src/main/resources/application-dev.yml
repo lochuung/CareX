@@ -49,7 +49,7 @@ logging:
     root: INFO
 security:
   ignore:
-    paths: /swagger-ui,/v3/api-docs,/api/v1/auth
+    paths: /swagger-ui,/v3/api-docs,/api/v1/auth,/api/v1/users
 server:
   port: '8080'
 app:
