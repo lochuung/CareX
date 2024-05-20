@@ -28,6 +28,12 @@ public class YogaController {
         return ResponseDto.success(yogaService.findById(id));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseDto<Void> deleteYogaWorkout(@PathVariable Long id) {
+        yogaService.delete(id);
+        return ResponseDto.success(null);
+    }
+
     @GetMapping
     public ResponseDto<List<YogaDto>> getAllYogaWorkouts() {
         return ResponseDto.success(yogaService.findAll());

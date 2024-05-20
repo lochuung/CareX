@@ -50,6 +50,14 @@ public class YogaServiceImpl implements YogaService {
     }
 
     @Override
+    public void delete(Long id) {
+        if (!yogaRepository.existsById(id)) {
+            throw BadRequestException.message("Yoga workout not found");
+        }
+        yogaRepository.deleteById(id);
+    }
+
+    @Override
     public YogaDto findById(Long id) {
         return yogaRepository.findById(id)
                 .map(YogaMapper.INSTANCE::toYogaDto)

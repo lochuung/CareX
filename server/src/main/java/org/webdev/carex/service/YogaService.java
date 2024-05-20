@@ -8,6 +8,8 @@ import java.util.List;
 public interface YogaService {
     YogaDto upsert(YogaDto yogaDto);
 
+    void delete(Long id);
+
     YogaDto findById(Long id);
 
     List<YogaDto> findAll();
