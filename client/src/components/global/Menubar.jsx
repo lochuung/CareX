@@ -1,22 +1,11 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-import { FiHome, FiSettings } from "react-icons/fi";
-import { GrWorkshop, GrYoga } from "react-icons/gr";
+import { menuUser } from '@/constants';
 const Menubar = () => {
   const pathname = usePathname();
   const router = useRouter();
   console.log(pathname);
-  const menuUser = [
-    {
-      name: "Trang chủ",
-      icon: <FiHome />,
-      link: "/home",
-    },
-    { name: "Workshops", icon: <GrWorkshop />, link: "/workshops" },
-    { name: "Yoga", icon: <GrYoga />, link: "/yoga" },
-    { name: "Cài đặt", icon: <FiSettings />, link: "/settings" },
-  ];
   return (
     <div>
       <div className="text-center flex p-3 justify-center">

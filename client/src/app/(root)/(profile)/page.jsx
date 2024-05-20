@@ -6,6 +6,7 @@ const Profile = () => {
     <div className='w-full h-screen'>
         <ProfileContent/>
     </div>
+    
   )
 }
 
