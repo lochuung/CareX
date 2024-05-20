@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <p>Base API URL: {apiUrl}</p>
+        {/* <p>Base API URL: {apiUrl}</p> */}
         {children}
       </body>
     </html>
