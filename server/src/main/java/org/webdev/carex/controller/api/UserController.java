@@ -1,6 +1,5 @@
 package org.webdev.carex.controller.api;
 
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,6 @@ import org.webdev.carex.service.PostService;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 @CrossOrigin("*")
-@Api(value = "USER APIs")
 public class UserController {
     //Service
     private final PostService postService;
