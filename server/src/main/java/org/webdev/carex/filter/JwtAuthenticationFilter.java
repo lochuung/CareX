@@ -45,10 +45,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
 
     private ObjectMapper objectMapper;
 
-    @Value("#{'${security.ignore.paths}'.split(',')}")
+    @Value("#{'${application.security.ignore.paths}'.split(',')}")
     private List<String> ignoreList;
 
-    @Value("${app.security.enabled:true}")
+    @Value("${application.security.enabled:true}")
     private boolean isSecuredMode;
 
     @Override

@@ -11,6 +11,8 @@ services:
       - carex-mysql-net
       depends_on:
       - mysqldb
+      volumes:
+        - ./maven-repo:/root/.m2
       environment:
         SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/carex
         SPRING_DATASOURCE_USERNAME: dev
