@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.webdev.carex.dto.ResponseDto;
-import org.webdev.carex.dto.request.post.PostDeleteRequestDto;
 import org.webdev.carex.dto.request.post.PostLikeRequestDto;
 import org.webdev.carex.dto.request.post.PostRequestDto;
 import org.webdev.carex.dto.response.post.PostLikeResponseDto;
@@ -32,7 +31,7 @@ public class PostServiceImpl implements PostService {
             return;
         }
 
-        User user = userRepository.findByFullName("Admin").orElseThrow(()->new BadRequestException(HttpStatus.BAD_REQUEST.toString(),"Username not found"));
+        User user = userRepository.findByEmail("Admin").orElseThrow(()->new BadRequestException(HttpStatus.BAD_REQUEST.toString(),"Username not found"));
         Post post1 = Post.builder()
                         .title("test1")
                         .content("test1")
@@ -57,7 +56,7 @@ public class PostServiceImpl implements PostService {
         postResponseDto.setTitle(post.getTitle());
         postResponseDto.setContent(post.getContent());
         postResponseDto.setImage(post.getImageUrl());
-        postResponseDto.setAuthor(post.getAuthor().getFullName());
+        postResponseDto.setAuthor(post.getAuthor().getEmail());
         postResponseDto.setId(post.getId());
         return ResponseDto.success(postResponseDto);
     }
@@ -72,42 +71,61 @@ public class PostServiceImpl implements PostService {
             postResponseDto.setTitle(post.getTitle());
             postResponseDto.setContent(post.getContent());
             postResponseDto.setImage(post.getImageUrl());
-            postResponseDto.setAuthor(post.getAuthor().getFullName());
+            postResponseDto.setAuthor(post.getAuthor().getEmail());
             postResponseDto.setId(post.getId());
             postResponseDtoList.add(postResponseDto);
         }
         return ResponseDto.success(postResponseDtoList);
     }
 
+    @Override
+    public ResponseDto<PostResponseDto> createNewPost(PostRequestDto postRequestDto, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not found"));
+        Post post = new Post();
+        post.setTitle(postRequestDto.getTitle());
+        post.setContent(postRequestDto.getContent());
+        post.setAuthor(user);
+        post.setImageUrl(postRequestDto.getImageUrl());
+        postRepository.save(post);
+        PostResponseDto postResponseDto = new PostResponseDto();
+        postResponseDto.setId(post.getId());
+        postResponseDto.setTitle(post.getTitle());
+        postResponseDto.setContent(post.getContent());
+        postResponseDto.setImage(post.getImageUrl());
+        postResponseDto.setAuthor(post.getAuthor().getEmail());
+        return ResponseDto.success(postResponseDto);
+    }
+
     //Edit post
     @Override
-    public ResponseDto<PostResponseDto> editPost(Long id, PostRequestDto postEditRequestDto) {
+    public ResponseDto<PostResponseDto> editPost(Long id,PostRequestDto postRequestDto, String email) {
         Post post = postRepository.findById(id).orElseThrow(()->new RuntimeException("Post not found"));
         User user = post.getAuthor();
-        if (user.getFullName().equals(postEditRequestDto.getFullName())) {
-            post.setTitle(postEditRequestDto.getTitle());
-            post.setContent(postEditRequestDto.getContent());
-            post.setImageUrl(postEditRequestDto.getImageUrl());
-            post.setId(post.getId());
+        if (user.getEmail().equals(email)) {
+            post.setTitle(postRequestDto.getTitle());
+            post.setContent(postRequestDto.getContent());
+            post.setImageUrl(postRequestDto.getImageUrl());
             postRepository.save(post);
         }
         else {
             throw new RuntimeException("Only author can edit this post");
         }
         PostResponseDto postResponseDto = new PostResponseDto();
+        postResponseDto.setId(post.getId());
         postResponseDto.setTitle(post.getTitle());
         postResponseDto.setContent(post.getContent());
         postResponseDto.setImage(post.getImageUrl());
-        postResponseDto.setAuthor(post.getAuthor().getFullName());
+        postResponseDto.setAuthor(post.getAuthor().getEmail());
+        postResponseDto.setTotalLike(post.getLikes().size());
         return ResponseDto.success(postResponseDto);
     }
 
     //Delete post
     @Override
-    public ResponseDto<String> deletePost(Long id, PostDeleteRequestDto postDeleteRequestDto) {
+    public ResponseDto<String> deletePost(Long id, String email ) {
         Post post = postRepository.findById(id).orElseThrow(()->new RuntimeException("Post not found"));
         User user = post.getAuthor();
-        if (user.getFullName().equals(postDeleteRequestDto.getFullName())) {
+        if (user.getEmail().equals(email)) {
             postRepository.delete(post);
         }
         else {
@@ -118,9 +136,9 @@ public class PostServiceImpl implements PostService {
 
     //Like post
     @Override
-    public ResponseDto<PostLikeResponseDto> likePost(PostLikeRequestDto postLikeRequestDto) {
+    public ResponseDto<PostLikeResponseDto> likePost(PostLikeRequestDto postLikeRequestDto, String email) {
         Post post = postRepository.findById(postLikeRequestDto.getPostId()).orElseThrow(()->new RuntimeException("Post not found"));
-        User user = userRepository.findByFullName(postLikeRequestDto.getFullName()).orElseThrow(()->new RuntimeException("Username not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("Username not found"));
         List<User> likes = post.getLikes();
         if (likes.contains(user)){
             throw new BadRequestException(HttpStatus.BAD_REQUEST.toString(),"You are already like post");
@@ -135,9 +153,9 @@ public class PostServiceImpl implements PostService {
 
     //Unlike post
     @Override
-    public ResponseDto<PostLikeResponseDto> unlikePost(PostLikeRequestDto postUnlikeRequestDto) {
+    public ResponseDto<PostLikeResponseDto> unlikePost(PostLikeRequestDto postUnlikeRequestDto, String email) {
         Post post = postRepository.findById(postUnlikeRequestDto.getPostId()).orElseThrow(()->new RuntimeException("Post not found"));
-        User user = userRepository.findByFullName(postUnlikeRequestDto.getFullName()).orElseThrow(()->new RuntimeException("Username not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("Username not found"));
         List<User> likes = post.getLikes();
         if (likes.contains(user)) {
             likes.remove(user);
@@ -154,13 +172,13 @@ public class PostServiceImpl implements PostService {
 
     //Check post is liked?
     @Override
-    public ResponseDto<Boolean> isLiked(PostLikeRequestDto postIslikeRequestDto) {
-        Post post = postRepository.findById(postIslikeRequestDto.getPostId()).orElseThrow(()->new RuntimeException("Post not found"));
-        User user = userRepository.findByFullName(postIslikeRequestDto.getFullName()).orElseThrow(()->new RuntimeException("Username not found"));
+    public ResponseDto<Boolean> isLiked(Long id, String email) {
+        Post post = postRepository.findById(id).orElseThrow(()->new RuntimeException("Post not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("Username not found"));
         List<User> likes = post.getLikes();
         boolean isLiked = false;
         for (User like : likes){
-            if (like.getFullName().equals(user.getFullName())) {
+            if (like.getEmail().equals(user.getEmail())) {
                 isLiked = true;
                 break;
             }

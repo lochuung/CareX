@@ -1,7 +1,6 @@
 package org.webdev.carex.service;
 
 import org.webdev.carex.dto.ResponseDto;
-import org.webdev.carex.dto.request.workshop.JoinWorkshopRequestDto;
 import org.webdev.carex.dto.request.workshop.WorkshopRequestDto;
 import org.webdev.carex.dto.response.workshop.JoinWorkshopResponseDto;
 import org.webdev.carex.dto.response.workshop.WorkshopResponseDto;
@@ -15,13 +14,17 @@ public interface WorkshopService {
 
     void createWorkshop();
 
-    ResponseDto<WorkshopResponseDto> editWorkshop(WorkshopRequestDto workshopEditRequestDto, Long id);
+    ResponseDto<WorkshopResponseDto> editWorkshop(Long id, WorkshopRequestDto workshopRequestDto, String email);
 
-    ResponseDto<String> deleteWorkshop(JoinWorkshopRequestDto deleteWorkshopRequestDto, Long id);
+    ResponseDto<String> deleteWorkshop(Long id, String email);
 
-    ResponseDto<JoinWorkshopResponseDto> joinWorkshop(JoinWorkshopRequestDto joinWorkshopRequestDto, Long id);
+    ResponseDto<JoinWorkshopResponseDto> joinWorkshop(Long id, String email);
 
-    ResponseDto<JoinWorkshopResponseDto> outWorkshop(JoinWorkshopRequestDto outWorkshopRequestDto, Long id);
+    ResponseDto<JoinWorkshopResponseDto> outWorkshop(Long id, String email);
 
-    ResponseDto<WorkshopResponseDto> cancelWorkshop(JoinWorkshopRequestDto cancelWorkshopRequestDto, Long id);
+    ResponseDto<WorkshopResponseDto> cancelWorkshop(Long id, String email);
+
+    ResponseDto<WorkshopResponseDto> createNewWorkshop(WorkshopRequestDto workshopRequestDto, String email);
+
+    ResponseDto<Boolean> checkIsJoinedWorkshop(Long id, String email);
 }

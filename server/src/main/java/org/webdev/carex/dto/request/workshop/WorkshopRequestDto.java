@@ -16,7 +16,6 @@ public class WorkshopRequestDto{
     private String description;
     private String address;
     private String imageUrl;
-    private String hostName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 }

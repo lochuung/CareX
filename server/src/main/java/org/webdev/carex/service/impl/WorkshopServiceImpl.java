@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.webdev.carex.dto.ResponseDto;
-import org.webdev.carex.dto.request.workshop.JoinWorkshopRequestDto;
 import org.webdev.carex.dto.request.workshop.WorkshopRequestDto;
 import org.webdev.carex.dto.response.workshop.JoinWorkshopResponseDto;
 import org.webdev.carex.dto.response.workshop.WorkshopResponseDto;
@@ -34,7 +33,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshopResponseDto.setDescription(workshop.getDescription());
         workshopResponseDto.setName(workshop.getName());
         workshopResponseDto.setAddress(workshop.getAddress());
-        workshopResponseDto.setHostName(workshop.getHost().getFullName());
+        workshopResponseDto.setHostName(workshop.getHost().getEmail());
         workshopResponseDto.setStartTime(workshop.getStartTime());
         workshopResponseDto.setEndTime(workshop.getEndTime());
         workshopResponseDto.setCancelled(workshop.isCancelled());
@@ -47,7 +46,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         List<Workshop> workshops = workshopRepository.findAll();
         List<WorkshopResponseDto> workshopResponseDtos = new ArrayList<>();
         for (Workshop workshop : workshops){
-            if (!workshop.isCancelled() || !workshop.isFinished()){
+            if (!workshop.isCancelled() && workshop.isFinished()){
                 WorkshopResponseDto workshopResponseDto = newWorkshopResponseDto(workshop);
                 workshopResponseDtos.add(workshopResponseDto);
             }
@@ -59,20 +58,23 @@ public class WorkshopServiceImpl implements WorkshopService {
     public void updateWorkshopStatus() {
         List<Workshop> workshops = workshopRepository.findAll();
         for (Workshop workshop : workshops){
-            if (workshop.getEndTime().isBefore(LocalDateTime.now()) && !workshop.isFinished()){
+            if (workshop.getEndTime().isEqual(LocalDateTime.now()) && !workshop.isFinished()){
                 workshop.setFinished(true);
             }
         }
     }
 
-    @Scheduled(fixedRate = 60*1000)
+    @Scheduled(fixedRate = 5*60*1000)
     public void checkTimeWorkshop() throws MessagingException {
         List<Workshop> workshops = workshopRepository.findAll();
         for (Workshop workshop : workshops){
-            if ((workshop.getStartTime().minusMinutes(5)).isBefore(LocalDateTime.now())){
+            if ((workshop.getStartTime().minusMinutes(30)).isBefore(LocalDateTime.now())) {
                 User host = workshop.getHost();
-                emailService.sendEmail(host.getEmail(),"Workshop", "The workshop begin after 5 minutes");
-                workshop.setFinished(true);
+                List<User> participants = workshop.getParticipants();
+                participants.add(host);
+                for (User participant : participants) {
+                    emailService.sendEmail(participant.getEmail(), "Workshop", "The workshop begin after 5 minutes");
+                }
             }
         }
     }
@@ -90,7 +92,7 @@ public class WorkshopServiceImpl implements WorkshopService {
             return;
         }
 
-        User user = userRepository.findByFullName("Admin").orElseThrow(()->new RuntimeException("User not exist"));
+        User user = userRepository.findByEmail("Admin").orElseThrow(()->new RuntimeException("User not exist"));
         Workshop workshop1 = Workshop.builder()
                         .name("test1")
                         .description("test1")
@@ -118,18 +120,16 @@ public class WorkshopServiceImpl implements WorkshopService {
     }
 
     @Override
-    public ResponseDto<WorkshopResponseDto> editWorkshop(WorkshopRequestDto workshopEditRequestDto, Long id) {
+    public ResponseDto<WorkshopResponseDto> editWorkshop(Long id, WorkshopRequestDto workshopRequestDto, String email) {
         Workshop workshop = workshopRepository.findById(id).orElseThrow(() -> new RuntimeException("Workshop not exist"));
         User host = workshop.getHost();
-        if (host.getFullName().equals(workshopEditRequestDto.getHostName())) {
-            workshop.setName(workshopEditRequestDto.getName());
-            workshop.setDescription(workshopEditRequestDto.getDescription());
-            workshop.setAddress(workshopEditRequestDto.getAddress());
-            workshop.setImageUrl(workshopEditRequestDto.getImageUrl());
-            workshop.setStartTime(workshopEditRequestDto.getStartTime());
-            workshop.setEndTime(workshopEditRequestDto.getEndTime());
-            workshop.setCancelled(false);
-            workshop.setFinished(false);
+        if (host.getEmail().equals(email)) {
+            workshop.setName(workshopRequestDto.getName());
+            workshop.setDescription(workshopRequestDto.getDescription());
+            workshop.setAddress(workshopRequestDto.getAddress());
+            workshop.setImageUrl(workshopRequestDto.getImageUrl());
+            workshop.setStartTime(workshopRequestDto.getStartTime());
+            workshop.setEndTime(workshopRequestDto.getEndTime());
             workshopRepository.save(workshop);
         } else {
             throw new RuntimeException("Wrong host");
@@ -139,10 +139,10 @@ public class WorkshopServiceImpl implements WorkshopService {
     }
 
     @Override
-    public ResponseDto<String> deleteWorkshop(JoinWorkshopRequestDto deleteWorkshopDto,Long id) {
+    public ResponseDto<String> deleteWorkshop(Long id, String email) {
         Workshop workshop = workshopRepository.findById(id).orElseThrow(() -> new RuntimeException("Workshop not exist"));
         User host = workshop.getHost();
-        if (host.getFullName().equals(deleteWorkshopDto.getFullName())) {
+        if (host.getEmail().equals(email)) {
             workshopRepository.delete(workshop);
         }
         else {
@@ -152,9 +152,9 @@ public class WorkshopServiceImpl implements WorkshopService {
     }
 
     @Override
-    public ResponseDto<JoinWorkshopResponseDto> joinWorkshop(JoinWorkshopRequestDto joinWorkshopRequestDto, Long id) {
+    public ResponseDto<JoinWorkshopResponseDto> joinWorkshop(Long id, String email) {
         Workshop workshop = workshopRepository.findById(id).orElseThrow(() -> new RuntimeException("Workshop not exist"));
-        User user = userRepository.findByFullName(joinWorkshopRequestDto.getFullName()).orElseThrow(()->new RuntimeException("User not exists"));
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not exists"));
         List<User> participants = workshop.getParticipants();
         if (!participants.contains(user)){
             participants.add(user);
@@ -171,9 +171,9 @@ public class WorkshopServiceImpl implements WorkshopService {
     }
 
     @Override
-    public ResponseDto<JoinWorkshopResponseDto> outWorkshop(JoinWorkshopRequestDto outWorkshopRequestDto, Long id) {
+    public ResponseDto<JoinWorkshopResponseDto> outWorkshop(Long id, String email) {
         Workshop workshop = workshopRepository.findById(id).orElseThrow(() -> new RuntimeException("Workshop not exist"));
-        User user = userRepository.findByFullName(outWorkshopRequestDto.getFullName()).orElseThrow(()->new RuntimeException("User not exists"));
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not exists"));
         List<User> participants = workshop.getParticipants();
         if (!participants.contains(user)){
             throw new RuntimeException("You doesn't join this workshop");
@@ -190,10 +190,10 @@ public class WorkshopServiceImpl implements WorkshopService {
     }
 
     @Override
-    public ResponseDto<WorkshopResponseDto> cancelWorkshop(JoinWorkshopRequestDto cancelWorkshopRequestDto, Long id) {
+    public ResponseDto<WorkshopResponseDto> cancelWorkshop(Long id, String email) {
         Workshop workshop = workshopRepository.findById(id).orElseThrow(() -> new RuntimeException("Workshop not exist"));
         User host = workshop.getHost();
-        if (host.getFullName().equals(cancelWorkshopRequestDto.getFullName())) {
+        if (host.getEmail().equals(email)) {
             workshop.setCancelled(true);
             workshopRepository.save(workshop);
             WorkshopResponseDto workshopResponseDto = newWorkshopResponseDto(workshop);
@@ -202,6 +202,37 @@ public class WorkshopServiceImpl implements WorkshopService {
         }
         else {
             throw new RuntimeException("Wrong host");
+        }
+    }
+
+    @Override
+    public ResponseDto<WorkshopResponseDto> createNewWorkshop(WorkshopRequestDto workshopRequestDto, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not exists"));
+        Workshop workshop = new Workshop();
+        workshop.setHost(user);
+        workshop.setName(workshopRequestDto.getName());
+        workshop.setDescription(workshopRequestDto.getDescription());
+        workshop.setAddress(workshopRequestDto.getAddress());
+        workshop.setImageUrl(workshopRequestDto.getImageUrl());
+        workshop.setStartTime(workshopRequestDto.getStartTime());
+        workshop.setEndTime(workshopRequestDto.getEndTime());
+        workshop.setCancelled(false);
+        workshop.setFinished(false);
+        workshopRepository.save(workshop);
+        WorkshopResponseDto workshopResponseDto = newWorkshopResponseDto(workshop);
+        return ResponseDto.success(workshopResponseDto);
+    }
+
+    @Override
+    public ResponseDto<Boolean> checkIsJoinedWorkshop(Long id, String name) {
+        User user = userRepository.findById(id).orElseThrow(()->new RuntimeException("User not exists"));
+        Workshop workshop = workshopRepository.findById(id).orElseThrow(()->new RuntimeException("Workshop not exist"));
+        List<User> participants = workshop.getParticipants();
+        if (!participants.contains(user)){
+            return ResponseDto.success(false);
+        }
+        else {
+            return ResponseDto.success(true);
         }
     }
 }
