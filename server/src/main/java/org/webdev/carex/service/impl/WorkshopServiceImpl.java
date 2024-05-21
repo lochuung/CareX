@@ -118,7 +118,7 @@ public class WorkshopServiceImpl implements WorkshopService {
             return;
         }
 
-        User user = userRepository.findByEmail("Admin").orElseThrow(()->new RuntimeException("User not exist"));
+        User user = userRepository.findByFullName("Admin").orElseThrow(()->new RuntimeException("User not exist"));
         Workshop workshop1 = Workshop.builder()
                         .name("test1")
                         .description("test1")

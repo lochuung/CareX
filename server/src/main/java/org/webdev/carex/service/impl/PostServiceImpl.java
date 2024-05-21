@@ -31,7 +31,7 @@ public class PostServiceImpl implements PostService {
             return;
         }
 
-        User user = userRepository.findByEmail("Admin").orElseThrow(()->new BadRequestException(HttpStatus.BAD_REQUEST.toString(),"Username not found"));
+        User user = userRepository.findByFullName("Admin").orElseThrow(()->new BadRequestException(HttpStatus.BAD_REQUEST.toString(),"Username not found"));
         Post post1 = Post.builder()
                         .title("test1")
                         .content("test1")
