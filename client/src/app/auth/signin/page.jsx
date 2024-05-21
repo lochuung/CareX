@@ -45,10 +45,8 @@ const SignInPage = () => {
         values?.password === "user123"
       ) {
         setRole("user");
-        setErrorSignin({ type: "success", message: "Logged in successfully." });
-        setTimeout(() => {
-          router.push("/home", { scroll: true });
-        }, 1400);
+
+        router.push("/home", { scroll: true });
       } else if (
         values?.email === "admin@gmail.com" &&
         values?.password === "admin123"
@@ -58,9 +56,8 @@ const SignInPage = () => {
           type: "success",
           message: "Logged in successfully.",
         });
-        setTimeout(() => {
-          router.push("/admin/home", { scroll: true });
-        }, 1400);
+
+        router.push("/admin/home", { scroll: true });
       } else {
         setErrorSignin({
           type: "error",

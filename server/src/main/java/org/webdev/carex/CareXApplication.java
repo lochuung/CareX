@@ -4,6 +4,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.webdev.carex.service.UserService;
+import org.webdev.carex.service.YogaService;
 
 @SpringBootApplication
 public class CareXApplication {
@@ -14,9 +16,10 @@ public class CareXApplication {
 	}
 
 	@Bean
-	CommandLineRunner runner() {
+	CommandLineRunner runner(UserService userService, YogaService yogaService) {
 		return args -> {
-			// migrate data code here
+			userService.createData();
+			yogaService.createData();
 		};
 	}
 }
