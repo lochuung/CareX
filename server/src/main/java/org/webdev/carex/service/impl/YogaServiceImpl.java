@@ -2,6 +2,8 @@ package org.webdev.carex.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webdev.carex.dto.mapper.YogaHistoryMapper;
 import org.webdev.carex.dto.mapper.YogaMapper;
@@ -29,15 +31,16 @@ public class YogaServiceImpl implements YogaService {
 
     @Override
     public YogaDto upsert(YogaDto yogaDto) {
-//        Authentication authentication = SecurityContextHolder
-//                .getContext().getAuthentication();
-//        if (authentication == null) {
-//            throw BadRequestException.message("User not authenticated");
-//        }
-//        if (authentication.getAuthorities().stream()
-//                .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-//            throw BadRequestException.message("User not authorized");
-//        }
+        Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+        if (authentication == null) {
+            throw BadRequestException.message("User not authenticated");
+        }
+        if (authentication.getAuthorities().stream()
+                .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            throw BadRequestException.message("User not authorized");
+        }
+
         if (yogaDto == null) {
             throw BadRequestException.message("Yoga workout cannot be null");
         }
