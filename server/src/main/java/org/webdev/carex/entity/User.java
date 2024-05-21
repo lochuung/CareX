@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.webdev.carex.entity.common.BaseEntity;
+import org.webdev.carex.entity.key.WorkshopParticipantKey;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
