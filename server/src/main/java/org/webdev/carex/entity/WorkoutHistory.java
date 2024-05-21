@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity(name = "workout_histories")
 public class WorkoutHistory {
     @Id

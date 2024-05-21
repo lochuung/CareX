@@ -25,10 +25,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void createData() {
-        if (userRepository.count() > 0) {
-            return;
-        }
-
         Privilege readPrivilege = Privilege.builder().name("READ").build();
         Privilege writePrivilege = Privilege.builder().name("WRITE").build();
         Privilege deletePrivilege = Privilege.builder().name("DELETE").build();
@@ -63,13 +59,15 @@ public class UserServiceImpl implements UserService {
             ));
         }
 
-        userRepository.save(User.builder()
-                .email("admin@huuloc.id.vn")
-                .password("{bcrypt}" + new BCryptPasswordEncoder(10)
-                        .encode("admin"))
-                .fullName("Admin")
-                .enabled(true)
-                .roles(List.of(roleRepository.findByName("ADMIN")))
-                .build());
+        if (userRepository.count() == 0) {
+            userRepository.save(User.builder()
+                    .email("admin@huuloc.id.vn")
+                    .password("{bcrypt}" + new BCryptPasswordEncoder(10)
+                            .encode("admin"))
+                    .fullName("Admin")
+                    .enabled(true)
+                    .roles(List.of(roleRepository.findByName("ADMIN")))
+                    .build());
+        }
     }
 }

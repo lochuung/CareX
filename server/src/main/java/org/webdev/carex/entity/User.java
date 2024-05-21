@@ -3,6 +3,7 @@ package org.webdev.carex.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.webdev.carex.entity.common.BaseEntity;
 
 import java.math.BigDecimal;
