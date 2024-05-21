@@ -1,7 +1,8 @@
+import DefaultLayout from "@/layouts/DefaultLayout";
 import React from "react";
 
 const AdminHomePage = () => {
-  return <div>tewt</div>;
+  return <DefaultLayout />;
 };
 
 export default AdminHomePage;
