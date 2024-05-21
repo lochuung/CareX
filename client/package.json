@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/nextjs-registry": "^1.0.0",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-hover-card": "^1.0.7",
     "@radix-ui/react-label": "^2.0.2",
@@ -20,6 +21,7 @@
     "@tensorflow/tfjs-backend-webgl": "^4.19.0",
     "@tensorflow/tfjs-backend-webgpu": "^4.19.0",
     "again": "^0.0.1",
+    "antd": "^5.17.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
