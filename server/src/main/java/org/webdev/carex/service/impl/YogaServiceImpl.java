@@ -1,7 +1,12 @@
 package org.webdev.carex.service.impl;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
+import com.opencsv.exceptions.CsvValidationException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webdev.carex.dto.mapper.YogaHistoryMapper;
 import org.webdev.carex.dto.mapper.YogaMapper;
@@ -16,6 +21,8 @@ import org.webdev.carex.repository.WorkoutHistoryRepository;
 import org.webdev.carex.repository.YogaWorkoutRepository;
 import org.webdev.carex.service.YogaService;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -29,15 +36,16 @@ public class YogaServiceImpl implements YogaService {
 
     @Override
     public YogaDto upsert(YogaDto yogaDto) {
-//        Authentication authentication = SecurityContextHolder
-//                .getContext().getAuthentication();
-//        if (authentication == null) {
-//            throw BadRequestException.message("User not authenticated");
-//        }
-//        if (authentication.getAuthorities().stream()
-//                .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-//            throw BadRequestException.message("User not authorized");
-//        }
+        Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+        if (authentication == null) {
+            throw BadRequestException.message("User not authenticated");
+        }
+        if (authentication.getAuthorities().stream()
+                .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            throw BadRequestException.message("User not authorized");
+        }
+
         if (yogaDto == null) {
             throw BadRequestException.message("Yoga workout cannot be null");
         }
@@ -122,42 +130,30 @@ public class YogaServiceImpl implements YogaService {
     }
 
     @Override
-    public void createData() {
+    public void createData() throws IOException, CsvException {
         if (yogaRepository.count() > 0) {
             return;
         }
-        YogaWorkout yoga = YogaWorkout.builder()
-                .name("Yoga 1")
-                .description("Yoga workout 1")
-                .imageUrl("https://images.ctfassets.net/6ilvqec50fal/9dGv5WEjz4WCmqNT4ohK7/6f4751715ae7e71f466b4610404eaabf/How_to_create_a_yoga_focused_routine.jpg")
-                .videoUrl("https://www.youtube.com/watch?v=NJU8dcCacRY")
-                .level(1)
-                .point(10.0)
-                .duration(1800)
-                .build();
-        yogaRepository.save(yoga);
-
-        yoga = YogaWorkout.builder()
-                .name("Yoga 2")
-                .description("Yoga workout 2")
-                .imageUrl("https://images.ctfassets.net/6ilvqec50fal/9dGv5WEjz4WCmqNT4ohK7/6f4751715ae7e71f466b4610404eaabf/How_to_create_a_yoga_focused_routine.jpg")
-                .videoUrl("https://www.youtube.com/watch?v=NJU8dcCacRY")
-                .level(2)
-                .point(20.0)
-                .duration(2800)
-                .build();
-        yogaRepository.save(yoga);
-
-        yoga = YogaWorkout.builder()
-                .name("Yoga 3")
-                .description("Yoga workout 3")
-                .imageUrl("https://images.ctfassets.net/6ilvqec50fal/9dGv5WEjz4WCmqNT4ohK7/6f4751715ae7e71f466b4610404eaabf/How_to_create_a_yoga_focused_routine.jpg")
-                .videoUrl("https://www.youtube.com/watch?v=NJU8dcCacRY")
-                .level(3)
-                .point(30.0)
-                .duration(3800)
-                .build();
-        yogaRepository.save(yoga);
+        // read csv file in classpath csv/yoga-raw.csv and insert to database
+        try (CSVReader reader = new CSVReader(
+                new InputStreamReader(Objects.requireNonNull(
+                        getClass().getClassLoader()
+                                .getResourceAsStream("csv/yoga-raw.csv"))))) {
+            List<String[]> r = reader.readAll();
+            r.forEach(row -> {
+                YogaWorkout yoga = YogaWorkout.builder()
+                        .name(row[0])
+                        .description(row[1])
+                        .videoUrl(row[2])
+                        .imageUrl(row[3])
+                        .level(Integer.parseInt(row[4]))
+                        .duration(Integer.parseInt(row[5]))
+                        .point(Double.parseDouble(row[6]))
+                        .instruction(row[7])
+                        .build();
+                yogaRepository.save(yoga);
+            });
+        }
     }
 
 }
