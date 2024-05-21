@@ -86,6 +86,10 @@ public class WorkshopServiceImpl implements WorkshopService {
 
     @Override
     public void createWorkshop() {
+        if (workshopRepository.count() > 0) {
+            return;
+        }
+
         User user = userRepository.findByFullName("Admin").orElseThrow(()->new RuntimeException("User not exist"));
         Workshop workshop1 = Workshop.builder()
                         .name("test1")

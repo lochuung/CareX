@@ -1,5 +1,6 @@
 package org.webdev.carex.controller.api;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/workshops")
+@SecurityRequirement(name = "bearerAuth")
 public class WorkshopController {
     private final WorkshopService workshopService;
 
