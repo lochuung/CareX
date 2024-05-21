@@ -28,6 +28,10 @@ public class PostServiceImpl implements PostService {
     //Create post
     @Override
     public void createPost() {
+        if (postRepository.findAll().size() > 0) {
+            return;
+        }
+
         User user = userRepository.findByFullName("Admin").orElseThrow(()->new BadRequestException(HttpStatus.BAD_REQUEST.toString(),"Username not found"));
         Post post1 = Post.builder()
                         .title("test1")
