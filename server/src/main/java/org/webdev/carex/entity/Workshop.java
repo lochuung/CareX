@@ -41,7 +41,7 @@ public class Workshop extends BaseEntity {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    private boolean isCancelled;
+    private boolean cancelled;
 
-    private boolean isFinished;
+    private boolean finished;
 }
