@@ -7,7 +7,7 @@ services:
       - maven-repo:/root/.m2
       - .:/app
     working_dir: /app
-    command: ./mvnw spring-boot:run
+    command: bash -c "mvn clean install -DskipTests && mvn spring-boot:run"
     networks:
         - carex-mysql-net
     depends_on:
@@ -15,6 +15,8 @@ services:
 
     ports:
       - '8000:8080'
+    expose:
+      - '25'
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/carex
       SPRING_DATASOURCE_USERNAME: dev

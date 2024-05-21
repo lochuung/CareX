@@ -83,7 +83,7 @@ public class AuthenticationService {
         var user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password("{bcrypt}" + passwordEncoder.encode(request.getPassword()))
                 .birthday(request.getBirthday())
                 .build();
         var savedUser = userRepository.save(user);
@@ -97,9 +97,10 @@ public class AuthenticationService {
                         .code(generateVerifyCode())
                         .expiredAt(expiredAt)
                         .build();
-        verifyCodeRepository.save(verifyCode);
 
         emailService.sendVerifyCode(savedUser.getEmail(), verifyCode.getCode());
+
+        verifyCodeRepository.save(verifyCode);
 
         return ResponseDto.success(null);
     }
