@@ -1,5 +1,5 @@
 "use client";
-import FILE from "@/app/root/yoga/model.json";
+import FILE from "@/app/(root)/yoga/model.json";
 import "@tensorflow/tfjs-backend-webgpu";
 import * as poseDetection from "@tensorflow-models/pose-detection";
 import * as tf from "@tensorflow/tfjs";

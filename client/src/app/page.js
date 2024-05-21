@@ -4,7 +4,7 @@ import Profile from "./(root)/(profile)/page";
 
 export default function Home() {
   return (
-    //<SignInPage />
-    <Profile />
+    <SignInPage />
+    //<Profile />
   );
 }
