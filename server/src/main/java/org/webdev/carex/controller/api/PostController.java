@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@CrossOrigin(originPatterns = "*")
 public class PostController {
     //Service
     private final PostService postService;

@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/workshops")
 @SecurityRequirement(name = "bearerAuth")
+@CrossOrigin(originPatterns = "*")
 public class WorkshopController {
     private final WorkshopService workshopService;
 
