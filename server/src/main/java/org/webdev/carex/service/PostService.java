@@ -10,7 +10,7 @@ import org.webdev.carex.dto.response.post.PostResponseDto;
 import java.util.List;
 
 public interface PostService {
-    ResponseDto<PostResponseDto> createPost(PostRequestDto postCreateRequestDto);
+    void createPost();
 
     ResponseDto<PostResponseDto> getPost(Long id);
 

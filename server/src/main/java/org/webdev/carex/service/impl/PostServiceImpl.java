@@ -27,21 +27,26 @@ public class PostServiceImpl implements PostService {
 
     //Create post
     @Override
-    public ResponseDto<PostResponseDto> createPost(PostRequestDto postCreateRequestDto) {
-        User user = userRepository.findByFullName(postCreateRequestDto.getFullName()).orElseThrow(()->new BadRequestException(HttpStatus.BAD_REQUEST.toString(),"Username not found"));
-        Post post = new Post();
-        post.setTitle(postCreateRequestDto.getTitle());
-        post.setContent(postCreateRequestDto.getContent());
-        post.setAuthor(user);
-        post.setImageUrl(postCreateRequestDto.getImageUrl());
-        postRepository.save(post);
-        PostResponseDto postCreateResponseDto = new PostResponseDto();
-        postCreateResponseDto.setAuthor(post.getAuthor().getFullName());
-        postCreateResponseDto.setTitle(post.getTitle());
-        postCreateResponseDto.setContent(post.getContent());
-        postCreateResponseDto.setImage(post.getImageUrl());
-        postCreateResponseDto.setId(post.getId());
-        return ResponseDto.success(postCreateResponseDto);
+    public void createPost() {
+        if (postRepository.findAll().size() > 0) {
+            return;
+        }
+
+        User user = userRepository.findByFullName("Admin").orElseThrow(()->new BadRequestException(HttpStatus.BAD_REQUEST.toString(),"Username not found"));
+        Post post1 = Post.builder()
+                        .title("test1")
+                        .content("test1")
+                        .author(user)
+                        .imageUrl("http://link")
+                        .build();
+        postRepository.save(post1);
+        Post post2 = Post.builder()
+                .title("test2")
+                .content("test2")
+                .author(user)
+                .imageUrl("http://link")
+                .build();
+        postRepository.save(post2);
     }
 
     //Get post by id
