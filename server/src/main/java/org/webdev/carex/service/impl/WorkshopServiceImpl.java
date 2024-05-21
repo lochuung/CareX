@@ -11,7 +11,10 @@ import org.webdev.carex.dto.response.workshop.JoinWorkshopResponseDto;
 import org.webdev.carex.dto.response.workshop.WorkshopResponseDto;
 import org.webdev.carex.entity.User;
 import org.webdev.carex.entity.Workshop;
+import org.webdev.carex.entity.WorkshopParticipant;
+import org.webdev.carex.entity.key.WorkshopParticipantKey;
 import org.webdev.carex.repository.UserRepository;
+import org.webdev.carex.repository.WorkshopParticipantRepository;
 import org.webdev.carex.repository.WorkshopRepository;
 import org.webdev.carex.service.EmailService;
 import org.webdev.carex.service.WorkshopService;
@@ -24,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkshopServiceImpl implements WorkshopService {
     private final WorkshopRepository workshopRepository;
+    private final WorkshopParticipantRepository workshopParticipantRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
 
@@ -61,21 +65,47 @@ public class WorkshopServiceImpl implements WorkshopService {
         for (Workshop workshop : workshops){
             if (workshop.getEndTime().isBefore(LocalDateTime.now()) && !workshop.isFinished()){
                 workshop.setFinished(true);
+                workshopRepository.save(workshop);
             }
         }
     }
 
     @Scheduled(fixedRate = 60*1000)
-    public void checkTimeWorkshop() throws MessagingException {
-        List<Workshop> workshops = workshopRepository.findAll();
-        for (Workshop workshop : workshops){
-            if ((workshop.getStartTime().minusMinutes(5)).isBefore(LocalDateTime.now())){
-                User host = workshop.getHost();
-                emailService.sendEmail(host.getEmail(),"Workshop", "The workshop begin after 5 minutes");
-                workshop.setFinished(true);
+public void checkTimeWorkshop() throws MessagingException {
+    LocalDateTime oneDayAhead = LocalDateTime.now().plusDays(1);
+    List<Workshop> workshops = workshopRepository
+            .findAllByCancelledFalseAndStartTimeBefore(oneDayAhead);
+
+    for (Workshop workshop : workshops){
+        // add workshop participants if not exist
+        List<User> participants = workshop.getParticipants();
+        for (User participant : participants){
+            if (!workshopParticipantRepository.existsById_UserAndId_Workshop(participant,
+                    workshop)){
+                WorkshopParticipant workshopParticipant =
+                        WorkshopParticipant.builder()
+                                .id(
+                                        WorkshopParticipantKey.builder()
+                                                .user(participant)
+                                                .workshop(workshop)
+                                                .build()
+                                )
+                                .sent(false)
+                                .build();
+                workshopParticipantRepository.save(workshopParticipant);
             }
         }
+
+        List<WorkshopParticipant> participantsToNotify = workshopParticipantRepository
+                .findAllById_Workshop_Id(workshop.getId());
+        for (WorkshopParticipant participant : participantsToNotify){
+            emailService.sendEmail(participant.getId().getUser().getEmail(), "Workshop",
+                    "Workshop " + workshop.getName() + " will start at " + workshop.getStartTime());
+            participant.setSent(true);
+        }
+        workshopParticipantRepository.saveAll(participantsToNotify);
     }
+}
 
     @Override
     public ResponseDto<WorkshopResponseDto> getWorkshopById(Long id) {
@@ -97,10 +127,11 @@ public class WorkshopServiceImpl implements WorkshopService {
                         .address("test1")
                         .imageUrl("http://link")
                         .host(user)
+                        .participants(List.of(user))
                         .startTime(LocalDateTime.now())
                         .endTime(LocalDateTime.now().plusDays(1))
-                        .isCancelled(false)
-                        .isFinished(false)
+                        .cancelled(false)
+                        .finished(false)
                         .build();
         workshopRepository.save(workshop1);
         Workshop workshop2 = Workshop.builder()
@@ -109,10 +140,11 @@ public class WorkshopServiceImpl implements WorkshopService {
                 .address("test2")
                 .imageUrl("http://link")
                 .host(user)
+                .participants(List.of(user))
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusDays(1))
-                .isCancelled(false)
-                .isFinished(false)
+                .cancelled(false)
+                .finished(false)
                 .build();
         workshopRepository.save(workshop2);
     }
