@@ -1,7 +1,17 @@
 package org.webdev.carex.service.impl;
 
+<<<<<<< HEAD
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+=======
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
+import com.opencsv.exceptions.CsvValidationException;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 import org.springframework.stereotype.Service;
 import org.webdev.carex.dto.mapper.YogaHistoryMapper;
 import org.webdev.carex.dto.mapper.YogaMapper;
@@ -16,6 +26,11 @@ import org.webdev.carex.repository.WorkoutHistoryRepository;
 import org.webdev.carex.repository.YogaWorkoutRepository;
 import org.webdev.carex.service.YogaService;
 
+<<<<<<< HEAD
+=======
+import java.io.IOException;
+import java.io.InputStreamReader;
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +44,7 @@ public class YogaServiceImpl implements YogaService {
 
     @Override
     public YogaDto upsert(YogaDto yogaDto) {
+<<<<<<< HEAD
 //        Authentication authentication = SecurityContextHolder
 //                .getContext().getAuthentication();
 //        if (authentication == null) {
@@ -38,6 +54,18 @@ public class YogaServiceImpl implements YogaService {
 //                .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
 //            throw BadRequestException.message("User not authorized");
 //        }
+=======
+        Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+        if (authentication == null) {
+            throw BadRequestException.message("User not authenticated");
+        }
+        if (authentication.getAuthorities().stream()
+                .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            throw BadRequestException.message("User not authorized");
+        }
+
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
         if (yogaDto == null) {
             throw BadRequestException.message("Yoga workout cannot be null");
         }
@@ -122,6 +150,7 @@ public class YogaServiceImpl implements YogaService {
     }
 
     @Override
+<<<<<<< HEAD
     public void createData() {
         if (yogaRepository.count() > 0) {
             return;
@@ -158,6 +187,32 @@ public class YogaServiceImpl implements YogaService {
                 .duration(3800)
                 .build();
         yogaRepository.save(yoga);
+=======
+    public void createData() throws IOException, CsvException {
+        if (yogaRepository.count() > 0) {
+            return;
+        }
+        // read csv file in classpath csv/yoga-raw.csv and insert to database
+        try (CSVReader reader = new CSVReader(
+                new InputStreamReader(Objects.requireNonNull(
+                        getClass().getClassLoader()
+                                .getResourceAsStream("csv/yoga-raw.csv"))))) {
+            List<String[]> r = reader.readAll();
+            r.forEach(row -> {
+                YogaWorkout yoga = YogaWorkout.builder()
+                        .name(row[0])
+                        .description(row[1])
+                        .videoUrl(row[2])
+                        .imageUrl(row[3])
+                        .level(Integer.parseInt(row[4]))
+                        .duration(Integer.parseInt(row[5]))
+                        .point(Double.parseDouble(row[6]))
+                        .instruction(row[7])
+                        .build();
+                yogaRepository.save(yoga);
+            });
+        }
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     }
 
 }

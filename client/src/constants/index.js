@@ -1,5 +1,6 @@
 export const sidebarProfileLinks = [
     {
+<<<<<<< HEAD
         label: 'Edit Profile',
         route: '/editprofile',
         imgUrl: '/Icons/edit.png'
@@ -18,6 +19,26 @@ export const sidebarProfileLinks = [
         label: 'Password & Security',
         route: '/password-security',
         imgUrl: '/Icons/security.png'
+=======
+        name: 'Edit Profile',
+        link: '/edit-profile',
+        icon: '/Icons/edit.png'
+    },
+    {
+        name: 'Notifications',
+        link: '/notifications',
+        icon: '/Icons/notification.png'
+    },
+    {
+        name: 'Choose Plan',
+        link: '/chooseplan',
+        icon: '/Icons/chooseplan.png'
+    },
+    {
+        name: 'Password & Security',
+        link: '/password-security',
+        icon: '/Icons/security.png'
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     }
 ]
 export const inputProfile = [
@@ -111,4 +132,79 @@ export const inputProfile = [
         touched: 'formik.touched.password',
         errors: 'formik.errors.password'
     },
+<<<<<<< HEAD
+=======
+]
+import { FiHome, FiSettings } from "react-icons/fi";
+import { GrWorkshop, GrYoga } from "react-icons/gr";
+export const menuUser = [
+    {
+      name: "Trang chủ",
+      icon: <FiHome />,
+      link: "/home",
+    },
+    { name: "Workshops", icon: <GrWorkshop />, link: "/workshops" },
+    { name: "Yoga", icon: <GrYoga />, link: "/yoga" },
+    { name: "Cài đặt", icon: <FiSettings />, link: "/settings" },
+];
+
+export const buttonPassS1 =[
+    {
+        name: "Đổi mật khẩu",
+    },
+    {
+        name: "Xác thực 2 yếu tố",
+    },
+    {
+        name: "Thông tin đăng nhập đã lưu",
+    }
+]
+export const buttonPassS2 =[
+    {
+        name: "Nơi bạn đăng nhập",
+    },
+    {
+        name: "Cảnh báo đăng nhập",
+    },
+    {
+        name: "Email gần đây",
+    },
+    {
+        name: "Kiểm tra bảo mật",
+    },
+]
+export const myPlan =[
+    {
+        imagePlan:"/PlanPictures/yoga.png",
+        name: "Yoga Practice",
+        username: "yogaeveryday",
+        socialImage: "/Icons/twitter.png",
+        dateSend: "20 May 2024",
+        content: "Practice yoga everyday will make you have a better health and body. Let's practice with us",
+    },
+    {
+        imagePlan:"/PlanPictures/dailymeal.png",
+        name: "Daily Meal",
+        username: "dailymeal",
+        socialImage: "/Icons/twitter.png",
+        dateSend: "21 May 2024",
+        content: "It's time for eating and enjoying the meal we plan for you today. We have egg, salad, 2 breads and sausages"
+    },
+    {
+        imagePlan:"/PlanPictures/fitness.png",
+        name: "It's Gym time",
+        username: "fitnesswithus",
+        socialImage: "/Icons/twitter.png",
+        dateSend: "19 May 2024",
+        content: "I’ve heard that you’ve made significant progress in your fitness journey. Any tips or advice you can share?"
+    },
+    {
+        imagePlan:"/PlanPictures/lunchbag.png",
+        name: "Lunch's Time",
+        username: "dailymeal",
+        socialImage: "/Icons/twitter.png",
+        dateSend: "19 May 2024",
+        content: "It's time to have lunch with us. We have some juice, secret bag and an orange for you. Let see what you got in bag today friend!"
+    }
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 ]

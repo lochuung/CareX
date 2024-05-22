@@ -5,7 +5,7 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3308/carex
+    url: jdbc:mysql://localhost:3308/carex?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false
     hikari:
       connectionTimeout: 30000
       idleTimeout: 600000

@@ -12,6 +12,9 @@ WORKDIR /app
 # to the /app working directory
 COPY package*.json ./
 
+# install the next.js cli
+RUN npm install -g next
+
 # Install dependencies in /app
 RUN npm install
 
