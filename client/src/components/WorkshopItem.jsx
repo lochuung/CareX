@@ -4,6 +4,25 @@ import Router from "next/router";
 import React, { useMemo } from "react";
 
 const WorkshopItem = ({ ...item }) => {
+  const formatDateTime = (isoString) => {
+    const date = new Date(isoString);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  };
+
+  const startTime = "2024-05-23T02:07:46.112492";
+  const formattedDateTime = formatDateTime(startTime);
+
+  console.log(formattedDateTime); // Output: "23/05/2024 02-07-46"
+
   const formatCurrency = (amount) => {
     // Chuyển đổi chuỗi thành số nguyên
     let number = parseInt(amount, 10);
@@ -27,7 +46,7 @@ const WorkshopItem = ({ ...item }) => {
   const router = useRouter();
   return (
     <div
-      onClick={() => router.push(`/workshops/923193219`)}
+      onClick={() => router.push(`/workshops/${item?.id}`)}
       className="w-[300px] border-[1px] border-gray-300 rounded-xl hover:bg-blue-100 hover:text-white cursor-pointer"
     >
       <div className="">
@@ -52,12 +71,12 @@ const WorkshopItem = ({ ...item }) => {
             color="gold-inverse"
             className="text-gray-500 text-sm font-semibold"
           >
-            12/2/2024 12:00 - 14:00
+            {formatDateTime(item?.startTime)}
           </Tag>
         </div>
 
         <div className="">
-          <Progress percent={percent} />
+          <p className="text-gray-600 font-medium">{item?.address}</p>
         </div>
       </div>
     </div>

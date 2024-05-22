@@ -1,7 +1,7 @@
 "use client";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { empty, not } from "../utils/Images";
 import { PageHeading } from "@/components";
 import { DatePicker, Drawer, Form, Input, InputNumber, Upload } from "antd";
@@ -12,6 +12,37 @@ const Workshops = () => {
 
   const [action, setAction] = useState({ createWorkshop: false });
   const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchDataWorkshop = async () => {
+      console.log("fw");
+      const token = localStorage.getItem("access_token");
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API}/api/v1/workshops/all`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "*/*",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log(data, "data");
+        setData(data?.data);
+      } catch (error) {
+        console.error("There was a problem with the fetch operation: ", error);
+      }
+    };
+    fetchDataWorkshop();
+  }, []);
 
   const handleAction = (type) => {
     setAction({ [type]: !action[type] });
@@ -44,7 +75,12 @@ const Workshops = () => {
             </button>
           </div>
         ) : (
-          <div className="">
+          <div className="w-full">
+            <div className="my-4 w-full justify-end flex">
+              <div className="w-[400px]">
+                <Input placeholder="Tìm kiếm Workshop" className="" />
+              </div>
+            </div>
             {data?.length > 0 ? (
               //   Có dữ liệu
               <div className="flex justify-start flex-wrap gap-4">
