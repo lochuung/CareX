@@ -1,5 +1,5 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { FiHome, FiSettings } from "react-icons/fi";
 import { GrWorkshop, GrYoga } from "react-icons/gr";
@@ -21,18 +21,8 @@ import { Menu } from "antd";
 const Menubar = () => {
   const pathname = usePathname();
   const router = useRouter();
-  console.log(pathname);
-  const menuUser = [
-    {
-      name: "Trang chủ",
-      icon: <FiHome />,
-      link: "/home",
-    },
-    { name: "Workshops", icon: <GrWorkshop />, link: "/workshops" },
-    { name: "Yoga", icon: <GrYoga />, link: "/yoga" },
-    { name: "Cài đặt", icon: <FiSettings />, link: "/settings" },
-  ];
 
+  console.log(pathname);
   const adminItems = [
     {
       key: "/admin/home",
@@ -100,7 +90,7 @@ const Menubar = () => {
 
       <div className="flex flex-col gap-3 px-4 mt-4 h-full">
         <Menu
-          onClick={({ key }) => router.push(key)}
+          onClick={({ key }) => redirect(key)}
           style={{
             width: 256,
             height: "calc(100%-40px)",
