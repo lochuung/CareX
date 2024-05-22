@@ -1,7 +1,6 @@
 "use client";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import React from "react";
-<<<<<<< HEAD
 import { FiHome, FiSettings } from "react-icons/fi";
 import { GrWorkshop, GrYoga } from "react-icons/gr";
 import { MdDashboard } from "react-icons/md";
@@ -19,15 +18,12 @@ import {
   BookOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
-=======
 import { menuUser } from '@/constants';
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 const Menubar = () => {
   const pathname = usePathname();
   const router = useRouter();
 
   console.log(pathname);
-<<<<<<< HEAD
   const adminItems = [
     {
       key: "/admin/home",
@@ -87,8 +83,6 @@ const Menubar = () => {
   const { role } = useStore();
 
   const menu = role === "admin" ? adminItems : userItems;
-=======
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
   return (
     <div className="fixed h-screen">
       <div className="text-center flex p-3 justify-center">
@@ -97,7 +91,7 @@ const Menubar = () => {
 
       <div className="flex flex-col gap-3 px-4 mt-4 h-full">
         <Menu
-          onClick={({ key }) => redirect(key)}
+          onClick={({ key }) => router.push(key)}
           style={{
             width: 256,
             height: "calc(100%-40px)",

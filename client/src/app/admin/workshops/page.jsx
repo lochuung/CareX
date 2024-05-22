@@ -9,10 +9,10 @@ import { FaEye } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import useFilterTable from "@/hooks/useFilterTable";
 import withAuth from "@/components/withAuth";
+
 const AdminWorkshopPage = () => {
   const [data, setData] = useState([]);
   const [action, setAction] = useState({ modal: false, data });
-
   const [getColumnSearchProps] = useFilterTable();
   const handleAction = (type, data) => {
     setAction({ [type]: !action[type], data: data });
@@ -76,7 +76,6 @@ const AdminWorkshopPage = () => {
       dataIndex: "status",
       key: "status",
       ...getColumnSearchProps("status"),
-
       render: (status) => {
         let color = "";
         if (status == "Not yet occurred") {

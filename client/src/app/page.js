@@ -1,16 +1,12 @@
 "use client";
 import Image from "next/image";
 import SignInPage from "./auth/signin/page";
-<<<<<<< HEAD
 import { useStore } from "@/store/store";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HomePage from "./home/page";
 import AdminHomePage from "./admin/home/page";
-=======
 import Profile from "./(root)/(profile)/page";
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
-
 export default function Home() {
   const token = localStorage?.getItem("access_token");
   const [loading, setLoading] = useState(false);
@@ -56,7 +52,6 @@ export default function Home() {
   console.log(currentUser, "currentUser");
 
   return (
-<<<<<<< HEAD
     <div className="">
       {loading ? (
         <div className="flex items-center justify-center h-screen">
@@ -70,9 +65,6 @@ export default function Home() {
         currentUser === null && <SignInPage />
       )}
     </div>
-=======
-    <SignInPage />
-    //<Profile />
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
+
   );
 }
