@@ -12,6 +12,9 @@ server:
   port: '8080'
 
 application:
+  default-admin:
+    email: admin
+    password: admin
   security:
     enabled: true
     ignore:

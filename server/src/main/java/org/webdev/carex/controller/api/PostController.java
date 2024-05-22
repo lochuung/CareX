@@ -1,24 +1,15 @@
 package org.webdev.carex.controller.api;
 
-<<<<<<< HEAD
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.webdev.carex.dto.ResponseDto;
-=======
+
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.webdev.carex.dto.ResponseDto;
-import org.webdev.carex.dto.request.post.PostDeleteRequestDto;
 import org.webdev.carex.dto.request.post.PostLikeRequestDto;
 import org.webdev.carex.dto.request.post.PostRequestDto;
 import org.webdev.carex.dto.response.post.PostLikeResponseDto;
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 import org.webdev.carex.dto.response.post.PostResponseDto;
 import org.webdev.carex.service.PostService;
 
@@ -26,19 +17,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/posts")
-<<<<<<< HEAD
-public class PostController {
-    @Autowired
-    private PostService postService;
-
-=======
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@CrossOrigin(originPatterns = "*")
 public class PostController {
     //Service
     private final PostService postService;
     //------POST API------//
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     //Get post
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<PostResponseDto>> getPost(@PathVariable Long id) {
@@ -49,32 +34,34 @@ public class PostController {
     public ResponseEntity<ResponseDto<List<PostResponseDto>>> getAllPosts() {
         return ResponseEntity.ok().body(postService.getAllPost());
     }
-<<<<<<< HEAD
-=======
+    //Create post
+    @PostMapping("/create")
+    public ResponseEntity<ResponseDto<PostResponseDto>> createPost(@RequestBody PostRequestDto postRequestDto, Authentication authentication) {
+        return ResponseEntity.ok().body(postService.createNewPost(postRequestDto, authentication.getName()));
+    }
     //Edit post
     @PutMapping("/{id}/edit")
-    public ResponseEntity<ResponseDto<PostResponseDto>> editPost(@PathVariable Long id, @RequestBody PostRequestDto postEditRequestDto) {
-        return ResponseEntity.ok().body(postService.editPost(id, postEditRequestDto));
+    public ResponseEntity<ResponseDto<PostResponseDto>> editPost(@PathVariable Long id,@RequestBody PostRequestDto postRequestDto, Authentication authentication) {
+        return ResponseEntity.ok().body(postService.editPost(id,postRequestDto, authentication.getName()));
     }
     //Delete post
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<ResponseDto<String>> deletePost(@PathVariable Long id, @RequestBody PostDeleteRequestDto postDeleteRequestDto) {
-        return ResponseEntity.ok().body(postService.deletePost(id, postDeleteRequestDto));
+    public ResponseEntity<ResponseDto<String>> deletePost(@PathVariable Long id, Authentication authentication) {
+        return ResponseEntity.ok().body(postService.deletePost(id, authentication.getName()));
     }
     //Check is like?
-    @PostMapping("/isLiked")
-    public ResponseEntity<ResponseDto<Boolean>> isLiked(@RequestBody PostLikeRequestDto postLikeRequestDto) {
-        return ResponseEntity.ok().body(postService.isLiked(postLikeRequestDto));
+    @GetMapping("/{id}/isLiked")
+    public ResponseEntity<ResponseDto<Boolean>> isLiked(@PathVariable Long id, Authentication authentication) {
+        return ResponseEntity.ok().body(postService.isLiked(id, authentication.getName()));
     }
     //Like post
     @PostMapping("/like")
-    public ResponseEntity<ResponseDto<PostLikeResponseDto>> likePost(@RequestBody PostLikeRequestDto postLikeRequestDto) {
-        return ResponseEntity.ok().body(postService.likePost(postLikeRequestDto));
+    public ResponseEntity<ResponseDto<PostLikeResponseDto>> likePost(@RequestBody PostLikeRequestDto postLikeRequestDto, Authentication authentication) {
+        return ResponseEntity.ok().body(postService.likePost(postLikeRequestDto, authentication.getName()));
     }
     //Unlike post
     @PostMapping("/unlike")
-    public ResponseEntity<ResponseDto<PostLikeResponseDto>> unlikePost(@RequestBody PostLikeRequestDto postUnlikeRequestDto) {
-        return ResponseEntity.ok().body(postService.unlikePost(postUnlikeRequestDto));
+    public ResponseEntity<ResponseDto<PostLikeResponseDto>> unlikePost(@RequestBody PostLikeRequestDto postUnlikeRequestDto, Authentication authentication) {
+        return ResponseEntity.ok().body(postService.unlikePost(postUnlikeRequestDto, authentication.getName()));
     }
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 }

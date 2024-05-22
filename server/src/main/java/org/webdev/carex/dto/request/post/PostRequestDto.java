@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PostRequestDto {
-    private String fullName;
     private String title;
     private String content;
     private String imageUrl;

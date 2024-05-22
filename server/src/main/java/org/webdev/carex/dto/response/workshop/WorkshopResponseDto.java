@@ -18,6 +18,7 @@ public class WorkshopResponseDto {
     private String description;
     private String address;
     private String imageUrl;
+    private int totalPeople;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean isCancelled;
