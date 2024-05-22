@@ -21,10 +21,12 @@ import org.webdev.carex.dto.auth.AuthenticationResponse;
 import org.webdev.carex.dto.auth.RegisterRequest;
 import org.webdev.carex.dto.auth.VerifyRequest;
 import org.webdev.carex.dto.ResponseDto;
+import org.webdev.carex.entity.Role;
 import org.webdev.carex.entity.User;
 import org.webdev.carex.entity.VerifyCode;
 import org.webdev.carex.exception.BadRequestException;
 import org.webdev.carex.exception.UnauthorizedException;
+import org.webdev.carex.repository.RoleRepository;
 import org.webdev.carex.repository.UserRepository;
 import org.webdev.carex.repository.VerifyCodeRepository;
 import org.webdev.carex.service.EmailService;
@@ -34,6 +36,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import static org.webdev.carex.constant.AppConstants.VERIFY_CODE_LENGTH;
@@ -44,6 +47,8 @@ import static org.webdev.carex.utils.AuthUtils.generateVerifyCode;
 public class AuthenticationService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private VerifyCodeRepository verifyCodeRepository;
     @Autowired
@@ -84,11 +89,17 @@ public class AuthenticationService {
                     + request.getEmail());
         }
 
+        Role userRole = roleRepository.findByName(AppConstants.ROLE_USER);
+        if (userRole == null) {
+            throw BadRequestException.message("Role is invalid.");
+        }
+
         var user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .password("{bcrypt}" + passwordEncoder.encode(request.getPassword()))
                 .birthday(request.getBirthday())
+                .roles(List.of(userRole))
                 .build();
         var savedUser = userRepository.save(user);
         SendVerifyCodeHandle(savedUser, emailService, verifyCodeRepository);
