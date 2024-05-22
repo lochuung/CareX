@@ -30,4 +30,6 @@ public class YogaDto extends BaseDto {
     private Double point;
 
     private Integer duration;
+
+    private String instruction;
 }

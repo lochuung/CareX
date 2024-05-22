@@ -28,13 +28,17 @@ import org.webdev.carex.exception.UnauthorizedException;
 import org.webdev.carex.repository.UserRepository;
 import org.webdev.carex.repository.VerifyCodeRepository;
 import org.webdev.carex.service.EmailService;
+import org.webdev.carex.service.impl.UserServiceImpl;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Map;
 
 import static org.webdev.carex.constant.AppConstants.VERIFY_CODE_LENGTH;
+import static org.webdev.carex.utils.AuthUtils.SendVerifyCodeHandle;
+import static org.webdev.carex.utils.AuthUtils.generateVerifyCode;
 
 @Service
 public class AuthenticationService {
@@ -87,32 +91,12 @@ public class AuthenticationService {
                 .birthday(request.getBirthday())
                 .build();
         var savedUser = userRepository.save(user);
-        Date expired = DateUtils.addMinutes(new Date(),
-                AppConstants.VERIFY_CODE_EXPIRATION);
-        LocalDateTime expiredAt = LocalDateTime.ofInstant(expired.toInstant(),
-                ZoneId.systemDefault());
+        SendVerifyCodeHandle(savedUser, emailService, verifyCodeRepository);
 
-        var verifyCode = VerifyCode.builder()
-                        .user(savedUser)
-                        .code(generateVerifyCode())
-                        .expiredAt(expiredAt)
-                        .build();
-
-        emailService.sendVerifyCode(savedUser.getEmail(), verifyCode.getCode());
-
-        verifyCodeRepository.save(verifyCode);
-
-        return ResponseDto.success(null);
-    }
-
-    private String generateVerifyCode() {
-        String codeBase = "0123456789";
-        StringBuilder codeBuilder = new StringBuilder();
-        for (int i = 0; i < VERIFY_CODE_LENGTH; i++) {
-            int index = (int) (codeBase.length() * Math.random());
-            codeBuilder.append(codeBase.charAt(index));
-        }
-        return codeBuilder.toString();
+        return ResponseDto.success(
+                Map.of("message",
+                        "User registered successfully. Please check your email to verify.")
+        );
     }
 
     public ResponseDto<Object> verify(VerifyRequest request) {
@@ -134,7 +118,9 @@ public class AuthenticationService {
         }
         verifyCode.setUsed(true);
         verifyCodeRepository.save(verifyCode);
-        return ResponseDto.success(null);
+        return ResponseDto.success(
+                Map.of("message", "User verified successfully.")
+        );
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
