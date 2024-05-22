@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HomePage from "./home/page";
 import AdminHomePage from "./admin/home/page";
-import Profile from "./(root)/(profile)/page";
+
 export default function Home() {
   const token = localStorage?.getItem("access_token");
   const [loading, setLoading] = useState(false);
@@ -65,6 +65,5 @@ export default function Home() {
         currentUser === null && <SignInPage />
       )}
     </div>
-
   );
 }
