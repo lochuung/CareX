@@ -130,6 +130,10 @@ public class WorkshopServiceImpl implements WorkshopService {
 
         List<User> users = userRepository.findAll();
 
+        if (users.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
         Workshop workshop1 = Workshop.builder()
                         .name("test1")
                         .description("test1")
@@ -252,6 +256,17 @@ public class WorkshopServiceImpl implements WorkshopService {
     @Override
     public ResponseDto<WorkshopResponseDto> createNewWorkshop(WorkshopRequestDto workshopRequestDto, String email) {
         User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not exists"));
+        if (workshopRequestDto.getStartTime().isBefore(LocalDateTime.now())){
+            throw new RuntimeException("Start time must be after current time");
+        }
+        // user have CREATE_WORKSHOP privilege
+        user.getRoles().stream()
+                .flatMap(role -> role.getPrivileges().stream())
+                .filter(privilege -> privilege.getName().equals("CREATE_WORKSHOP"))
+                .findAny()
+                .orElseThrow(() ->
+                        new RuntimeException("You don't have permission to create workshop"));
+
         Workshop workshop = new Workshop();
         workshop.setHost(user);
         workshop.setName(workshopRequestDto.getName());
