@@ -1,7 +1,6 @@
 package org.webdev.carex.service;
 
 import org.webdev.carex.dto.ResponseDto;
-import org.webdev.carex.dto.request.post.PostDeleteRequestDto;
 import org.webdev.carex.dto.request.post.PostLikeRequestDto;
 import org.webdev.carex.dto.request.post.PostRequestDto;
 import org.webdev.carex.dto.response.post.PostLikeResponseDto;
@@ -16,13 +15,15 @@ public interface PostService {
 
     ResponseDto<List<PostResponseDto>> getAllPost();
 
-    ResponseDto<PostResponseDto> editPost(Long id, PostRequestDto postEditRequestDto);
+    ResponseDto<PostResponseDto> editPost(Long id, PostRequestDto postRequestDto, String email);
 
-    ResponseDto<String> deletePost(Long id, PostDeleteRequestDto postDeleteRequestDto);
+    ResponseDto<String> deletePost(Long id, String email);
 
-    ResponseDto<PostLikeResponseDto> likePost(PostLikeRequestDto postLikeRequestDto);
+    ResponseDto<PostLikeResponseDto> likePost(PostLikeRequestDto postLikeRequestDto, String email);
 
-    ResponseDto<PostLikeResponseDto> unlikePost(PostLikeRequestDto postUnlikeRequestDto);
+    ResponseDto<PostLikeResponseDto> unlikePost(PostLikeRequestDto postUnlikeRequestDto, String email);
 
-    ResponseDto<Boolean> isLiked(PostLikeRequestDto postLikeRequestDto);
+    ResponseDto<Boolean> isLiked(Long id, String email);
+
+    ResponseDto<PostResponseDto> createNewPost(PostRequestDto postRequestDto, String email);
 }

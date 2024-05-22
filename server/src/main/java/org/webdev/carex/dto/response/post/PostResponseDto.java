@@ -15,4 +15,5 @@ public class PostResponseDto {
     private String content;
     private String author;
     private String image;
+    private int totalLike;
 }
