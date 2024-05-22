@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class WorkshopResponseDto {
     private String address;
     private String imageUrl;
     private int totalPeople;
+    List<UserJoinResponse> userJoins;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean isCancelled;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.webdev.carex.dto.ResponseDto;
 import org.webdev.carex.dto.request.workshop.WorkshopRequestDto;
 import org.webdev.carex.dto.response.workshop.JoinWorkshopResponseDto;
+import org.webdev.carex.dto.response.workshop.UserJoinResponse;
 import org.webdev.carex.dto.response.workshop.WorkshopResponseDto;
 import org.webdev.carex.entity.User;
 import org.webdev.carex.entity.Workshop;
@@ -32,6 +33,8 @@ public class WorkshopServiceImpl implements WorkshopService {
 
     //Initialize new workshop response dto
     private WorkshopResponseDto newWorkshopResponseDto(Workshop workshop) {
+        List<User> users = workshop.getParticipants();
+        List<UserJoinResponse> userJoinResponses = new ArrayList<>();
         WorkshopResponseDto workshopResponseDto = new WorkshopResponseDto();
         workshopResponseDto.setId(workshop.getId());
         workshopResponseDto.setDescription(workshop.getDescription());
@@ -43,7 +46,14 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshopResponseDto.setEndTime(workshop.getEndTime());
         workshopResponseDto.setCancelled(workshop.isCancelled());
         workshopResponseDto.setFinished(workshop.isFinished());
-        System.out.println(workshopResponseDto.getTotalPeople());
+        for (User user : users) {
+            UserJoinResponse userJoinResponse = new UserJoinResponse();
+            userJoinResponse.setFullName(user.getFullName());
+            userJoinResponse.setBirthDay(user.getBirthday());
+            userJoinResponse.setPoint(user.getPoint());
+            userJoinResponses.add(userJoinResponse);
+        }
+        workshopResponseDto.setUserJoins(userJoinResponses);
         return workshopResponseDto;
     }
 
@@ -160,6 +170,7 @@ public class WorkshopServiceImpl implements WorkshopService {
             workshop.setImageUrl(workshopRequestDto.getImageUrl());
             workshop.setStartTime(workshopRequestDto.getStartTime());
             workshop.setEndTime(workshopRequestDto.getEndTime());
+            workshop.setUpdatedDate(LocalDateTime.now());
             workshopRepository.save(workshop);
         } else {
             throw new RuntimeException("Wrong host");
