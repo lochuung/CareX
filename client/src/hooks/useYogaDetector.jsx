@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "@tensorflow/tfjs-backend-webgpu";
 
 import * as poseDetection from "@tensorflow-models/pose-detection";
 import * as tf from "@tensorflow/tfjs";
 import { drawPoint, drawSegment } from "@/lib/utils";
 import { POINTS, keypointConnections } from "@/constants/detector";
+import useTicktimer from "./useTicktimer";
 
 let skeletonColor = "rgb(255,255,255)";
 let flag = false;
@@ -70,24 +71,76 @@ function landmarks_to_embedding(landmarks) {
   return embedding;
 }
 
+let interval;
+
+const CLASS_NO = {
+  Chair: 0,
+  Cobra: 1,
+  Dog: 2,
+  No_Pose: 3,
+  Shoulderstand: 4,
+  Traingle: 5,
+  Tree: 6,
+  Warrior: 7,
+};
+
 const useYogaDetector = () => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
+  const [accuracy, setAccuracy] = useState(0);
+  const [totalTimer, startTimer, pauseTimer, resetTimer, isTiming] =
+    useTicktimer();
 
+  const [isDone, setIsDone] = useState(false);
+
+  const [currentPose, setCurrentPose] = useState("Tree");
+  const [startingTime, setStartingTime] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [poseTime, setPoseTime] = useState(0);
+  const [bestPerform, setBestPerform] = useState(0);
+
+  useEffect(() => {
+    // if isDone then pause the timer
+    if (isDone) {
+      pauseTimer();
+    }
+  }, [isDone]);
+
+  useEffect(() => {
+    if (accuracy > 0.97) {
+      if (!flag) {
+        if (!isTiming && !isDone) startTimer();
+        setStartingTime(new Date(Date()).getTime());
+        flag = true;
+      }
+      setCurrentTime(new Date(Date()).getTime());
+      skeletonColor = "rgb(0,255,0)";
+    } else {
+      if (isTiming) {
+        pauseTimer();
+      }
+      flag = false;
+      skeletonColor = "rgb(255,255,255)";
+    }
+  }, [accuracy]);
+
+  useEffect(() => {
+    const timeDiff = (currentTime - startingTime) / 1000;
+    if (flag) {
+      setPoseTime(timeDiff);
+    }
+    if ((currentTime - startingTime) / 1000 > bestPerform) {
+      setBestPerform(timeDiff);
+    }
+  }, [currentTime]);
+
+  useEffect(() => {
+    setCurrentTime(0);
+    setPoseTime(0);
+    setBestPerform(0);
+    resetTimer();
+  }, [currentPose]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const CLASS_NO = {
-    Chair: 0,
-    Cobra: 1,
-    Dog: 2,
-    No_Pose: 3,
-    Shoulderstand: 4,
-    Traingle: 5,
-    Tree: 6,
-    Warrior: 7,
-  };
-
-  const [currentClass, setCurrentClass] = useState(CLASS_NO.Chair);
 
   const detectPose = async (detector, poseClassifier) => {
     if (
@@ -137,13 +190,9 @@ const useYogaDetector = () => {
         const classification = poseClassifier.predict(processedInput);
 
         classification.array().then((data) => {
-          const classNo = CLASS_NO[currentClass];
+          const classNo = CLASS_NO[currentPose];
           let rate = data[0][classNo];
-          if (rate > 0.97) {
-            skeletonColor = "rgb(0,255,0)";
-          } else {
-            skeletonColor = "rgb(255,255,255)";
-          }
+          setAccuracy(rate);
         });
       } catch (err) {
         console.log(err);
@@ -172,7 +221,19 @@ const useYogaDetector = () => {
       main();
     });
   }, []);
-  return [webcamRef, canvasRef, CLASS_NO, setCurrentClass, isLoading];
+  return [
+    webcamRef,
+    canvasRef,
+    isLoading,
+    currentTime,
+    poseTime,
+    bestPerform,
+    totalTimer,
+    accuracy,
+    resetTimer,
+    isDone,
+    setIsDone,
+  ];
 };
 
 export default useYogaDetector;
