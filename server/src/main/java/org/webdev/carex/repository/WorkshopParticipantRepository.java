@@ -13,5 +13,7 @@ public interface WorkshopParticipantRepository extends JpaRepository<WorkshopPar
 
     boolean existsById_UserAndId_Workshop(User id_user, Workshop id_workshop);
 
+    List<WorkshopParticipant> findAllById_Workshop_Id(Long id);
+
     List<WorkshopParticipant> findAllById_Workshop_IdAndSentFalse(Long id);
 }
