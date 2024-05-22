@@ -1,5 +1,5 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { FiHome, FiSettings } from "react-icons/fi";
 import { GrWorkshop, GrYoga } from "react-icons/gr";
@@ -18,25 +18,12 @@ import {
   BookOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
-
 import { menuUser } from '@/constants';
-
 const Menubar = () => {
   const pathname = usePathname();
   const router = useRouter();
+
   console.log(pathname);
-
-  const menuUser = [
-    {
-      name: "Trang chủ",
-      icon: <FiHome />,
-      link: "/home",
-    },
-    { name: "Workshops", icon: <GrWorkshop />, link: "/workshops" },
-    { name: "Yoga", icon: <GrYoga />, link: "/yoga" },
-    { name: "Cài đặt", icon: <FiSettings />, link: "/settings" },
-  ];
-
   const adminItems = [
     {
       key: "/admin/home",
@@ -96,7 +83,6 @@ const Menubar = () => {
   const { role } = useStore();
 
   const menu = role === "admin" ? adminItems : userItems;
-
   return (
     <div className="fixed h-screen">
       <div className="text-center flex p-3 justify-center">

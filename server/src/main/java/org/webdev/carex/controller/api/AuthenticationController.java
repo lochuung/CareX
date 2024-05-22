@@ -11,9 +11,18 @@ import org.webdev.carex.dto.auth.AuthenticationResponse;
 import org.webdev.carex.dto.auth.RegisterRequest;
 import org.webdev.carex.dto.auth.VerifyRequest;
 import org.webdev.carex.dto.ResponseDto;
+<<<<<<< HEAD
+import org.webdev.carex.dto.response.post.PostResponseDto;
+import org.webdev.carex.service.PostService;
 import org.webdev.carex.service.authen.AuthenticationService;
 
 import java.io.IOException;
+import java.util.List;
+=======
+import org.webdev.carex.service.authen.AuthenticationService;
+
+import java.io.IOException;
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 
 @RestController
 @RequestMapping("/api/v1/auth")

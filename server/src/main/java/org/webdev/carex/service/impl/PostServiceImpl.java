@@ -27,6 +27,23 @@ public class PostServiceImpl implements PostService {
 
     //Create post
     @Override
+<<<<<<< HEAD
+    public ResponseDto<PostResponseDto> createPost(PostRequestDto postCreateRequestDto) {
+        User user = userRepository.findByFullName(postCreateRequestDto.getFullName()).orElseThrow(()->new BadRequestException(HttpStatus.BAD_REQUEST.toString(),"Username not found"));
+        Post post = new Post();
+        post.setTitle(postCreateRequestDto.getTitle());
+        post.setContent(postCreateRequestDto.getContent());
+        post.setAuthor(user);
+        post.setImageUrl(postCreateRequestDto.getImageUrl());
+        postRepository.save(post);
+        PostResponseDto postCreateResponseDto = new PostResponseDto();
+        postCreateResponseDto.setAuthor(post.getAuthor().getFullName());
+        postCreateResponseDto.setTitle(post.getTitle());
+        postCreateResponseDto.setContent(post.getContent());
+        postCreateResponseDto.setImage(post.getImageUrl());
+        postCreateResponseDto.setId(post.getId());
+        return ResponseDto.success(postCreateResponseDto);
+=======
     public void createPost() {
         if (postRepository.findAll().size() > 0) {
             return;
@@ -47,6 +64,7 @@ public class PostServiceImpl implements PostService {
                 .imageUrl("http://link")
                 .build();
         postRepository.save(post2);
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     }
 
     //Get post by id

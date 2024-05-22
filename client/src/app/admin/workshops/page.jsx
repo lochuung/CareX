@@ -7,10 +7,13 @@ import React, { useEffect, useState } from "react";
 import { Divider, Drawer, Modal, Table, Tabs, Tag } from "antd";
 import { FaEye } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
+import useFilterTable from "@/hooks/useFilterTable";
+import withAuth from "@/components/withAuth";
+
 const AdminWorkshopPage = () => {
   const [data, setData] = useState([]);
   const [action, setAction] = useState({ modal: false, data });
-
+  const [getColumnSearchProps] = useFilterTable();
   const handleAction = (type, data) => {
     setAction({ [type]: !action[type], data: data });
   };
@@ -20,6 +23,7 @@ const AdminWorkshopPage = () => {
       title: "Id",
       dataIndex: "id",
       key: "id",
+      ...getColumnSearchProps("id"),
     },
     {
       title: "Image",
@@ -41,31 +45,37 @@ const AdminWorkshopPage = () => {
       title: "User Id",
       dataIndex: "userId",
       key: "userId",
+      ...getColumnSearchProps("userId"),
     },
     {
       title: "Name",
       dataIndex: "nameWorkshop",
       key: "nameWorkshop",
+      ...getColumnSearchProps("nameWorkshop"),
     },
     {
       title: "Address",
       dataIndex: "address",
       key: "address",
+      ...getColumnSearchProps("address"),
     },
     {
       title: "Start",
       dataIndex: "startTime",
       key: "startTime",
+      ...getColumnSearchProps("startTime"),
     },
     {
       title: "End",
       dataIndex: "endTime",
       key: "endTime",
+      ...getColumnSearchProps("endTime"),
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      ...getColumnSearchProps("status"),
       render: (status) => {
         let color = "";
         if (status == "Not yet occurred") {

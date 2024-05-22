@@ -1,5 +1,25 @@
 export const sidebarProfileLinks = [
     {
+<<<<<<< HEAD
+        label: 'Edit Profile',
+        route: '/editprofile',
+        imgUrl: '/Icons/edit.png'
+    },
+    {
+        label: 'Notifications',
+        route: '/notifications',
+        imgUrl: '/Icons/notification.png'
+    },
+    {
+        label: 'Choose Plan',
+        route: '/chooseplan',
+        imgUrl: '/Icons/chooseplan.png'
+    },
+    {
+        label: 'Password & Security',
+        route: '/password-security',
+        imgUrl: '/Icons/security.png'
+=======
         name: 'Edit Profile',
         link: '/edit-profile',
         icon: '/Icons/edit.png'
@@ -18,6 +38,7 @@ export const sidebarProfileLinks = [
         name: 'Password & Security',
         link: '/password-security',
         icon: '/Icons/security.png'
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     }
 ]
 export const inputProfile = [
@@ -111,6 +132,8 @@ export const inputProfile = [
         touched: 'formik.touched.password',
         errors: 'formik.errors.password'
     },
+<<<<<<< HEAD
+=======
 ]
 import { FiHome, FiSettings } from "react-icons/fi";
 import { GrWorkshop, GrYoga } from "react-icons/gr";
@@ -183,4 +206,5 @@ export const myPlan =[
         dateSend: "19 May 2024",
         content: "It's time to have lunch with us. We have some juice, secret bag and an orange for you. Let see what you got in bag today friend!"
     }
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 ]

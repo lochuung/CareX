@@ -102,12 +102,15 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
+<<<<<<< HEAD
+=======
 
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.3</version>
         </dependency>
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     </dependencies>
 
     <build>

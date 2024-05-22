@@ -1,5 +1,24 @@
 package org.webdev.carex.service.impl;
 
+<<<<<<< HEAD
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.webdev.carex.entity.Privilege;
+import org.webdev.carex.entity.Role;
+import org.webdev.carex.entity.User;
+import org.webdev.carex.repository.PrivilegeRepository;
+import org.webdev.carex.repository.RoleRepository;
+import org.webdev.carex.repository.UserRepository;
+import org.webdev.carex.service.UserService;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+=======
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,10 +56,13 @@ import static org.webdev.carex.utils.AuthUtils.generateVerifyCode;
 
 @Service
 @RequiredArgsConstructor
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PrivilegeRepository privilegeRepository;
+<<<<<<< HEAD
+=======
     private final VerifyCodeRepository verifyCodeRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
@@ -113,6 +135,7 @@ public class UserServiceImpl implements UserService {
 
         return Map.of("message", "Code has been sent to your email.");
     }
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 
     @Transactional
     @Override
@@ -163,6 +186,8 @@ public class UserServiceImpl implements UserService {
                 .enabled(true)
                 .roles(List.of(roleRepository.findByName("ADMIN")))
                 .build());
+<<<<<<< HEAD
+=======
 
         userRepository.save(User.builder()
                 .email("locn562836@gmail.com")
@@ -172,5 +197,6 @@ public class UserServiceImpl implements UserService {
                 .enabled(true)
                 .roles(List.of(roleRepository.findByName("USER")))
                 .build());
+>>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     }
 }
