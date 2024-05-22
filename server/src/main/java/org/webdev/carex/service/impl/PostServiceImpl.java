@@ -31,7 +31,11 @@ public class PostServiceImpl implements PostService {
             return;
         }
 
-        User user = userRepository.findByFullName("Admin").orElseThrow(()->new BadRequestException(HttpStatus.BAD_REQUEST.toString(),"Username not found"));
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        User user = users.get(0);
         Post post1 = Post.builder()
                         .title("test1")
                         .content("test1")
@@ -58,6 +62,7 @@ public class PostServiceImpl implements PostService {
         postResponseDto.setImage(post.getImageUrl());
         postResponseDto.setAuthor(post.getAuthor().getEmail());
         postResponseDto.setId(post.getId());
+        postResponseDto.setTotalLike(post.getLikes().size());
         return ResponseDto.success(postResponseDto);
     }
 
@@ -73,6 +78,7 @@ public class PostServiceImpl implements PostService {
             postResponseDto.setImage(post.getImageUrl());
             postResponseDto.setAuthor(post.getAuthor().getEmail());
             postResponseDto.setId(post.getId());
+            postResponseDto.setTotalLike(post.getLikes().size());
             postResponseDtoList.add(postResponseDto);
         }
         return ResponseDto.success(postResponseDtoList);
@@ -176,13 +182,11 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id).orElseThrow(()->new RuntimeException("Post not found"));
         User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("Username not found"));
         List<User> likes = post.getLikes();
-        boolean isLiked = false;
         for (User like : likes){
             if (like.getEmail().equals(user.getEmail())) {
-                isLiked = true;
-                break;
+                return ResponseDto.success(true);
             }
         }
-        return ResponseDto.success(isLiked);
+        return ResponseDto.success(false);
     }
 }

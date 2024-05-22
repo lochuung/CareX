@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,10 @@ public class UserServiceImpl implements UserService {
     private final VerifyCodeRepository verifyCodeRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    @Value("${application.default-admin.email:admin@huuloc.id.vn}")
+    private String defaultAdminEmail;
+    @Value("${application.default-admin.password:admin}")
+    private String defaultAdminPassword;
 
     @Override
     public UserResponse update(UserRequest userRequest) {
@@ -137,14 +142,14 @@ public class UserServiceImpl implements UserService {
         if (roleRepository.count() == 0) {
             roleRepository.saveAll(List.of(
                     Role.builder()
-                            .name("USER")
+                            .name(AppConstants.ROLE_USER)
                             .privileges(List.of(
                                     readPrivilege,
                                     writePrivilege
                             ))
                             .build(),
                     Role.builder()
-                            .name("ADMIN")
+                            .name(AppConstants.ROLE_ADMIN)
                             .privileges(List.of(
                                     readPrivilege,
                                     writePrivilege,
@@ -156,12 +161,13 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.save(User.builder()
-                .email("admin@huuloc.id.vn")
+                .email(defaultAdminEmail)
                 .password("{bcrypt}" + new BCryptPasswordEncoder(10)
-                        .encode("admin"))
+                        .encode(defaultAdminPassword))
                 .fullName("Admin")
                 .enabled(true)
-                .roles(List.of(roleRepository.findByName("ADMIN")))
+                .roles(List.of(roleRepository.findByName(AppConstants.ROLE_ADMIN),
+                        roleRepository.findByName(AppConstants.ROLE_USER)))
                 .build());
     }
 }

@@ -1,202 +1,186 @@
 "use client";
-import FILE from "@/app/(root)/yoga/model.json";
-import "@tensorflow/tfjs-backend-webgpu";
-import * as poseDetection from "@tensorflow-models/pose-detection";
-import * as tf from "@tensorflow/tfjs";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { HiBackspace, HiPause } from "react-icons/hi";
 import Webcam from "react-webcam";
-import "./Yoga.css";
-import { POINTS, keypointConnections } from "@/constants/detector";
-import { drawPoint, drawSegment } from "@/lib/utils";
+import useYogaDetector from "@/hooks/useYogaDetector";
+import Countdown from "@/components/Countdown";
+import Tick from "@/hooks/useTicktimer";
+import { formatTime } from "@/lib/utils";
+import { Pause, PlayCircle } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
-let skeletonColor = "rgb(255,255,255)";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-let flag = false;
-
+import {
+  FiArrowLeft,
+  FiPause,
+  FiSkipBack,
+  FiSkipForward,
+  FiVideo,
+} from "react-icons/fi";
+import { Checkbox } from "@/components/ui/checkbox";
 function Yoga() {
-  const webcamRef = useRef(null);
-  const canvasRef = useRef(null);
-
-  const CLASS_NO = {
-    Chair: 0,
-    Cobra: 1,
-    Dog: 2,
-    No_Pose: 3,
-    Shoulderstand: 4,
-    Traingle: 5,
-    Tree: 6,
-    Warrior: 7,
-  };
-
-  const main = async () => {
-    let interval;
-    const detectorConfig = {
-      modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER,
-    };
-    const detector = await poseDetection.createDetector(
-      poseDetection.SupportedModels.MoveNet,
-      detectorConfig
-    );
-    const poseClassifier = await tf.loadLayersModel("/ml/model.json");
-
-    interval = setInterval(() => {
-      detectPose(detector, poseClassifier);
-    }, 100);
-    function get_center_point(landmarks, left_bodypart, right_bodypart) {
-      let left = tf.gather(landmarks, left_bodypart, 1);
-      let right = tf.gather(landmarks, right_bodypart, 1);
-      const center = tf.add(tf.mul(left, 0.5), tf.mul(right, 0.5));
-      return center;
-    }
-
-    function get_pose_size(landmarks, torso_size_multiplier = 2.5) {
-      let hips_center = get_center_point(
-        landmarks,
-        POINTS.LEFT_HIP,
-        POINTS.RIGHT_HIP
-      );
-      let shoulders_center = get_center_point(
-        landmarks,
-        POINTS.LEFT_SHOULDER,
-        POINTS.RIGHT_SHOULDER
-      );
-      let torso_size = tf.norm(tf.sub(shoulders_center, hips_center));
-      let pose_center_new = get_center_point(
-        landmarks,
-        POINTS.LEFT_HIP,
-        POINTS.RIGHT_HIP
-      );
-      pose_center_new = tf.expandDims(pose_center_new, 1);
-
-      pose_center_new = tf.broadcastTo(pose_center_new, [1, 17, 2]);
-      // return: shape(17,2)
-      let d = tf.gather(tf.sub(landmarks, pose_center_new), 0, 0);
-      let max_dist = tf.max(tf.norm(d, "euclidean", 0));
-
-      // normalize scale
-      let pose_size = tf.maximum(
-        tf.mul(torso_size, torso_size_multiplier),
-        max_dist
-      );
-      return pose_size;
-    }
-
-    function normalize_pose_landmarks(landmarks) {
-      let pose_center = get_center_point(
-        landmarks,
-        POINTS.LEFT_HIP,
-        POINTS.RIGHT_HIP
-      );
-      pose_center = tf.expandDims(pose_center, 1);
-      pose_center = tf.broadcastTo(pose_center, [1, 17, 2]);
-      landmarks = tf.sub(landmarks, pose_center);
-
-      let pose_size = get_pose_size(landmarks);
-      landmarks = tf.div(landmarks, pose_size);
-      return landmarks;
-    }
-
-    function landmarks_to_embedding(landmarks) {
-      // normalize landmarks 2D
-      landmarks = normalize_pose_landmarks(tf.expandDims(landmarks, 0));
-      let embedding = tf.reshape(landmarks, [1, 34]);
-      return embedding;
-    }
-    const detectPose = async (detector, poseClassifier) => {
-      if (
-        typeof webcamRef.current !== "undefined" &&
-        webcamRef.current !== null &&
-        webcamRef.current.video.readyState === 4
-      ) {
-        let notDetected = 0;
-        const video = webcamRef.current.video;
-        const pose = await detector.estimatePoses(video);
-        const ctx = canvasRef.current.getContext("2d");
-        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        try {
-          const keypoints = pose[0].keypoints;
-          let input = keypoints.map((keypoint) => {
-            if (keypoint.score > 0.4) {
-              if (
-                !(keypoint.name === "left_eye" || keypoint.name === "right_eye")
-              ) {
-                drawPoint(ctx, keypoint.x, keypoint.y, 8, "rgb(255,255,255)");
-                let connections = keypointConnections[keypoint.name];
-                try {
-                  connections.forEach((connection) => {
-                    let conName = connection.toUpperCase();
-                    drawSegment(
-                      ctx,
-                      [keypoint.x, keypoint.y],
-                      [
-                        keypoints[POINTS[conName]].x,
-                        keypoints[POINTS[conName]].y,
-                      ],
-                      skeletonColor
-                    );
-                  });
-                } catch (err) {}
-              }
-            } else {
-              notDetected += 1;
-            }
-            return [keypoint.x, keypoint.y];
-          });
-          if (notDetected > 4) {
-            skeletonColor = "rgb(255,255,255)";
-            return;
-          }
-          const processedInput = landmarks_to_embedding(input);
-          const classification = poseClassifier.predict(processedInput);
-
-          classification.array().then((data) => {
-            const classNo = CLASS_NO["Tree"];
-            let rate = data[0][classNo];
-            if (rate > 0.97) {
-              skeletonColor = "rgb(0,255,0)";
-            } else {
-              skeletonColor = "rgb(255,255,255)";
-            }
-          });
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    };
-  };
+  const [
+    webcamRef,
+    canvasRef,
+    isLoading,
+    currentTime,
+    poseTime,
+    bestPerform,
+    totalTimer,
+    accuracy,
+    resetTimer,
+    isDone,
+    setIsDone,
+  ] = useYogaDetector();
+  const initialTime = 10;
 
   useEffect(() => {
-    // Set the backend to WebGPU and wait for the module to be ready.
-    tf.setBackend("webgpu").then(() => main());
-  }, []);
+    if (totalTimer == initialTime) {
+      setIsDone(true);
+    }
+  }, [totalTimer]);
 
   return (
-    <div className="yoga-container">
-      <div>
-        <Webcam
-          width="640px"
-          height="480px"
-          id="webcam"
-          ref={webcamRef}
-          style={{
-            position: "absolute",
-            left: 120,
-            top: 100,
-            padding: "0px",
-          }}
-        />
-        <canvas
-          ref={canvasRef}
-          id="my-canvas"
-          width="640px"
-          height="480px"
-          style={{
-            position: "absolute",
-            left: 120,
-            top: 100,
-            zIndex: 1,
-          }}
-        ></canvas>
+    <div class=" h-screen flex w-full">
+      <div className="h-full flex flex-col justify-between">
+        <div className="w-full flex gap-4 items-center p-2">
+          <button className="rounded-xl border-[1px] p-2 text-2xl">
+            <FiArrowLeft />
+          </button>
+
+          <div>
+            <span className="border-[1px] rounded-xl p-2 m-2">Level 1</span>
+            <span className="text-sky-400 border-[1px] rounded-xl p-2 m-2">
+              +500 care points
+            </span>
+            <span className="text-red-400 border-[1px] rounded-xl p-2 m-2">
+              30 seconds
+            </span>
+          </div>
+        </div>
+        <div class="rounded-xl px-24 w-auto h-full  flex items-center justify-center">
+          <div
+            className="relative"
+            style={{
+              borderRadius: "10px",
+              width: "640px",
+              height: "480px",
+            }}
+          >
+            {isLoading && (
+              <div className="absolute z-[99] flex-col gap-4 w-full h-full bg-[rgba(255,255,255,.2)] rounded-xl flex items-center justify-center">
+                <div role="status">
+                  <svg
+                    aria-hidden="true"
+                    class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                    viewBox="0 0 100 101"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                      fill="currentFill"
+                    />
+                  </svg>
+                  <span class="sr-only">Loading...</span>
+                </div>
+                <div className="bg-white p-4 rounded-xl">Đang tải mô hình</div>
+              </div>
+            )}
+            <div className={`${isLoading ? "hidden" : ""}`}>
+              <Webcam
+                width="640px"
+                height="480px"
+                id="webcam"
+                ref={webcamRef}
+                style={{
+                  borderRadius: "10px",
+                  position: "absolute",
+                  padding: "0px",
+                }}
+              />
+              <canvas
+                ref={canvasRef}
+                id="my-canvas"
+                width="640px"
+                height="480px"
+                style={{
+                  borderRadius: "10px",
+                  position: "absolute",
+                  zIndex: 1,
+                }}
+              ></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w-full flex flex-col h-full  ">
+        <div className="p-4  flex justify-center gap-4">
+          <>
+            <Countdown
+              duration={initialTime - totalTimer}
+              original={initialTime}
+            />
+            <div className="shadow-sm border-[1px] bg-white w-full p-4 rounded-xl flex  items-center justify-center gap-4">
+              <div className="flex flex-col gap-2 items-center justify-center cursor-pointer hover:bg-gray-200 border-[1px] rounded-xl p-2">
+                <button className="p-2 text-2xl rounded-xl ">
+                  <FiPause />
+                </button>
+                <span>Dừng lại </span>
+              </div>
+              <div className="flex flex-col gap-2 items-center justify-center cursor-pointer hover:bg-gray-200 border-[1px] rounded-xl p-2">
+                <button className="p-2 text-2xl rounded-xl ">
+                  <FiSkipForward />
+                </button>
+                <span>Bỏ qua </span>
+              </div>
+            </div>
+          </>
+        </div>
+        <div className="">
+          <div className="w-full px-4">
+            <Accordion type="single" collapsible>
+              <AccordionItem value="item-1">
+                <AccordionTrigger>
+                  Bài tập này giúp gì cho mình?
+                </AccordionTrigger>
+                <AccordionContent>
+                  Nó giúp bạn giải tỏa được căng thẳng ở bên trong tâm hồn mình
+                  nhiều hơn.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+
+          <div className="w-full flex">
+            <ScrollArea className="h-[200px] m-2 flex rounded-md border p-4">
+              {[...new Array(40)].map((item, _i) => (
+                <div className="p-2 border-[1px] rounded-xl m-2 hover:bg-blue-100 cursor-pointer transition-all ease-in-out duration-50 ">
+                  Step: {_i}. Đứng thẳng, hai chân hơi hẹp hơn vai, hai tay duỗi
+                  thẳng
+                </div>
+              ))}
+            </ScrollArea>
+            <div className="m-2 flex items-center">
+              <div className="flex flex-col gap-2 items-center justify-center cursor-pointer hover:bg-gray-200 border-[1px] h-full rounded-xl p-2">
+                <button className="text-2xl rounded-xl ">
+                  <PlayCircle />
+                </button>
+                <span className="text-center">Video hướng dẫn</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
