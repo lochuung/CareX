@@ -62,6 +62,7 @@ public class PostServiceImpl implements PostService {
         postResponseDto.setImage(post.getImageUrl());
         postResponseDto.setAuthor(post.getAuthor().getEmail());
         postResponseDto.setId(post.getId());
+        postResponseDto.setTotalLike(post.getLikes().size());
         return ResponseDto.success(postResponseDto);
     }
 
@@ -77,6 +78,7 @@ public class PostServiceImpl implements PostService {
             postResponseDto.setImage(post.getImageUrl());
             postResponseDto.setAuthor(post.getAuthor().getEmail());
             postResponseDto.setId(post.getId());
+            postResponseDto.setTotalLike(post.getLikes().size());
             postResponseDtoList.add(postResponseDto);
         }
         return ResponseDto.success(postResponseDtoList);
