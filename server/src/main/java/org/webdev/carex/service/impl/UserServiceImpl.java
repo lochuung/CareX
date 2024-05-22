@@ -163,5 +163,14 @@ public class UserServiceImpl implements UserService {
                 .enabled(true)
                 .roles(List.of(roleRepository.findByName("ADMIN")))
                 .build());
+
+        userRepository.save(User.builder()
+                .email("locn562836@gmail.com")
+                .password("{bcrypt}" + new BCryptPasswordEncoder(10)
+                        .encode("user"))
+                .fullName("User")
+                .enabled(true)
+                .roles(List.of(roleRepository.findByName("USER")))
+                .build());
     }
 }
