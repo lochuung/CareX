@@ -1,10 +1,6 @@
 spring:
   datasource:
-<<<<<<< HEAD
-    url: jdbc:mysql://localhost:3306/carex
-=======
     url: jdbc:mysql://localhost:3306/carex?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
