@@ -11,7 +11,9 @@ import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/datetimepicker";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 const SignUpPage = (props) => {
+  const router = useRouter();
   const loginSchema = yup.object().shape({
     username: yup.string().required("Username is required"),
     //dateofbirth: yup.date().required("Date of birth is required"),
@@ -34,21 +36,26 @@ const SignUpPage = (props) => {
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
+      const [month, day, year] = values?.dateofbirth.split("/");
+      const birthday = `${day}/${month}/${year}`;
       try {
-        const res = await fetch(`http://localhost:8000/api/v1/auth/register`, {
-          method: "POST",
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: values?.email,
-            password: values?.password,
-            fullname: values?.username,
-            birthday: "2024-4-2",
-            confirmPassword: values?.passwordConfirmation,
-          }),
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API}/api/v1/auth/register`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "*/*",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: values?.email,
+              password: values?.password,
+              fullName: values?.username,
+              birthday: birthday,
+              confirmPassword: values?.passwordConfirmation,
+            }),
+          }
+        );
 
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -56,7 +63,10 @@ const SignUpPage = (props) => {
 
         const data = await res.json();
 
-        router.push("/");
+        console.log(data);
+        if (data?.status === 200) {
+          router.push("/auth/signin");
+        }
       } catch (error) {
         console.error("There was a problem with the fetch operation: ", error);
       }

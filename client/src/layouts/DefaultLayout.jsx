@@ -16,7 +16,6 @@ import { redirect, useRouter } from "next/navigation";
 import { useStore } from "@/store/store";
 const { Header, Content, Footer, Sider } = Layout;
 
-
 const DefaultLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const {
@@ -80,7 +79,7 @@ const DefaultLayout = ({ children }) => {
   ];
 
   const currentUser = useStore((state) => state?.currentUser);
-  const setCurrentUser = useStore((state) => state?.currentUser);
+  const { setCurrentUser } = useStore();
 
   const role = currentUser?.roles[0]?.name;
 

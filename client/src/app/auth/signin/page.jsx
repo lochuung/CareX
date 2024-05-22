@@ -38,17 +38,20 @@ const SignInPage = () => {
     onSubmit: async (values) => {
       // Handle your form submission here
       try {
-        const res = await fetch(`http://localhost:8000/api/v1/auth/login`, {
-          method: "POST",
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: values?.email,
-            password: values?.password,
-          }),
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API}/api/v1/auth/login`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "*/*",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: values?.email,
+              password: values?.password,
+            }),
+          }
+        );
 
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
