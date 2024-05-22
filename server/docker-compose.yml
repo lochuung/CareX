@@ -1,25 +1,5 @@
 version: '3.1'
 services:
-<<<<<<< HEAD
-  carex-app:
-      image: carex-app
-      build:
-        context: .
-        dockerfile: Dockerfile
-      ports:
-      - '8000:8080'
-      networks:
-      - carex-mysql-net
-      depends_on:
-      - mysqldb
-      volumes:
-        - ./maven-repo:/root/.m2
-      environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/carex
-        SPRING_DATASOURCE_USERNAME: dev
-        SPRING_DATASOURCE_PASSWORD: root
-        SPRING_SERVER_PORT: '8080'
-=======
   maven:
     image: maven:3.8.3-openjdk-17-slim
     container_name: carex-maven
@@ -42,7 +22,6 @@ services:
       SPRING_DATASOURCE_USERNAME: dev
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_SERVER_PORT: '8080'
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
   mysqldb:
     image: mysql:8.4
     restart: always
