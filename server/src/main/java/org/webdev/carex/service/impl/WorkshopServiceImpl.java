@@ -2,6 +2,7 @@ package org.webdev.carex.service.impl;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.webdev.carex.dto.ResponseDto;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class WorkshopServiceImpl implements WorkshopService {
     private final WorkshopRepository workshopRepository;
     private final WorkshopParticipantRepository workshopParticipantRepository;
@@ -96,14 +98,20 @@ public class WorkshopServiceImpl implements WorkshopService {
                 }
             }
 
-            List<WorkshopParticipant> participantsToNotify = workshopParticipantRepository
-                    .findAllById_Workshop_Id(workshop.getId());
-            for (WorkshopParticipant participant : participantsToNotify){
-                emailService.sendEmail(participant.getId().getUser().getEmail(), "Workshop",
-                        "Workshop " + workshop.getName() + " will start at " + workshop.getStartTime());
-                participant.setSent(true);
+
+        List<WorkshopParticipant> participantsToNotify = workshopParticipantRepository
+                .findAllById_Workshop_IdAndSentFalse(workshop.getId());
+        for (WorkshopParticipant participant : participantsToNotify){
+            if (participant.isSent()){
+                continue;
             }
-            workshopParticipantRepository.saveAll(participantsToNotify);
+            log.info("Send email to {}", participant.getId().getUser().getEmail());
+
+            emailService.sendEmail(participant.getId().getUser().getEmail(), "Workshop",
+                    "Workshop " + workshop.getName() + " will start at " + workshop.getStartTime());
+            participant.setSent(true);
+        }
+        workshopParticipantRepository.saveAll(participantsToNotify);
     }
 }
 
@@ -120,14 +128,15 @@ public class WorkshopServiceImpl implements WorkshopService {
             return;
         }
 
-        User user = userRepository.findByFullName("Admin").orElseThrow(()->new RuntimeException("User not exist"));
+        List<User> users = userRepository.findAll();
+
         Workshop workshop1 = Workshop.builder()
                         .name("test1")
                         .description("test1")
                         .address("test1")
                         .imageUrl("http://link")
-                        .host(user)
-                        .participants(List.of(user))
+                        .host(users.get(0))
+                        .participants(users)
                         .startTime(LocalDateTime.now())
                         .endTime(LocalDateTime.now().plusDays(1))
                         .cancelled(false)
@@ -139,8 +148,8 @@ public class WorkshopServiceImpl implements WorkshopService {
                 .description("test2")
                 .address("test2")
                 .imageUrl("http://link")
-                .host(user)
-                .participants(List.of(user))
+                .host(users.get(0))
+                .participants(users)
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusDays(1))
                 .cancelled(false)
