@@ -142,14 +142,14 @@ public class UserServiceImpl implements UserService {
         if (roleRepository.count() == 0) {
             roleRepository.saveAll(List.of(
                     Role.builder()
-                            .name("USER")
+                            .name(AppConstants.ROLE_USER)
                             .privileges(List.of(
                                     readPrivilege,
                                     writePrivilege
                             ))
                             .build(),
                     Role.builder()
-                            .name("ADMIN")
+                            .name(AppConstants.ROLE_ADMIN)
                             .privileges(List.of(
                                     readPrivilege,
                                     writePrivilege,
@@ -166,7 +166,8 @@ public class UserServiceImpl implements UserService {
                         .encode(defaultAdminPassword))
                 .fullName("Admin")
                 .enabled(true)
-                .roles(List.of(roleRepository.findByName("ADMIN")))
+                .roles(List.of(roleRepository.findByName(AppConstants.ROLE_ADMIN),
+                        roleRepository.findByName(AppConstants.ROLE_USER)))
                 .build());
     }
 }
