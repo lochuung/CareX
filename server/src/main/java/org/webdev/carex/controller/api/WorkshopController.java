@@ -23,7 +23,7 @@ public class WorkshopController {
 
     //-----WORKSHOP API-----//
     //Get all workshop
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<ResponseDto<List<WorkshopResponseDto>>> getAllWorkshop(){
         return ResponseEntity.ok().body(workshopService.getAllWorkshop());
     }

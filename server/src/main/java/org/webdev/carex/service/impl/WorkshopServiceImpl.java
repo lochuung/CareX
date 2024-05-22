@@ -38,10 +38,12 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshopResponseDto.setName(workshop.getName());
         workshopResponseDto.setAddress(workshop.getAddress());
         workshopResponseDto.setHostName(workshop.getHost().getEmail());
+        workshopResponseDto.setTotalPeople(workshop.getParticipants().size());
         workshopResponseDto.setStartTime(workshop.getStartTime());
         workshopResponseDto.setEndTime(workshop.getEndTime());
         workshopResponseDto.setCancelled(workshop.isCancelled());
-        workshopResponseDto.setFinished(workshopResponseDto.isFinished());
+        workshopResponseDto.setFinished(workshop.isFinished());
+        System.out.println(workshopResponseDto.getTotalPeople());
         return workshopResponseDto;
     }
 
@@ -50,7 +52,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         List<Workshop> workshops = workshopRepository.findAll();
         List<WorkshopResponseDto> workshopResponseDtos = new ArrayList<>();
         for (Workshop workshop : workshops){
-            if (!workshop.isCancelled() && workshop.isFinished()){
+            if (!workshop.isCancelled() && !workshop.isFinished()){
                 WorkshopResponseDto workshopResponseDto = newWorkshopResponseDto(workshop);
                 workshopResponseDtos.add(workshopResponseDto);
             }
@@ -168,9 +170,11 @@ public class WorkshopServiceImpl implements WorkshopService {
 
     @Override
     public ResponseDto<String> deleteWorkshop(Long id, String email) {
+        List<WorkshopParticipant> workshopParticipants = workshopParticipantRepository.findAllById_Workshop_Id(id);
         Workshop workshop = workshopRepository.findById(id).orElseThrow(() -> new RuntimeException("Workshop not exist"));
         User host = workshop.getHost();
         if (host.getEmail().equals(email)) {
+            workshopParticipantRepository.deleteAll(workshopParticipants);
             workshopRepository.delete(workshop);
         }
         else {
@@ -203,6 +207,9 @@ public class WorkshopServiceImpl implements WorkshopService {
         Workshop workshop = workshopRepository.findById(id).orElseThrow(() -> new RuntimeException("Workshop not exist"));
         User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not exists"));
         List<User> participants = workshop.getParticipants();
+        if (email.equals(workshop.getHost().getEmail())){
+            throw new RuntimeException("You are host");
+        }
         if (!participants.contains(user)){
             throw new RuntimeException("You doesn't join this workshop");
         }
@@ -244,6 +251,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshop.setImageUrl(workshopRequestDto.getImageUrl());
         workshop.setStartTime(workshopRequestDto.getStartTime());
         workshop.setEndTime(workshopRequestDto.getEndTime());
+        workshop.setParticipants(List.of(user));
         workshop.setCancelled(false);
         workshop.setFinished(false);
         workshopRepository.save(workshop);
