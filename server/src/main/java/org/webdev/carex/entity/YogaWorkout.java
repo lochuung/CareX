@@ -34,11 +34,8 @@ public class YogaWorkout extends BaseEntity {
 
     private Integer duration; //second
 
-<<<<<<< HEAD
-=======
     private String instruction;
 
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     @OneToMany(mappedBy = "yogaWorkout", fetch = jakarta.persistence.FetchType.LAZY)
     private List<WorkoutHistory> workoutHistories;
 }

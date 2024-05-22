@@ -28,25 +28,17 @@ import org.webdev.carex.exception.UnauthorizedException;
 import org.webdev.carex.repository.UserRepository;
 import org.webdev.carex.repository.VerifyCodeRepository;
 import org.webdev.carex.service.EmailService;
-<<<<<<< HEAD
-=======
 import org.webdev.carex.service.impl.UserServiceImpl;
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-<<<<<<< HEAD
-
-import static org.webdev.carex.constant.AppConstants.VERIFY_CODE_LENGTH;
-=======
 import java.util.Map;
 
 import static org.webdev.carex.constant.AppConstants.VERIFY_CODE_LENGTH;
 import static org.webdev.carex.utils.AuthUtils.SendVerifyCodeHandle;
 import static org.webdev.carex.utils.AuthUtils.generateVerifyCode;
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 
 @Service
 public class AuthenticationService {
@@ -95,37 +87,6 @@ public class AuthenticationService {
         var user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
-<<<<<<< HEAD
-                .password(passwordEncoder.encode(request.getPassword()))
-                .birthday(request.getBirthday())
-                .build();
-        var savedUser = userRepository.save(user);
-        Date expired = DateUtils.addMinutes(new Date(),
-                AppConstants.VERIFY_CODE_EXPIRATION);
-        LocalDateTime expiredAt = LocalDateTime.ofInstant(expired.toInstant(),
-                ZoneId.systemDefault());
-
-        var verifyCode = VerifyCode.builder()
-                        .user(savedUser)
-                        .code(generateVerifyCode())
-                        .expiredAt(expiredAt)
-                        .build();
-        verifyCodeRepository.save(verifyCode);
-
-        emailService.sendVerifyCode(savedUser.getEmail(), verifyCode.getCode());
-
-        return ResponseDto.success(null);
-    }
-
-    private String generateVerifyCode() {
-        String codeBase = "0123456789";
-        StringBuilder codeBuilder = new StringBuilder();
-        for (int i = 0; i < VERIFY_CODE_LENGTH; i++) {
-            int index = (int) (codeBase.length() * Math.random());
-            codeBuilder.append(codeBase.charAt(index));
-        }
-        return codeBuilder.toString();
-=======
                 .password("{bcrypt}" + passwordEncoder.encode(request.getPassword()))
                 .birthday(request.getBirthday())
                 .build();
@@ -136,7 +97,6 @@ public class AuthenticationService {
                 Map.of("message",
                         "User registered successfully. Please check your email to verify.")
         );
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     }
 
     public ResponseDto<Object> verify(VerifyRequest request) {
@@ -158,13 +118,9 @@ public class AuthenticationService {
         }
         verifyCode.setUsed(true);
         verifyCodeRepository.save(verifyCode);
-<<<<<<< HEAD
-        return ResponseDto.success(null);
-=======
         return ResponseDto.success(
                 Map.of("message", "User verified successfully.")
         );
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

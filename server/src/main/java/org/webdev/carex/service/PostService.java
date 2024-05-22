@@ -9,11 +9,7 @@ import org.webdev.carex.dto.response.post.PostResponseDto;
 import java.util.List;
 
 public interface PostService {
-<<<<<<< HEAD
-    ResponseDto<PostResponseDto> createPost(PostRequestDto postCreateRequestDto);
-=======
     void createPost();
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 
     ResponseDto<PostResponseDto> getPost(Long id);
 

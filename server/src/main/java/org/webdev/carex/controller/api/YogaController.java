@@ -2,10 +2,7 @@ package org.webdev.carex.controller.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
-<<<<<<< HEAD
-=======
 import lombok.RequiredArgsConstructor;
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.webdev.carex.dto.ResponseDto;
@@ -17,11 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/yoga-workouts")
-<<<<<<< HEAD
-@AllArgsConstructor
-=======
 @RequiredArgsConstructor
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 @SecurityRequirement(name = "bearerAuth")
 public class YogaController {
     private final YogaService yogaService;

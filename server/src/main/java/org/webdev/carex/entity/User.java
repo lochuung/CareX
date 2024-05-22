@@ -3,13 +3,8 @@ package org.webdev.carex.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-<<<<<<< HEAD
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.webdev.carex.entity.common.BaseEntity;
-=======
 import org.webdev.carex.entity.common.BaseEntity;
 import org.webdev.carex.entity.key.WorkshopParticipantKey;
->>>>>>> 76550d94e548d7d620b20f4431376b517fd5e895
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
