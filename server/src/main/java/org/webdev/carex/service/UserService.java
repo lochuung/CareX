@@ -16,6 +16,5 @@ public interface UserService {
     UserResponse findByEmail(String email);
 
     Map<String, String> enableUser(String email) throws MessagingException;
-
     void createData();
 }

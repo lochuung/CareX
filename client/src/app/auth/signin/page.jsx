@@ -21,10 +21,7 @@ const SignInPage = () => {
 
   const loginSchema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Email is required"),
-    password: yup
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
+    password: yup.string().required("Password is required"),
   });
 
   const router = useRouter();
@@ -33,39 +30,38 @@ const SignInPage = () => {
   // Cấu hình form submit
   const formik = useFormik({
     initialValues: {
-      email: "admin@gmail.com",
-      password: "admin123",
+      email: "admin@huuloc.id.vn",
+      password: "admin",
     },
     validationSchema: loginSchema,
-    onSubmit: (values) => {
+
+    onSubmit: async (values) => {
       // Handle your form submission here
-      console.log(values);
-      if (
-        values?.email === "user@gmail.com" &&
-        values?.password === "user123"
-      ) {
-        setRole("user");
-        setErrorSignin({ type: "success", message: "Logged in successfully." });
-        setTimeout(() => {
-          router.push("/home", { scroll: true });
-        }, 1400);
-      } else if (
-        values?.email === "admin@gmail.com" &&
-        values?.password === "admin123"
-      ) {
-        setRole("admin");
-        setErrorSignin({
-          type: "success",
-          message: "Logged in successfully.",
+      try {
+        const res = await fetch(`http://localhost:8000/api/v1/auth/login`, {
+          method: "POST",
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: values?.email,
+            password: values?.password,
+          }),
         });
-        setTimeout(() => {
-          router.push("/admin/home", { scroll: true });
-        }, 1400);
-      } else {
-        setErrorSignin({
-          type: "error",
-          message: "Email or password is incorrect.",
-        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log(data?.data?.access_token, "ad");
+        localStorage.setItem("access_token", data?.data?.access_token);
+        localStorage.setItem("refresh_token", data?.data?.refresh_token);
+
+        router.push("/");
+      } catch (error) {
+        console.error("There was a problem with the fetch operation: ", error);
       }
     },
   });

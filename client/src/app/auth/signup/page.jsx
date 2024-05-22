@@ -33,10 +33,33 @@ const SignUpPage = (props) => {
       dateofbirth: new Date(),
     },
     validationSchema: loginSchema,
-    onSubmit: (values) => {
-      // Handle your form submission here
-      //console.log(values);
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      try {
+        const res = await fetch(`http://localhost:8000/api/v1/auth/register`, {
+          method: "POST",
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: values?.email,
+            password: values?.password,
+            fullname: values?.username,
+            birthday: "2024-4-2",
+            confirmPassword: values?.passwordConfirmation,
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        router.push("/");
+      } catch (error) {
+        console.error("There was a problem with the fetch operation: ", error);
+      }
     },
   });
   return (
