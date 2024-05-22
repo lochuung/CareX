@@ -2,6 +2,7 @@ package org.webdev.carex.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,7 @@ public class VerifyCode {
 
     private String code;
 
+    @ColumnDefault("false")
     private boolean isUsed;
 
     private LocalDateTime expiredAt;
