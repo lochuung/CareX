@@ -1,5 +1,6 @@
 package org.webdev.carex.service.impl;
 
+
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PrivilegeRepository privilegeRepository;
+
     private final VerifyCodeRepository verifyCodeRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
@@ -168,6 +170,14 @@ public class UserServiceImpl implements UserService {
                 .enabled(true)
                 .roles(List.of(roleRepository.findByName(AppConstants.ROLE_ADMIN),
                         roleRepository.findByName(AppConstants.ROLE_USER)))
+                .build());
+        userRepository.save(User.builder()
+                .email("locn562836@gmail.com")
+                .password("{bcrypt}" + new BCryptPasswordEncoder(10)
+                        .encode("user"))
+                .fullName("User")
+                .enabled(true)
+                .roles(List.of(roleRepository.findByName("USER")))
                 .build());
     }
 }

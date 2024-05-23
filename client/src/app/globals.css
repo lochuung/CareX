@@ -74,3 +74,6 @@
     @apply bg-background text-foreground;
   }
 }
+.ant-menu-item-active {
+  @apply bg-red-500;
+}
