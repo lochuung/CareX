@@ -25,6 +25,7 @@ public class Workshop extends BaseEntity {
     private String address;
 
     private String imageUrl;
+    private String category;
 
     @ManyToOne // Many workshops can be created by one user
     @JoinColumn(name = "host_id", referencedColumnName = "id")
