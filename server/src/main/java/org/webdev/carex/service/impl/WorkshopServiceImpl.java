@@ -260,12 +260,12 @@ public class WorkshopServiceImpl implements WorkshopService {
             throw new RuntimeException("Start time must be after current time");
         }
         // user have CREATE_WORKSHOP privilege
-        user.getRoles().stream()
-                .flatMap(role -> role.getPrivileges().stream())
-                .filter(privilege -> privilege.getName().equals("CREATE_WORKSHOP"))
-                .findAny()
-                .orElseThrow(() ->
-                        new RuntimeException("You don't have permission to create workshop"));
+//        user.getRoles().stream()
+//                .flatMap(role -> role.getPrivileges().stream())
+//                .filter(privilege -> privilege.getName().equals("CREATE_WORKSHOP"))
+//                .findAny()
+//                .orElseThrow(() ->
+//                        new RuntimeException("You don't have permission to create workshop"));
 
         Workshop workshop = new Workshop();
         workshop.setHost(user);
