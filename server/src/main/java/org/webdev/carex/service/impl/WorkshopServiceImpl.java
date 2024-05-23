@@ -48,6 +48,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshopResponseDto.setEndTime(workshop.getEndTime());
         workshopResponseDto.setCancelled(workshop.isCancelled());
         workshopResponseDto.setFinished(workshop.isFinished());
+        workshopResponseDto.setCategory(workshop.getCategory());
         for (User user : users) {
             UserJoinResponse userJoinResponse = new UserJoinResponse();
             userJoinResponse.setFullName(user.getFullName());
@@ -151,6 +152,7 @@ public class WorkshopServiceImpl implements WorkshopService {
                         .imageUrl("http://link")
                         .host(users.get(0))
                         .participants(users)
+                        .category("health")
                         .startTime(LocalDateTime.now())
                         .endTime(LocalDateTime.now().plusDays(1))
                         .cancelled(false)
@@ -163,6 +165,7 @@ public class WorkshopServiceImpl implements WorkshopService {
                 .address("test2")
                 .imageUrl("http://link")
                 .host(users.get(0))
+                .category("health")
                 .participants(users)
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusDays(1))
@@ -178,6 +181,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         User host = workshop.getHost();
         if (host.getEmail().equals(email)) {
             workshop.setName(workshopRequestDto.getName());
+            workshop.setCategory(workshopRequestDto.getCategory());
             workshop.setDescription(workshopRequestDto.getDescription());
             workshop.setAddress(workshopRequestDto.getAddress());
             workshop.setImageUrl(workshopRequestDto.getImageUrl());
@@ -286,7 +290,9 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshop.setImageUrl(workshopRequestDto.getImageUrl());
         workshop.setStartTime(workshopRequestDto.getStartTime());
         workshop.setEndTime(workshopRequestDto.getEndTime());
+        workshop.setCategory(workshopRequestDto.getCategory());
         workshop.setParticipants(List.of(user));
+        workshop.setCreatedDate(LocalDateTime.now());
         workshop.setCancelled(false);
         workshop.setFinished(false);
         workshopRepository.save(workshop);
