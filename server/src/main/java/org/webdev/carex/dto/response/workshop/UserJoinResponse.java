@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class UserJoinResponse {
+    private String email;
     private String fullName;
     private LocalDate birthDay;
     private BigDecimal point;

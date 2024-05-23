@@ -1,6 +1,7 @@
 package org.webdev.carex.controller.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -39,7 +40,7 @@ public class WorkshopController {
     }
     //Edit workshop
     @PutMapping("/{id}/edit")
-    public ResponseEntity<ResponseDto<WorkshopResponseDto>> editWorkshop(@PathVariable Long id, @RequestBody WorkshopRequestDto workshopRequestDto, Authentication authentication){
+    public ResponseEntity<ResponseDto<WorkshopResponseDto>> editWorkshop(@PathVariable Long id, @Valid @RequestBody WorkshopRequestDto workshopRequestDto, Authentication authentication){
         return ResponseEntity.ok().body(workshopService.editWorkshop(id, workshopRequestDto, authentication.getName()));
     }
     //Delete workshop

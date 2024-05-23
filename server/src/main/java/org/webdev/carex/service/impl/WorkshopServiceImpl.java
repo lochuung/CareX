@@ -51,6 +51,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshopResponseDto.setCategory(workshop.getCategory());
         for (User user : users) {
             UserJoinResponse userJoinResponse = new UserJoinResponse();
+            userJoinResponse.setEmail(user.getEmail());
             userJoinResponse.setFullName(user.getFullName());
             userJoinResponse.setBirthDay(user.getBirthday());
             userJoinResponse.setPoint(user.getPoint());
@@ -146,18 +147,18 @@ public class WorkshopServiceImpl implements WorkshopService {
         }
 
         Workshop workshop1 = Workshop.builder()
-                        .name("test1")
-                        .description("test1")
-                        .address("test1")
-                        .imageUrl("http://link")
-                        .host(users.get(0))
-                        .participants(users)
-                        .category("health")
-                        .startTime(LocalDateTime.now())
-                        .endTime(LocalDateTime.now().plusDays(1))
-                        .cancelled(false)
-                        .finished(false)
-                        .build();
+                .name("test1")
+                .description("test1")
+                .address("test1")
+                .imageUrl("http://link")
+                .host(users.get(0))
+                .participants(users)
+                .category("health")
+                .startTime(LocalDateTime.now())
+                .endTime(LocalDateTime.now().plusDays(1))
+                .cancelled(false)
+                .finished(false)
+                .build();
         workshopRepository.save(workshop1);
         Workshop workshop2 = Workshop.builder()
                 .name("test2")
