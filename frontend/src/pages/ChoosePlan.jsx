@@ -1,7 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { myPlan } from '../constants';
 import DefaultLayoutProfile from "../layouts/DefaultLayoutProfile";
+import { motion } from "framer-motion"
+
 const ChoosePlan = () => {
+  const [selectedId, setSelectedId] = useState(null)
+  const gridContainersVariants = {
+      hidden: {opacity: 0},
+      show: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.25,
+        },
+      }
+  }
+  const gridCardVariants = {
+    hidden: {opacity: 0},
+    show: {opacity: 1,}
+  }
   return (
     <DefaultLayoutProfile>
       <section className='flex min-h-screen flex-1 flex-col pt-6 max-md:pb-14 sm:px-14'>
@@ -9,11 +25,11 @@ const ChoosePlan = () => {
           <h1 className='text-2xl font-bold'>Kế hoạch 🧾</h1>
           <div className='flex flex-col justify-center items-center space-y-4'>
             <h1 className='text-xl font-semibold italic'><span className='text-blue-600'>Plan</span> your life, <span className='text-blue-600'>Plan</span> your future</h1>
-            <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <motion.div variants={gridContainersVariants} initial="hidden" animate="show" class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {
                 myPlan.map((item)=>{
                   return (
-                      <div class="relative group overflow-hidden p-8 rounded-xl bg-white border border-gray-200 hover:bg-slate-100 ">
+                      <motion.div onClick={() => setSelectedId(item.id)}  variants={gridCardVariants} class="relative group overflow-hidden p-8 rounded-xl bg-white border border-gray-200 hover:bg-slate-100 ">
                         <div class="relative">
                           <div className='flex flex-row gap-2 items-center justify-between'>
                             <div className='flex flex-row gap-2 items-center'>
@@ -28,16 +44,15 @@ const ChoosePlan = () => {
                               <span>{item.dateSend}</span>
                             </div>
                           </div>
-
                           <div class="mt-6 pb-6 rounded-b-[--card-border-radius]">
                               <p class="text-gray-700 dark:text-gray-300">{item.content}</p>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
                   )
                 })
               }
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
