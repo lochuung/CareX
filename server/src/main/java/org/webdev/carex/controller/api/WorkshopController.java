@@ -35,7 +35,7 @@ public class WorkshopController {
     }
     //Create workshop
     @PostMapping("/create")
-    public ResponseEntity<ResponseDto<WorkshopResponseDto>> createNewWorkshop(@RequestBody WorkshopRequestDto workshopRequestDto, Authentication authentication){
+    public ResponseEntity<ResponseDto<WorkshopResponseDto>> createNewWorkshop(@Valid @RequestBody WorkshopRequestDto workshopRequestDto, Authentication authentication){
         return ResponseEntity.ok().body(workshopService.createNewWorkshop(workshopRequestDto, authentication.getName()));
     }
     //Edit workshop
