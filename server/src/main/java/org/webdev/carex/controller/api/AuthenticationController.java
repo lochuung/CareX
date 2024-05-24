@@ -3,6 +3,7 @@ package org.webdev.carex.controller.api;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDto<Object>> register(
+            @Valid
             @RequestBody RegisterRequest request
     ) throws MessagingException {
         return ResponseEntity.ok(
@@ -34,6 +36,7 @@ public class AuthenticationController {
 
     @PostMapping("/verify")
     public ResponseEntity<ResponseDto<Object>> verify(
+            @Valid
             @RequestBody VerifyRequest request
     ) {
         return ResponseEntity.ok(
@@ -42,7 +45,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto<AuthenticationResponse>> authenticate(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<ResponseDto<AuthenticationResponse>> authenticate(
+            @Valid
+            @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(
                 ResponseDto.success(service.authenticate(request))
         );

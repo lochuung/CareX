@@ -23,4 +23,25 @@ public class HealthyInfo {
     private Double weight;
     @ColumnDefault(value = "0")
     private Double height;
+
+    private Integer age;
+
+    @ColumnDefault(value = "true")
+    private boolean male;
+
+    @ColumnDefault(value = "0")
+    private Double bmi;
+
+    @ColumnDefault(value = "0")
+    private Double bmr;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "weight_plan_id", referencedColumnName = "id")
+    private WeightPlan weightPlan;
+
+    @ColumnDefault(value = "0")
+    private Integer activityLevel;
+
+    @ColumnDefault(value = "3")
+    private Integer mealPerDay;
 }

@@ -27,6 +27,7 @@ import org.webdev.carex.repository.VerifyCodeRepository;
 import org.webdev.carex.service.EmailService;
 import org.webdev.carex.service.UserService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -159,13 +160,14 @@ public class UserServiceImpl implements UserService {
                             .build()
             ));
         }
-
+        LocalDate birthday = LocalDate.of(2004, 5, 21);
         userRepository.save(User.builder()
                 .email(defaultAdminEmail)
                 .password("{bcrypt}" + new BCryptPasswordEncoder(10)
                         .encode(defaultAdminPassword))
                 .fullName("Admin")
                 .enabled(true)
+                .birthday(birthday)
                 .roles(List.of(roleRepository.findByName(AppConstants.ROLE_ADMIN),
                         roleRepository.findByName(AppConstants.ROLE_USER)))
                 .build());
