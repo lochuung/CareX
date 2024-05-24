@@ -2,6 +2,7 @@ package org.webdev.carex.controller.api;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public ResponseDto<UserResponse> updateUserInfo(@RequestBody UserRequest userRequest,
+    public ResponseDto<UserResponse> updateUserInfo(@Valid @RequestBody UserRequest userRequest,
                                                     Authentication authentication) {
         userRequest.setEmail(authentication.getName());
         return ResponseDto.success(
@@ -36,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping("/update-password")
-    public ResponseDto<UserResponse> updatePassword(@RequestBody ChangePasswordDto changePasswordDto,
+    public ResponseDto<UserResponse> updatePassword(@Valid @RequestBody ChangePasswordDto changePasswordDto,
                                                     Authentication authentication) {
         return ResponseDto.success(
                 userService.updatePassword(authentication.getName(), changePasswordDto)
