@@ -10,10 +10,7 @@ import org.springframework.context.annotation.Bean;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.webdev.carex.service.PostService;
-import org.webdev.carex.service.UserService;
-import org.webdev.carex.service.WorkshopService;
-import org.webdev.carex.service.YogaService;
+import org.webdev.carex.service.*;
 
 @SpringBootApplication
 @EnableScheduling
@@ -30,9 +27,12 @@ public class CareXApplication {
 	private PasswordEncoder passwordEncoder;
 
 	@Bean
-	CommandLineRunner runner(UserService userService, YogaService yogaService, WorkshopService workshopService, PostService postService) {
+	CommandLineRunner runner(UserService userService, YogaService yogaService,
+							 WorkshopService workshopService, PostService postService,
+							 HealthyService healthyService) {
 		return args -> {
 			log.info("Creating data...");
+			healthyService.createWeightPlanData();
 			userService.createData();
 			yogaService.createData();
 			workshopService.createWorkshop();
