@@ -7,4 +7,14 @@ import EditProfile from "./EditProfile";
 import ChoosePlan from "./ChoosePlan";
 import Notifications from "./Notifications";
 import PasswordAndSecurity from "./PasswordAndSecurity";
-export { Login, Signup, HomePage, Workshop, Yoga, EditProfile, ChoosePlan, Notifications, PasswordAndSecurity};
+export {
+  Login,
+  Signup,
+  HomePage,
+  Workshop,
+  Yoga,
+  EditProfile,
+  ChoosePlan,
+  Notifications,
+  PasswordAndSecurity,
+};
