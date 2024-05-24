@@ -33,9 +33,7 @@ const DefaultLayout = ({ children }) => {
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
-          >
-            {children}
-          </div>
+          ></div>
         </Content>
       </Layout>
     </Layout>
