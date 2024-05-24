@@ -37,11 +37,6 @@ const Sidebar = ({ collapsed, onCollapsed }) => {
       key: "/yoga",
       icon: <UserOutlined />,
       label: "Yoga",
-      children: [
-        { key: "yoga/practice", label: "Yoga Practice" },
-        { key: "yoga/exercise ", label: "Yoga Exercise" },
-        { key: "yoga/shop ", label: "Yoga Shop " },
-      ],
     },
 
     {
