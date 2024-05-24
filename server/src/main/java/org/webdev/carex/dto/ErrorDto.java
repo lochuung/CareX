@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -14,4 +16,5 @@ import java.time.LocalDateTime;
 public class ErrorDto {
     private String message;
     private LocalDateTime timestamp;
+    private List<String> errors;
 }
