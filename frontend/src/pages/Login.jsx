@@ -4,8 +4,10 @@ import { useFormik } from "formik";
 import { Alert, Button, Form, Input, message } from "antd";
 import ImageSlider from "../components/global/ImageSlider";
 import useFetch from "../hooks/useFetch";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [errorsSignIn, setErrorSignin] = useState({
     type: null,
     message: null,
@@ -52,6 +54,7 @@ const Login = () => {
       const data = await res.json();
       console.log(data?.data?.access_token, "ad");
       localStorage.setItem("access_token", data?.data?.access_token);
+      navigate("/");
     } catch (error) {
       console.error("There was a problem with the fetch operation: ", error);
     }
@@ -86,7 +89,15 @@ const Login = () => {
               We care about you and your health ❤️
             </h1>
 
-            <Form name="basic" onFinish={onFinish} autoComplete="off">
+            <Form
+              initialValues={{
+                email: "locn562836@gmail.com",
+                password: "user",
+              }}
+              name="basic"
+              onFinish={onFinish}
+              autoComplete="off"
+            >
               <Form.Item
                 name="email"
                 rules={[

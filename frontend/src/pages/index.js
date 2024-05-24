@@ -3,4 +3,5 @@ import Signup from "./Signup";
 import HomePage from "./HomePage";
 import Workshop from "./Workshop";
 import Yoga from "./Yoga";
-export { Login, Workshop, Signup, HomePage, Yoga };
+import WorkshopAdmin from "./WorkshopAdmin";
+export { Login, Workshop, WorkshopAdmin, Signup, HomePage, Yoga };
