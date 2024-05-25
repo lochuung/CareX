@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 // import { empty, not } from "../utils/Images";
 import { DatePicker, Drawer, Form, Input, InputNumber, Upload } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import DefaultLayout from "../layouts/DefaultLayout";
-import PageHeading from "../components/global/PageHeading";
-import { empty, not } from "../utils/Image";
-const Workshop = () => {
+import PageHeading from "../../components/global/PageHeading";
+import { empty, not } from "../../utils/Image";
+const UserWorkShopPage = () => {
   const isAccess = true;
 
   const [action, setAction] = useState({ createWorkshop: false });
@@ -52,7 +51,7 @@ const Workshop = () => {
   };
 
   return (
-    <DefaultLayout>
+    <>
       <PageHeading
         title="Workshops"
         desc="Bạn có thể tạo các buổi workshop của riêng mình"
@@ -114,7 +113,7 @@ const Workshop = () => {
           <FormCreateWorkshop onNewWorkshop={handleNewWorkshop} />
         </Drawer>
       </div>
-    </DefaultLayout>
+    </>
   );
 };
 
@@ -285,4 +284,4 @@ const FormCreateWorkshop = ({ onNewWorkshop }) => {
   );
 };
 
-export default Workshop;
+export default UserWorkShopPage;

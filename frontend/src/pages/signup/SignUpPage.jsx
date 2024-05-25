@@ -1,19 +1,16 @@
 import React, { useState } from "react";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { Alert, Button, DatePicker, Form, Input, message } from "antd";
-import ImageSlider from "../components/global/ImageSlider";
-import useFetch from "../hooks/useFetch";
-import { formatDate } from "../utils/utils";
+import { Alert, Button, DatePicker, Form, Input } from "antd";
 
-const Signup = () => {
+import ImageSlider from "../../components/global/ImageSlider/index";
+import { formatDate } from "../../utils/utils";
+import { Link } from "react-router-dom";
+
+const SignUpPage = () => {
   const [errorsSignup, setErrorSignup] = useState({
     type: null,
     message: null,
   });
   const onFinish = async (values) => {
-    console.log("Success:", values);
-
     if (values?.password !== values?.confirmPassword) {
       setErrorSignup({
         type: "error",
@@ -56,6 +53,7 @@ const Signup = () => {
       const data = await res.json();
 
       if (res?.status === 200) {
+        alert(data?.data?.access_token);
         setErrorSignup({ type: "success", message: res?.body?.message });
         localStorage.setItem("access_token", data?.data?.access_token);
       }
@@ -83,14 +81,14 @@ const Signup = () => {
         <div className="w-3/6 bg-gray-100 lg:w-1/2 flex items-center justify-center">
           <div className="max-w-md w-full p-6">
             <h1 className="text-3xl font-semibold mb-6 text-black text-center">
-              Welcome to our
+              Happy to see you here!
             </h1>
 
             <h1 className="text-3xl font-bold mb-6 text-blue-600 text-center">
               CareX
             </h1>
             <h1 className="text-sm font-semibold mb-6 text-gray-500 text-center">
-              We care about you and your health ❤️
+              Stay healthy, stay strong.
             </h1>
 
             <Form name="basic" onFinish={onFinish} autoComplete="off">
@@ -103,7 +101,7 @@ const Signup = () => {
                   },
                 ]}
               >
-                <Input className="py-2" placeholder="Nhập email" />
+                <Input className="py-2" placeholder="Your email" />
               </Form.Item>
 
               <Form.Item
@@ -115,7 +113,7 @@ const Signup = () => {
                   },
                 ]}
               >
-                <Input className="py-2" placeholder="Nhập tên " />
+                <Input className="py-2" placeholder="Full name" />
               </Form.Item>
 
               <Form.Item
@@ -123,7 +121,7 @@ const Signup = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your birthday!",
+                    message: "Please input your birth date",
                   },
                 ]}
               >
@@ -139,7 +137,7 @@ const Signup = () => {
                   },
                 ]}
               >
-                <Input.Password className="py-2" placeholder="Nhập mật khẩu" />
+                <Input.Password className="py-2" placeholder="Password" />
               </Form.Item>
 
               <Form.Item
@@ -147,33 +145,27 @@ const Signup = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your confirmPassword!",
+                    message: "Please input your confirm password!",
                   },
                 ]}
               >
                 <Input.Password
                   className="py-2"
-                  placeholder="Nhập lại mật khẩu"
+                  placeholder="Confirm password"
                 />
               </Form.Item>
 
               <Form.Item>
                 <Button className="w-full" type="primary" htmlType="submit">
-                  Login
+                  Sign up now
                 </Button>
               </Form.Item>
             </Form>
-            <div className="mt-4 text-sm text-gray-600 text-center items-center">
-              <p className="flex gap-1">
-                Don't you have an account?
-                <Button
-                  type="text"
-                  className="text-blue-600"
-                  href="/auth/signup"
-                >
-                  Sign up here!
-                </Button>
-              </p>
+            <div className="mt-4 text-sm text-gray-600 text-center flex justify-center items-center">
+              <p className="">Already have an account?</p>
+              <Link to="/login" replace={true}>
+                <p className="text-blue-600 ml-2">Login here !</p>
+              </Link>
             </div>
           </div>
         </div>
@@ -182,4 +174,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignUpPage;

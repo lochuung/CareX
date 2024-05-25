@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useUserStore } from "../store/user";
+import { toast } from "react-toastify";
 
 function useAuth() {
-  const [user, setUser] = useState(undefined);
-  const [role, setRole] = useState(undefined);
   const [loading, setLoading] = useState(false);
 
-  console.log(loading, "loading");
-  const dispatch = useDispatch();
+  const { setCurrentUser, logout } = useUserStore((state) => state);
+
   useEffect(() => {
     const fetchUser = async () => {
       setLoading(true);
       const token = localStorage?.getItem("access_token");
-      console.log(token, "token");
       if (token) {
         try {
           const options = {
@@ -29,34 +28,29 @@ function useAuth() {
             options
           );
 
-          if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-          }
-
-          const data = await res.json();
           if (res.status === 200) {
-            console.log(data);
-
-            dispatch({ type: "CURRENT_USER", payload: data });
-            setUser(data?.data);
-
-            const role = data?.data?.roles[0]?.name;
-            console.log(role);
-            setRole(role);
+            const data = await res.json();
+            setCurrentUser(data?.data);
             setLoading(false);
+          } else {
+            throw new Error(`Expired token, please login again.`);
           }
         } catch (error) {
-          console.log(error);
+          toast.error(error.message);
+          logout();
+          setLoading(false);
         }
       } else {
-        window.location.href("/login");
+        toast.error("You need to login first.");
+        logout();
+        setLoading(false);
       }
     };
 
     fetchUser();
   }, []);
 
-  return { user, role, loading };
+  return { loading };
 }
 
 export default useAuth;
