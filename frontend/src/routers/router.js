@@ -5,6 +5,7 @@ import {
   DietPage,
   YogaPage,
 } from "../pages";
+import WorkshopDetail from "../pages/workshop/WorkshopDetail";
 
 export const router = [
   { path: "/", element: HomePage, actor: ["USER"], isProtected: true },
@@ -25,6 +26,13 @@ export const router = [
   {
     path: "/profile",
     element: ProfilePage,
+    actor: ["USER"],
+    isProtected: true,
+  },
+
+  {
+    path: "/workshop/:id",
+    element: WorkshopDetail,
     actor: ["USER"],
     isProtected: true,
   },
