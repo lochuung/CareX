@@ -5,6 +5,9 @@ import {
   DietPage,
   YogaPage,
   BMIResult,
+  ChoosePlan,
+  Notifications,
+  PasswordAndSecurity
 } from "../pages";
 
 export const router = [
@@ -32,6 +35,24 @@ export const router = [
   {
     path: "/profile",
     element: ProfilePage,
+    actor: ["USER"],
+    isProtected: true,
+  },
+  { 
+    path: "/choose-plan", 
+    element: ChoosePlan, 
+    actor: ["USER"],
+    isProtected: true,
+  },
+  { 
+    path: "/notifications", 
+    element: Notifications, 
+    actor: ["USER"],
+    isProtected: true,
+  },
+  { 
+    path: "/password-security", 
+    element: PasswordAndSecurity, 
     actor: ["USER"],
     isProtected: true,
   },
