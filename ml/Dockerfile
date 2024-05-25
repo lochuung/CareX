@@ -1,9 +1,21 @@
-FROM python:3.12.3-slim
+# backend/Dockerfile
 
-WORKDIR /app
+FROM python:3.10.8
 
-COPY . /app
+RUN mkdir -p app/backend
 
-RUN pip install --no-cache-dir -r requirements.txt
+COPY FastAPI_Backend/requirements.txt app/backend/requirements.txt
+COPY Data app/Data
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5050", "--reload"]
+COPY FastAPI_Backend app/backend
+
+WORKDIR /app/backend
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+EXPOSE 8080
+
+CMD ["uvicorn","main:app","--host","0.0.0.0","--port","8080","--reload"]
+
+# uvicorn main:app --host 0.0.0.0 --port 8080 --reload
