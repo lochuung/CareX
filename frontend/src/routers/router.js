@@ -9,6 +9,7 @@ import {
   Notifications,
   PasswordAndSecurity
 } from "../pages";
+import WorkshopDetail from "../pages/workshop/WorkshopDetail";
 
 export const router = [
   { path: "/", element: HomePage, actor: ["USER"], isProtected: true },
@@ -53,6 +54,13 @@ export const router = [
   { 
     path: "/password-security", 
     element: PasswordAndSecurity, 
+    actor: ["USER"],
+    isProtected: true,
+  },
+
+  {
+    path: "/workshop/:id",
+    element: WorkshopDetail,
     actor: ["USER"],
     isProtected: true,
   },
