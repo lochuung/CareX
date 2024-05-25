@@ -16,14 +16,13 @@ import WorkshopItem from "./WorkshopItem";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../hooks/useFirebase";
 import { formatDate } from "../../utils/utils";
-import useSearchWorkshops from "../../hooks/useSearchWorkshops";
+
 const UserWorkShopPage = () => {
   const isAccess = true;
   const [reload, setReload] = useState(false);
 
   const [action, setAction] = useState({ createWorkshop: false });
   const [data, setData] = useState([]);
-  const { input, setInput, workshopList } = useSearchWorkshops(data);
   useEffect(() => {
     const fetchDataWorkshop = async () => {
       const token = localStorage.getItem("access_token");
@@ -114,12 +113,7 @@ const UserWorkShopPage = () => {
           <div className="w-full">
             <div className="my-4 w-full justify-end flex items-center gap-3">
               <div className="w-[400px]">
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Tìm kiếm Workshop"
-                  className=""
-                />
+                <Input placeholder="Tìm kiếm Workshop" className="" />
               </div>
 
               <div className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-semibold">
