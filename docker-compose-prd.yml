@@ -22,8 +22,6 @@ services:
       context: ./ml
       dockerfile: Dockerfile
     container_name: carex-ml
-    volumes:
-      - ./ml:/app
     ports:
       - '5050:5050'
     expose:
@@ -63,8 +61,6 @@ services:
     image: node:20.13-slim
     working_dir: /app
     command: bash -c "npm install && npm run build && npm run preview"
-    volumes:
-      - ./frontend:/app
     ports:
       - '3000:3000'
     expose:
