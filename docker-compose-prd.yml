@@ -34,6 +34,7 @@ services:
   carex-api:
     image: maven:3.8.3-openjdk-17-slim
     container_name: carex-api
+    restart: on-failure
     volumes:
       - ./server:/app
     working_dir: /app
@@ -59,6 +60,7 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
   carex-web:
     image: node:20.13-slim
+    restart: on-failure
     volumes:
       - ./frontend:/app
     working_dir: /app
