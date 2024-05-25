@@ -78,7 +78,7 @@ public class WorkshopServiceImpl implements WorkshopService {
     public void updateWorkshopStatus() {
         List<Workshop> workshops = workshopRepository.findAll();
         for (Workshop workshop : workshops){
-            if (workshop.getEndTime().isEqual(LocalDateTime.now()) && !workshop.isFinished()){
+            if (workshop.getEndTime().isBefore(LocalDateTime.now()) && !workshop.isFinished()){
                 workshop.setFinished(true);
                 workshopRepository.save(workshop);
             }

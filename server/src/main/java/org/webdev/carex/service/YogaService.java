@@ -19,6 +19,6 @@ public interface YogaService {
     List<WorkoutHistoryDto> getWorkoutHistoryFromEmail(String name);
 
     WorkoutHistoryDto upsertWorkoutHistory(WorkoutHistoryDto workoutHistoryDto, String email);
-
     void createData() throws IOException, CsvException;
+
 }
