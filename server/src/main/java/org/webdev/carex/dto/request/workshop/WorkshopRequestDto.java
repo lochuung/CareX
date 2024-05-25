@@ -1,10 +1,13 @@
 package org.webdev.carex.dto.request.workshop;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -13,18 +16,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class WorkshopRequestDto{
-    @NotBlank
+    @NotBlank(message = "Name is required")
     private String name;
-    @NotBlank
     private String description;
-    @NotBlank
+    @NotNull(message = "Address is required")
     private String address;
-    @NotBlank
     private String imageUrl;
-    @NotBlank
+    @NotNull(message = "Category is required")
     private String category;
-    @NotBlank
+    @NotNull(message = "Start time is required")
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private LocalDateTime startTime;
-    @NotBlank
+    @NotNull(message = "End time is required")
+    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private LocalDateTime endTime;
 }
