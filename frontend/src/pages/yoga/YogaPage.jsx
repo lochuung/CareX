@@ -59,12 +59,18 @@ const YogaPage = () => {
       );
 
       const data = await res.json();
+      console.log({ practiceHistory: data.data });
       setPracticeHistory(data.data);
     };
     fetchPracticeHistory();
   }, []);
   const isPracticed = (exercise) => {
-    return practiceHistory.some((item) => item.id == exercise.id);
+    console.log({ practiceHistory, exercise });
+    return false;
+
+    // return (
+    //   practiceHistory && practiceHistory.some((item) => item.id == exercise.id)
+    // );
   };
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const ExerciseList = () => {
@@ -129,19 +135,12 @@ const YogaPage = () => {
           Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify({
-          id: null,
           yogaWorkout: exercise,
-          startTime: new Date().toLocaleDateString(),
           done: true,
         }),
       }
     );
-    if (res.status === 400) {
-      throw new Error(`Email or password is incorrect`);
-    }
-    if (!res.ok) {
-      throw new Error(`Error while trying to login`);
-    }
+
     const data = await res.json();
     setPracticeHistory([...practiceHistory, data.data]);
   };
@@ -165,10 +164,16 @@ const YogaPage = () => {
             setShowPractice(false);
             setPracticeExercises([]);
           }}
-          next={() => {
+          skip={() => {
+            if (currentExerciseIndex < practiceExercises.length - 1) {
+              setCurrentExerciseIndex(currentExerciseIndex + 1);
+            }
+          }}
+          next={async () => {
             if (currentExerciseIndex < practiceExercises.length - 1) {
               // Save to history
-              saveToHistory(practiceExercises[currentExerciseIndex]);
+              let c = practiceExercises[currentExerciseIndex];
+              await saveToHistory(c);
               setCurrentExerciseIndex(currentExerciseIndex + 1);
             }
 

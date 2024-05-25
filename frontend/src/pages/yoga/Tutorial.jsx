@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Divider, Steps } from "antd";
+import { Descriptions, Divider, Steps } from "antd";
 import { createJSONStorage } from "zustand/middleware";
 const Tutorial = ({ instructions }) => {
   const [current, setCurrent] = useState(0);
@@ -8,14 +8,25 @@ const Tutorial = ({ instructions }) => {
   };
 
   const instructionsToSteps = (instructions) => {
-    return instructions.map((instruction, index) => {
-      return {
+    let list = instructions.split("\\n");
+    let steps = [];
+    list.forEach((item, index) => {
+      steps.push({
         title: `Step ${index + 1}`,
-        description: instruction,
-      };
+        description: item,
+      });
     });
+
+    return steps;
   };
 
-  return JSON.stringify(instructions);
+  return (
+    <Steps
+      current={current}
+      onChange={onChange}
+      direction="vertical"
+      items={[...instructionsToSteps(instructions)]}
+    />
+  );
 };
 export default Tutorial;
