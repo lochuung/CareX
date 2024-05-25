@@ -1,9 +1,7 @@
 import React from "react";
-import { myPlan } from "../constants/profile";
-import DefaultLayoutProfile from "../layouts/DefaultLayoutProfile";
+import { myPlan } from "../../constants/profile";
 const ChoosePlan = () => {
   return (
-    <DefaultLayoutProfile>
       <section className="flex min-h-screen flex-1 flex-col pt-6 max-md:pb-14 sm:px-14">
         <div className="w-full space-y-8">
           <h1 className="text-2xl font-bold">Kế hoạch 🧾</h1>
@@ -57,7 +55,6 @@ const ChoosePlan = () => {
           </div>
         </div>
       </section>
-    </DefaultLayoutProfile>
   );
 };
 

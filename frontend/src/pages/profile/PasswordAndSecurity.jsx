@@ -1,10 +1,8 @@
 import React from "react";
-import { buttonPassS1, buttonPassS2 } from "../constants/profile";
-import DefaultLayoutProfile from "../layouts/DefaultLayoutProfile";
+import { buttonPassS1, buttonPassS2 } from "../../constants/profile";
 import { Button } from "antd";
 const PasswordAndSecurity = () => {
   return (
-    <DefaultLayoutProfile>
       <section className="flex min-h-screen flex-1 flex-col pt-6 max-md:pb-14 sm:px-14">
         <div className="w-full space-y-8">
           <h1 className="text-2xl font-bold">Mật khẩu và bảo mật 🪪</h1>
@@ -49,7 +47,6 @@ const PasswordAndSecurity = () => {
           </div>
         </div>
       </section>
-    </DefaultLayoutProfile>
   );
 };
 
