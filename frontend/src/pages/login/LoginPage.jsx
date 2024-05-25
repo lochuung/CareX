@@ -20,8 +20,6 @@ const LoginPage = () => {
     let loginPromise = new Promise(async (resolve, reject) => {
       try {
         // Wait for 2 seconds
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
         const res = await fetch(
           `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/auth/login`,
           {
@@ -46,7 +44,6 @@ const LoginPage = () => {
 
         const data = await res.json();
         localStorage.setItem("access_token", data?.data?.access_token);
-        alert(data?.data?.access_token);
         // Get user data
         const userRes = await fetch(
           `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/user`,

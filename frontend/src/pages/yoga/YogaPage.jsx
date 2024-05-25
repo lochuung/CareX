@@ -136,12 +136,7 @@ const YogaPage = () => {
         }),
       }
     );
-    if (res.status === 400) {
-      throw new Error(`Email or password is incorrect`);
-    }
-    if (!res.ok) {
-      throw new Error(`Error while trying to login`);
-    }
+
     const data = await res.json();
     setPracticeHistory([...practiceHistory, data.data]);
   };
@@ -165,10 +160,15 @@ const YogaPage = () => {
             setShowPractice(false);
             setPracticeExercises([]);
           }}
-          next={() => {
+          skip={() => {
+            if (currentExerciseIndex < practiceExercises.length - 1) {
+              setCurrentExerciseIndex(currentExerciseIndex + 1);
+            }
+          }}
+          next={async () => {
             if (currentExerciseIndex < practiceExercises.length - 1) {
               // Save to history
-              saveToHistory(practiceExercises[currentExerciseIndex]);
+              await saveToHistory(practiceExercises[currentExerciseIndex]);
               setCurrentExerciseIndex(currentExerciseIndex + 1);
             }
 
