@@ -92,6 +92,9 @@ public class YogaServiceImpl implements YogaService {
         if (history == null) {
             throw BadRequestException.message("Workout history cannot be null");
         }
+        if (history.getYogaWorkout() == null) {
+            throw BadRequestException.message("Yoga workout cannot be null");
+        }
         if (!yogaRepository.existsById(history.getYogaWorkout().getId())) {
             throw BadRequestException.message("Yoga workout not found");
         }
@@ -107,7 +110,7 @@ public class YogaServiceImpl implements YogaService {
         history.setYogaWorkout(workout);
 
         // insert
-        if (history.getId() <= 0) {
+        if ( history.getId() == null || history.getId() <= 0) {
             history = historyRepository.save(history);
             return YogaHistoryMapper.INSTANCE.toYogaHistoryDto(history);
         }

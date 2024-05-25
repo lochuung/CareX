@@ -1,88 +1,191 @@
-import React, { useEffect } from "react";
-import DefaultLayout from "../../layouts/DefaultLayout";
-import Webcam from "react-webcam";
-import useYogaDetector from "../../hooks/useYogaDetector";
+import { Input, Space } from "antd";
+const { Search } = Input;
+import Collection from "./Collection";
+import { useEffect, useState } from "react";
+import YogaExercise from "./YogaExercise";
+import DoneExercise from "./DoneExercise";
+
 const YogaPage = () => {
-  const [
-    webcamRef,
-    canvasRef,
-    isLoading,
-    currentTime,
-    poseTime,
-    bestPerform,
-    totalTimer,
-    accuracy,
-    resetTimer,
-    isDone,
-    setIsDone,
-  ] = useYogaDetector();
-  const initialTime = 10;
+  const [yogaExercises, setYogaExercises] = useState([]);
+
+  const fetchExercise = async () => {
+    const access_token = localStorage.getItem("access_token");
+    const res = await fetch(
+      `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/yoga-workouts`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    if (res.status === 400) {
+      throw new Error(`Email or password is incorrect`);
+    }
+    if (!res.ok) {
+      throw new Error(`Error while trying to login`);
+    }
+    const data = await res.json();
+    setYogaExercises(
+      data.data.filter((exercise) => exercise.description !== "NO_DESCRIPTION")
+    );
+  };
+  useEffect(() => {
+    fetchExercise();
+  }, []);
+
+  const [searchKey, setSearchKey] = useState("");
+
+  const [practiceExercises, setPracticeExercises] = useState([]);
+  const [showPractice, setShowPractice] = useState(false);
+
+  const [practiceHistory, setPracticeHistory] = useState([]);
 
   useEffect(() => {
-    if (totalTimer == initialTime) {
-      setIsDone(true);
-    }
-  }, [totalTimer]);
+    const fetchPracticeHistory = async () => {
+      const access_token = localStorage.getItem("access_token");
+      const res = await fetch(
+        `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/yoga-workouts/history`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
 
+      const data = await res.json();
+      console.log({ practiceHistory: data.data });
+      setPracticeHistory(data.data);
+    };
+    fetchPracticeHistory();
+  }, []);
+  const isPracticed = (exercise) => {
+    console.log({ practiceHistory, exercise });
+    return false;
+
+    // return (
+    //   practiceHistory && practiceHistory.some((item) => item.id == exercise.id)
+    // );
+  };
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+  const ExerciseList = () => {
+    return (
+      <>
+        <Search
+          className="w-full py-2 "
+          value={searchKey}
+          onChange={(e) => setSearchKey(e.target.value)}
+          placeholder="Search by name"
+          allowClear
+        />
+        <Collection
+          deriveAttr="level"
+          isPracticed={isPracticed}
+          selectCollectionHandler={(level) => {
+            let exercises = yogaExercises.filter(
+              (exercise) => exercise.level == level
+            );
+            // Sort exercise that has't been practiced
+            exercises = exercises.sort((a, b) => {
+              if (isPracticed(a)) return 1;
+              if (isPracticed(b)) return -1;
+              return 0;
+            });
+            setCurrentExerciseIndex(0);
+            setPracticeExercises(exercises);
+            setShowPractice(true);
+          }}
+          converter={(level) => {
+            // Switch
+            // level 0 -> basic
+            // level 1 -> intermediate
+            // level 2 -> advanced
+            if (level == 0) return "Intro";
+            if (level == 1) return "Beginner";
+            if (level == 2) return "Intermediate";
+            if (level == 3) return "Advanced";
+            if (level == 4) return "Expert";
+
+            return "Unknown";
+          }}
+          data={yogaExercises.filter((exercise) =>
+            exercise.name.toLowerCase().includes(searchKey.toLowerCase())
+          )}
+        />
+      </>
+    );
+  };
+
+  const saveToHistory = async (exercise) => {
+    const access_token = localStorage.getItem("access_token");
+    const res = await fetch(
+      `${
+        import.meta.env.VITE_PUBLIC_API_URL
+      }/api/v1/yoga-workouts/history/upsert`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+        body: JSON.stringify({
+          yogaWorkout: exercise,
+          done: true,
+        }),
+      }
+    );
+
+    const data = await res.json();
+    setPracticeHistory([...practiceHistory, data.data]);
+  };
+
+  const [doneAll, setDoneAll] = useState(false);
   return (
-    <div class="rounded-xl px-24 w-auto h-full  flex items-center justify-center">
-      <div
-        className="relative"
-        style={{
-          borderRadius: "10px",
-          width: "640px",
-          height: "480px",
-        }}
-      >
-        {isLoading && (
-          <div className="absolute z-[99] flex-col gap-4 w-full h-full bg-[rgba(255,255,255,.2)] rounded-xl flex items-center justify-center">
-            <div role="status">
-              <svg
-                aria-hidden="true"
-                class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                viewBox="0 0 100 101"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                  fill="currentFill"
-                />
-              </svg>
-              <span class="sr-only">Loading...</span>
-            </div>
-            <div className="bg-white p-4 rounded-xl">Đang tải mô hình</div>
-          </div>
-        )}
-        <div className={`${isLoading ? "hidden" : ""}`}>
-          <Webcam
-            width="640px"
-            height="480px"
-            id="webcam"
-            ref={webcamRef}
-            style={{
-              borderRadius: "10px",
-              position: "absolute",
-              padding: "0px",
-            }}
-          />
-          <canvas
-            ref={canvasRef}
-            id="my-canvas"
-            width="640px"
-            height="480px"
-            style={{
-              borderRadius: "10px",
-              position: "absolute",
-              zIndex: 1,
-            }}
-          ></canvas>
-        </div>
-      </div>
+    <div className="h-screen">
+      {!showPractice ? (
+        <ExerciseList />
+      ) : doneAll ? (
+        <DoneExercise
+          discover={() => {
+            setDoneAll(false);
+            setShowPractice(false);
+          }}
+        />
+      ) : (
+        <YogaExercise
+          currentExercise={practiceExercises[currentExerciseIndex]}
+          stop={() => {
+            setShowPractice(false);
+            setPracticeExercises([]);
+          }}
+          skip={() => {
+            if (currentExerciseIndex < practiceExercises.length - 1) {
+              setCurrentExerciseIndex(currentExerciseIndex + 1);
+            }
+          }}
+          next={async () => {
+            if (currentExerciseIndex < practiceExercises.length - 1) {
+              // Save to history
+              let c = practiceExercises[currentExerciseIndex];
+              await saveToHistory(c);
+              setCurrentExerciseIndex(currentExerciseIndex + 1);
+            }
+
+            // Congrats you have finished all exercises
+            if (currentExerciseIndex == practiceExercises.length - 1) {
+              setDoneAll(true);
+              setShowPractice(false);
+              setPracticeExercises([]);
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

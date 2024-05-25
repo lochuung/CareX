@@ -116,6 +116,17 @@ const CLASS_NO = {
   Warrior: 7,
 };
 
+export const ID_TO_CLASS = {
+  1: "Chair",
+  2: "Cobra",
+  3: "Dog",
+  4: "No_Pose",
+  5: "Shoulderstand",
+  6: "Traingle",
+  7: "Tree",
+  8: "Warrior",
+};
+
 const useYogaDetector = () => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
@@ -265,6 +276,7 @@ const useYogaDetector = () => {
     resetTimer,
     isDone,
     setIsDone,
+    setCurrentPose,
   ];
 };
 
