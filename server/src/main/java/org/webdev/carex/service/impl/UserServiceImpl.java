@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.webdev.carex.constant.AppConstants;
 import org.webdev.carex.dto.ResponseDto;
+import org.webdev.carex.dto.mapper.HealthyInfoMapper;
 import org.webdev.carex.dto.mapper.UserMapper;
 import org.webdev.carex.dto.user.ChangePasswordDto;
+import org.webdev.carex.dto.user.HealthyInfoDto;
 import org.webdev.carex.dto.user.UserRequest;
 import org.webdev.carex.dto.user.UserResponse;
 import org.webdev.carex.entity.Privilege;
@@ -26,6 +28,7 @@ import org.webdev.carex.repository.RoleRepository;
 import org.webdev.carex.repository.UserRepository;
 import org.webdev.carex.repository.VerifyCodeRepository;
 import org.webdev.carex.service.EmailService;
+import org.webdev.carex.service.HealthyService;
 import org.webdev.carex.service.UserService;
 
 import java.time.LocalDate;
@@ -44,6 +47,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PrivilegeRepository privilegeRepository;
+    private final HealthyService healthyService;
 
     private final VerifyCodeRepository verifyCodeRepository;
     private final PasswordEncoder passwordEncoder;
@@ -61,8 +65,14 @@ public class UserServiceImpl implements UserService {
 
         user.setFullName(userRequest.getFullName());
         user.setBirthday(userRequest.getBirthday());
-        if (userRequest.getHealthyInfo() != null)
-            user.setHealthyInfo(UserMapper.INSTANCE.toEntity(userRequest.getHealthyInfo()));
+        if (userRequest.getHealthyInfo() != null) {
+            HealthyInfoDto healthyInfoDto = healthyService.updateHealthyInfo(user.getEmail(),
+                    userRequest.getHealthyInfo());
+
+            user.setHealthyInfo(
+                    HealthyInfoMapper.INSTANCE.toHealthyInfo(healthyInfoDto)
+            );
+        }
         user.setUpdatedDate(LocalDateTime.now());
 
         userRepository.save(user);
@@ -100,11 +110,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse findByEmail(String email) {
-        return UserMapper.INSTANCE.toDto(userRepository
+        User user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() ->
-                        BadRequestException.message("User not found."))
+                        BadRequestException.message("User not found."));
+
+        user.setHealthyInfo(
+                HealthyInfoMapper.INSTANCE.toHealthyInfo(healthyService.getHealthyInfo(email))
         );
+
+        return UserMapper.INSTANCE.toDto(user);
     }
 
     @Override
@@ -172,14 +187,6 @@ public class UserServiceImpl implements UserService {
                 .birthday(birthday)
                 .roles(List.of(roleRepository.findByName(AppConstants.ROLE_ADMIN),
                         roleRepository.findByName(AppConstants.ROLE_USER)))
-                .build());
-        userRepository.save(User.builder()
-                .email("locn562836@gmail.com")
-                .password("{bcrypt}" + new BCryptPasswordEncoder(10)
-                        .encode("user"))
-                .fullName("User")
-                .enabled(true)
-                .roles(List.of(roleRepository.findByName("USER")))
                 .build());
     }
 }
