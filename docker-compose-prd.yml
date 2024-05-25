@@ -17,20 +17,20 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - carex-mysql:/var/lib/mysql
-  # carex-ml:
-  #   image: python:3.12.3-slim
-  #   container_name: carex-ml
-  #   volumes:
-  #     - ./ml:/app
-  #     - python-packages:/usr/local/lib/python3.10/site-packages
-  #   working_dir: /app
-  #   command: bash -c "pip install -r requirements.txt && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-  #   networks:
-  #     - carex-mysql-net
-  #   depends_on:
-  #     - mysqldb
-  #   ports:
-  #     - '8001:8000'
+  carex-ml:
+    image: python:3.12.3-slim
+    container_name: carex-ml
+    volumes:
+      - ./ml:/app
+      - python-packages:/usr/local/lib/python3.10/site-packages
+    working_dir: /app
+    command: bash -c "pip install -r requirements.txt && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    networks:
+      - carex-mysql-net
+    depends_on:
+      - mysqldb
+    ports:
+      - '8001:8000'
   # carex-api:
   #   image: maven:3.8.3-openjdk-17-slim
   #   container_name: carex-api
@@ -59,18 +59,17 @@ services:
   #     ADMIN_PASSWORD: ${ADMIN_PASSWORD}
   #     JWT_SECRET_KEY: ${JWT_SECRET_KEY}
   carex-web:
-    image: node:20.13-slim
+    container_name: carex-web
     restart: on-failure
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-prd
     volumes:
       - ./frontend:/app
-    working_dir: /app
-    command: bash -c "npm install && npm i -g next && npm run dev -- --host 0.0.0.0 --port 3000"
     ports:
-      - "3000:3000"
+      - '3000:3000'
     expose:
       - '3000'
-    environment:
-      VITE_PUBLIC_API_URL: ${API_URL}
 
 networks:
   carex-mysql-net:
