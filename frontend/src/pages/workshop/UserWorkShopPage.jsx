@@ -125,11 +125,9 @@ const UserWorkShopPage = () => {
             {data?.length > 0 ? (
               //   Có dữ liệu
               <div className="flex justify-start flex-wrap gap-4">
-                {(workshopList.length > 0 ? workshopList : data)?.map(
-                  (item, index) => (
-                    <WorkshopItem key={index} {...item} />
-                  )
-                )}
+                {data?.map((item, index) => (
+                  <WorkshopItem key={index} {...item} />
+                ))}
               </div>
             ) : (
               //   Không có dữ liệu
