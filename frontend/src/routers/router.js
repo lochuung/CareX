@@ -4,6 +4,7 @@ import {
   UserWorkShopPage,
   DietPage,
   YogaPage,
+  BMIResult,
 } from "../pages";
 
 export const router = [
@@ -19,6 +20,12 @@ export const router = [
   {
     path: "/diet",
     element: DietPage,
+    actor: ["USER"],
+    isProtected: true,
+  },
+  {
+    path: "/bmiresult",
+    element: BMIResult,
     actor: ["USER"],
     isProtected: true,
   },
