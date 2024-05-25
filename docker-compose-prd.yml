@@ -13,7 +13,6 @@ services:
       - '3308'
     environment:
       MYSQL_DATABASE: carex
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
