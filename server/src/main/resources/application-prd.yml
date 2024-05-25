@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/carex?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  port: '8080'
+
+application:
+  default-admin:
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}
+  security:
+    enabled: true
+    ignore:
+      paths: /swagger-ui,/v3/api-docs,/api/v1/auth
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
