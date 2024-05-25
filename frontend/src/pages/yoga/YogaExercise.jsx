@@ -21,7 +21,7 @@ import {
 } from "react-icons/hi";
 import Tutorial from "./Tutorial";
 import { formatTime } from "../../utils/utils";
-const YogaExercise = ({ stop, next, currentExercise }) => {
+const YogaExercise = ({ stop, skip, next, currentExercise }) => {
   const [
     webcamRef,
     canvasRef,
@@ -200,7 +200,12 @@ const YogaExercise = ({ stop, next, currentExercise }) => {
                 </button>
                 <span>Tutorial</span>
               </div>
-              <div className="flex flex-col gap-2 items-center justify-center cursor-pointer hover:bg-gray-200 border-[1px] rounded-xl p-2">
+              <div
+                onClick={() => {
+                  skip();
+                }}
+                className="flex flex-col gap-2 items-center justify-center cursor-pointer hover:bg-gray-200 border-[1px] rounded-xl p-2"
+              >
                 <button className="p-2 text-2xl rounded-xl ">
                   <FiSkipForward />
                 </button>

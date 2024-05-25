@@ -117,14 +117,14 @@ const CLASS_NO = {
 };
 
 export const ID_TO_CLASS = {
-  0: "Chair",
-  1: "Cobra",
-  2: "Dog",
-  3: "No_Pose",
-  4: "Shoulderstand",
-  5: "Traingle",
-  6: "Tree",
-  7: "Warrior",
+  1: "Chair",
+  2: "Cobra",
+  3: "Dog",
+  4: "No_Pose",
+  5: "Shoulderstand",
+  6: "Traingle",
+  7: "Tree",
+  8: "Warrior",
 };
 
 const useYogaDetector = () => {
@@ -182,7 +182,6 @@ const useYogaDetector = () => {
     setPoseTime(0);
     setBestPerform(0);
     resetTimer();
-    alert(currentPose);
   }, [currentPose]);
   const [isLoading, setIsLoading] = useState(true);
 

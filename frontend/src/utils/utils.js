@@ -22,5 +22,7 @@ export const convertToPercentage = (value, min, max) => {
   // map percent to range 0-100
   // percentage is 0 to 1 in the range
   // multiple by 100 to get percentage
-  return Math.min(100, Math.max(0, percent));
+  let val = Math.min(100, Math.max(0, percent));
+  // round up
+  return Math.round(val);
 };
