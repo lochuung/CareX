@@ -84,7 +84,7 @@ const EditProfile = () => {
                   className="w-[300px] bg-blue-500 text-white p-2 rounded-md hover:bg-blue-800 focus:outline-none focus:bg-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-900 transition-colors duration-300"
                 >
                   {" "}
-                  Sign Up
+                  Submit
                 </Button>
               </div>
             </form>
