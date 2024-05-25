@@ -1,9 +1,6 @@
 package org.webdev.carex.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import org.webdev.carex.entity.common.BaseEntity;
 
@@ -34,6 +31,7 @@ public class YogaWorkout extends BaseEntity {
 
     private Integer duration; //second
 
+    @Column(name = "instruction", columnDefinition = "TEXT")
     private String instruction;
 
     @OneToMany(mappedBy = "yogaWorkout", fetch = jakarta.persistence.FetchType.LAZY)

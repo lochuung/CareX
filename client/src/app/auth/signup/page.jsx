@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 const SignUpPage = (props) => {
-  const router = useRouter();
   const loginSchema = yup.object().shape({
     username: yup.string().required("Username is required"),
     //dateofbirth: yup.date().required("Date of birth is required"),
@@ -62,11 +61,8 @@ const SignUpPage = (props) => {
         }
 
         const data = await res.json();
-
-        console.log(data);
-        if (data?.status === 200) {
-          router.push("/auth/signin");
-        }
+        // Save access token to local storage
+        
       } catch (error) {
         console.error("There was a problem with the fetch operation: ", error);
       }

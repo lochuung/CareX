@@ -48,6 +48,7 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshopResponseDto.setEndTime(workshop.getEndTime());
         workshopResponseDto.setCancelled(workshop.isCancelled());
         workshopResponseDto.setFinished(workshop.isFinished());
+        workshopResponseDto.setImageUrl(workshop.getImageUrl());
         workshopResponseDto.setCategory(workshop.getCategory());
         for (User user : users) {
             UserJoinResponse userJoinResponse = new UserJoinResponse();
@@ -78,7 +79,7 @@ public class WorkshopServiceImpl implements WorkshopService {
     public void updateWorkshopStatus() {
         List<Workshop> workshops = workshopRepository.findAll();
         for (Workshop workshop : workshops){
-            if (workshop.getEndTime().isEqual(LocalDateTime.now()) && !workshop.isFinished()){
+            if (workshop.getEndTime().isBefore(LocalDateTime.now()) && !workshop.isFinished()){
                 workshop.setFinished(true);
                 workshopRepository.save(workshop);
             }

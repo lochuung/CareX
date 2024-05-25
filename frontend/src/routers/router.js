@@ -4,6 +4,10 @@ import {
   UserWorkShopPage,
   DietPage,
   YogaPage,
+  BMIResult,
+  ChoosePlan,
+  Notifications,
+  PasswordAndSecurity
 } from "../pages";
 import WorkshopDetail from "../pages/workshop/WorkshopDetail";
 
@@ -24,8 +28,32 @@ export const router = [
     isProtected: true,
   },
   {
+    path: "/bmiresult",
+    element: BMIResult,
+    actor: ["USER"],
+    isProtected: true,
+  },
+  {
     path: "/profile",
     element: ProfilePage,
+    actor: ["USER"],
+    isProtected: true,
+  },
+  { 
+    path: "/choose-plan", 
+    element: ChoosePlan, 
+    actor: ["USER"],
+    isProtected: true,
+  },
+  { 
+    path: "/notifications", 
+    element: Notifications, 
+    actor: ["USER"],
+    isProtected: true,
+  },
+  { 
+    path: "/password-security", 
+    element: PasswordAndSecurity, 
     actor: ["USER"],
     isProtected: true,
   },
