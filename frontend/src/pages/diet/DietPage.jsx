@@ -189,201 +189,205 @@ const DietPage = () => {
 
   return (
     //<DefaultLayout>
-    <section>
-      <h1 className="text-xl font-bold w-full">Diet Recommediation</h1>
-      <div className="flex flex-row gap-3">
-        <div className="left-side pt-8 text-sm font-semilbold space-y-6 w-3/6">
-          <div className="flex flex-col gap-2 ">
-            <div className="flex gap-2 items-center">
-              <p>Birthdate</p>
-              <span className="p-2 border-[1px] text-white bg-blue-600 rounded-xl">
-                {AgeCalculate(stringToDate(currentDate))} years old
-              </span>
-            </div>
+    <>
+      <section>
+        <h1 className="text-xl font-bold w-full">Diet Recommediation</h1>
+        <div className="flex flex-row gap-3">
+          <div className="left-side pt-8 text-sm font-semilbold space-y-6 w-3/6">
+            <div className="flex flex-col gap-2 ">
+              <div className="flex gap-2 items-center">
+                <p>Birthdate</p>
+                <span className="p-2 border-[1px] text-white bg-blue-600 rounded-xl">
+                  {AgeCalculate(stringToDate(currentDate))} years old
+                </span>
+              </div>
 
-            <div className="w-full flex justify-center items-center">
-              <Space direction="vertical" style={{ width: "100%" }}>
-                <DatePicker
-                  defaultValue={dayjs(currentUser.birthday, "DD/MM/YYYY")}
-                  onChange={(value) => {
-                    // Convert value to string date for mat dd/mm/yyyy
-                    setCurrentDate(dayjs(value).format("DD/MM/YYYY"));
-                  }}
-                  style={{ width: "100%" }}
+              <div className="w-full flex justify-center items-center">
+                <Space direction="vertical" style={{ width: "100%" }}>
+                  <DatePicker
+                    defaultValue={dayjs(currentUser.birthday, "DD/MM/YYYY")}
+                    onChange={(value) => {
+                      // Convert value to string date for mat dd/mm/yyyy
+                      setCurrentDate(dayjs(value).format("DD/MM/YYYY"));
+                    }}
+                    style={{ width: "100%" }}
+                  />
+                </Space>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-start gap-4 items-center">
+                <p>Sex</p>
+                <RadioGroup
+                  options={[
+                    {
+                      label: "Male",
+                      value: "Male",
+                    },
+                    {
+                      label: "Female",
+                      value: "Female",
+                    },
+                  ]}
                 />
-              </Space>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-start gap-4 items-center">
-              <p>Sex</p>
-              <RadioGroup
-                options={[
-                  {
-                    label: "Male",
-                    value: "Male",
-                  },
-                  {
-                    label: "Female",
-                    value: "Female",
-                  },
-                ]}
+            <div className="flex flex-col gap-2">
+              <p>Your height (cm)</p>
+              <input
+                value={currentHeight}
+                onChange={(e) => setCurrentHeight(e.target.value)}
+                type="number"
+                className="border border-gray-300 p-2 rounded-md"
               />
             </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <p>Your height (cm)</p>
-            <input
-              value={currentHeight}
-              onChange={(e) => setCurrentHeight(e.target.value)}
-              type="number"
-              className="border border-gray-300 p-2 rounded-md"
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p>Weight (kg)</p>
-            <input
-              value={currentWeight}
-              onChange={(e) => setCurrentWeight(e.target.value)}
-              type="number"
-              className="border border-gray-300 p-2 rounded-md"
-            />
-          </div>
+            <div className="flex flex-col gap-2">
+              <p>Weight (kg)</p>
+              <input
+                value={currentWeight}
+                onChange={(e) => setCurrentWeight(e.target.value)}
+                type="number"
+                className="border border-gray-300 p-2 rounded-md"
+              />
+            </div>
 
-          <div className="flex flex-col gap-2">
-            <p>Activity level</p>
-            <div className="flex  flex-row">
-              <Select
-                style={{
-                  width: "100%",
-                }}
-                onChange={(value) => {
-                  setSelectActivity(value);
-                }}
-                placeholder="Give CareX your activity level"
-                dropdownRender={(menu) => (
-                  <>
-                    {menu}
-                    <Divider
-                      style={{
-                        margin: "8px 0",
-                      }}
-                    />
-                    <Space
-                      style={{
-                        padding: "0 8px 4px",
-                      }}
-                    ></Space>
-                  </>
-                )}
-                options={activities.map((item) => ({
-                  label: item,
-                  value: item,
-                }))}
-              />
+            <div className="flex flex-col gap-2">
+              <p>Activity level</p>
+              <div className="flex  flex-row">
+                <Select
+                  style={{
+                    width: "100%",
+                  }}
+                  onChange={(value) => {
+                    setSelectActivity(value);
+                  }}
+                  placeholder="Give CareX your activity level"
+                  dropdownRender={(menu) => (
+                    <>
+                      {menu}
+                      <Divider
+                        style={{
+                          margin: "8px 0",
+                        }}
+                      />
+                      <Space
+                        style={{
+                          padding: "0 8px 4px",
+                        }}
+                      ></Space>
+                    </>
+                  )}
+                  options={activities.map((item) => ({
+                    label: item,
+                    value: item,
+                  }))}
+                />
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <p>Meals per day</p>
-            <div className="flex  flex-row">
-              <CustomSlider
-                onChange={(value) => {
-                  setMealsPerDay(value);
-                }}
-                inputValue={mealsPerDay}
-              />
+            <div className="flex flex-col gap-2">
+              <p>Meals per day</p>
+              <div className="flex  flex-row">
+                <CustomSlider
+                  onChange={(value) => {
+                    setMealsPerDay(value);
+                  }}
+                  inputValue={mealsPerDay}
+                />
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <p>Tell CareX your goal</p>
-            <div className="flex  flex-row">
-              <Select
-                style={{
-                  width: "100%",
-                }}
-                onChange={(value) => {
-                  setSelectGoal(value);
-                }}
-                placeholder="What's your goal"
-                dropdownRender={(menu) => (
-                  <>
-                    {menu}
-                    <Divider
-                      style={{
-                        margin: "8px 0",
-                      }}
-                    />
-                    <Space
-                      style={{
-                        padding: "0 8px 4px",
-                      }}
-                    ></Space>
-                  </>
-                )}
-                options={plans.map((item) => ({
-                  label: item,
-                  value: item,
-                }))}
-              />
+            <div className="flex flex-col gap-2">
+              <p>Tell CareX your goal</p>
+              <div className="flex  flex-row">
+                <Select
+                  style={{
+                    width: "100%",
+                  }}
+                  onChange={(value) => {
+                    setSelectGoal(value);
+                  }}
+                  placeholder="What's your goal"
+                  dropdownRender={(menu) => (
+                    <>
+                      {menu}
+                      <Divider
+                        style={{
+                          margin: "8px 0",
+                        }}
+                      />
+                      <Space
+                        style={{
+                          padding: "0 8px 4px",
+                        }}
+                      ></Space>
+                    </>
+                  )}
+                  options={plans.map((item) => ({
+                    label: item,
+                    value: item,
+                  }))}
+                />
+              </div>
             </div>
-          </div>
-          <Button
-            value="large"
-            block
-            type="primary"
-            onClick={() => {
-              // Collect all information
-              let data = {
-                age: AgeCalculate(stringToDate(currentDate)),
-                height: currentHeight,
-                weight: currentWeight,
-                gender: currentSex,
-                activity: selectActivity,
-                meals_calories_perc: 0,
-                weight_loss: selectGoal,
-              };
+            <Button
+              value="large"
+              block
+              type="primary"
+              onClick={() => {
+                // Collect all information
+                let data = {
+                  age: AgeCalculate(stringToDate(currentDate)),
+                  height: currentHeight,
+                  weight: currentWeight,
+                  gender: currentSex,
+                  activity: selectActivity,
+                  meals_calories_perc: 0,
+                  weight_loss: selectGoal,
+                };
 
-              // Save to store
-              const setPerson = useDietStore.getState().setPerson;
-              setPerson(data);
-            }}
-          >
-            Save and get recommendation
-          </Button>
+                // Save to store
+                const setPerson = useDietStore.getState().setPerson;
+                setPerson(data);
+                navigate("/bmiresult");
+              }}
+            >
+              Save and get recommendation
+            </Button>
 
-          <div className="pt-6">
-            <p className="flex flex-row text-base font-semibold text-blue-500 items-center pb-2">
-              <IoIosInformationCircleOutline
-                style={{ width: "40px", height: "20px" }}
-              />
-              Be awakeness!
-            </p>
-            <p>
-              CareX is only tool for recommendation. We need more time to
-              upgrade our system to meet healthcare standard in the future.
-            </p>
+            <div className="pt-6">
+              <p className="flex flex-row text-base font-semibold text-blue-500 items-center pb-2">
+                <IoIosInformationCircleOutline
+                  style={{ width: "40px", height: "20px" }}
+                />
+                Be awakeness!
+              </p>
+              <p>
+                CareX is only tool for recommendation. We need more time to
+                upgrade our system to meet healthcare standard in the future.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="right-side pl-10 w-3/6 pt-8">
-          <div>
-            <p className="flex flex-row justify-center items-center text-base font-semibold text-blue-500">
-              <IoIosInformationCircleOutline
-                style={{ width: "40px", height: "20px" }}
-              />
-              Information (sources collection from many platform by CareX team)
-            </p>
+          <div className="right-side pl-10 w-3/6 pt-8">
             <div>
-              <Collapse
-                defaultActiveKey={["1"]}
-                accordion
-                ghost
-                items={infoHealth}
-              />
+              <p className="flex flex-row justify-center items-center text-base font-semibold text-blue-500">
+                <IoIosInformationCircleOutline
+                  style={{ width: "40px", height: "20px" }}
+                />
+                Information (sources collection from many platform by CareX
+                team)
+              </p>
+              <div>
+                <Collapse
+                  defaultActiveKey={["1"]}
+                  accordion
+                  ghost
+                  items={infoHealth}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 

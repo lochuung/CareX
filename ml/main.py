@@ -4,10 +4,30 @@ from typing import List,Optional
 import pandas as pd
 from model import recommend,output_recommended_recipes
 from bmi import Person, meals_percentage, weight_loss_plans
+from fastapi.middleware.cors import CORSMiddleware
 
 dataset=pd.read_csv('./Data/dataset.csv',compression='gzip')
 
 app = FastAPI()
+# Allow all
+# CORS(app)
+
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:5173",
+    "https://carex.huuloc.id.vn"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class params(BaseModel):
