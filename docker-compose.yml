@@ -18,20 +18,18 @@ services:
       MYSQL_PASSWORD: root
     volumes:
       - carex-mysql:/var/lib/mysql
-  # carex-ml:
-  #   image: python:3.12.3-slim
-  #   container_name: carex-ml
-  #   volumes:
-  #     - ./ml:/app
-  #     - python-packages:/usr/local/lib/python3.10/site-packages
-  #   working_dir: /app
-  #   command: bash -c "pip install -r requirements.txt && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-  #   networks:
-  #     - carex-mysql-net
-  #   depends_on:
-  #     - mysqldb
-  #   ports:
-  #     - '8001:8000'
+  carex-ml:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    container_name: carex-ml
+    volumes:
+      - ./ml:/app
+      - python-packages:/usr/local/lib/python3.10/site-packages
+    ports:
+      - '5050:5050'
+    expose:
+      - '5050'
   carex-api:
     image: maven:3.8.3-openjdk-17-slim
     container_name: carex-api
