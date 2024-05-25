@@ -5,7 +5,7 @@ import { FaArrowDown } from "react-icons/fa6";
 
 const BMIResult = () => {
     //value change image
-    var BMI 
+    var BMI =19
     return (
         <DefaultLayout>
             <section className='space-y-6 flex flex-col justify-center '>
