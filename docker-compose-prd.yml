@@ -66,6 +66,8 @@ services:
       - '3000:3000'
     expose:
       - '3000'
+    environment:
+      VITE_PUBLIC_API_URL: ${API_URL}
 
 networks:
   carex-mysql-net:
