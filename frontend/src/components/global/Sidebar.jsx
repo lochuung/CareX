@@ -15,8 +15,10 @@ import {
 import useConfirmModal from "../../hooks/useConfirmModal";
 import { Avatar, Dropdown, Layout, Menu, Modal, theme } from "antd";
 import { div } from "@tensorflow/tfjs";
-import { GrDashboard, GrYoga } from "react-icons/gr";
+import { GrDashboard, GrYoga, GrPlan } from "react-icons/gr";
 import ConfirmModal from "../../hooks/useConfirmModal";
+import { IoIosNotifications } from "react-icons/io";
+import { MdOutlineSecurity } from "react-icons/md";
 
 const { Sider } = Layout;
 
@@ -35,6 +37,9 @@ const EXECUTE_COMMANDS = {
 
 const ROUTING_COMMANDS = {
   PROFILE_COMMAND: "/profile",
+  CHOOSEPLAN_COMMAND: "/choose-plan",
+  NOTIFICATIONS_COMMAND: "/notifications",
+  PASSWORDANDSECURITY_COMMAND: "/password-security",
   REWARD_COMMAND: "/reward",
 };
 
@@ -73,6 +78,21 @@ const Sidebar = ({ collapsed, onCollapsed }) => {
         "Profile",
         ROUTING_COMMANDS.PROFILE_COMMAND,
         <HiInformationCircle />
+      ),
+      getItem(
+        "Notifications",
+        ROUTING_COMMANDS.NOTIFICATIONS_COMMAND,
+        <IoIosNotifications />
+      ),
+      getItem(
+        "Choose Plan",
+        ROUTING_COMMANDS.CHOOSEPLAN_COMMAND,
+        <GrPlan />
+      ),
+      getItem(
+        "Password & Security",
+        ROUTING_COMMANDS.PASSWORDANDSECURITY_COMMAND,
+        <MdOutlineSecurity />
       ),
       getItem("Logout", EXECUTE_COMMANDS.LOGOUT_COMMAND, <HiLogout />),
     ]),
