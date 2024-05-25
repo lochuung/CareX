@@ -39,8 +39,7 @@ if ! command -v npm &> /dev/null; then
 fi
 npm install
 npm run build
-npm install -g serve
-serve -s build &
+nohup npm run preview &
 
 # Deploy the server
 
