@@ -21,14 +21,14 @@ if [ "$(docker volume ls -q -f name=maven-repo)" != "maven-repo" ]; then
 fi
 
 # Validate the Docker Compose file
-# docker-compose -f docker-compose-prd.yml config
-# if [ $? -ne 0 ]; then
-#     echo "Invalid Docker Compose file"
-#     exit 1
-# fi
+docker-compose -f docker-compose-prd.yml config
+if [ $? -ne 0 ]; then
+    echo "Invalid Docker Compose file"
+    exit 1
+fi
 
 # Deploy the Docker Compose file with the environment variables
-# docker-compose -f docker-compose-prd.yml up -d --build
+docker-compose -f docker-compose-prd.yml up -d --build
 
 #Deploy the client
 cd frontend
