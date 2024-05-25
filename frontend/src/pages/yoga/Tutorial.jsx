@@ -1,34 +1,21 @@
 import React, { useState } from "react";
 import { Divider, Steps } from "antd";
-const Tutorial = () => {
+import { createJSONStorage } from "zustand/middleware";
+const Tutorial = ({ instructions }) => {
   const [current, setCurrent] = useState(0);
   const onChange = (value) => {
-    console.log("onChange:", value);
     setCurrent(value);
   };
-  const description = "This is a description.";
-  return (
-    <>
-      <Steps
-        current={current}
-        onChange={onChange}
-        direction="vertical"
-        items={[
-          {
-            title: "Step 1",
-            description,
-          },
-          {
-            title: "Step 2",
-            description,
-          },
-          {
-            title: "Step 3",
-            description,
-          },
-        ]}
-      />
-    </>
-  );
+
+  const instructionsToSteps = (instructions) => {
+    return instructions.map((instruction, index) => {
+      return {
+        title: `Step ${index + 1}`,
+        description: instruction,
+      };
+    });
+  };
+
+  return JSON.stringify(instructions);
 };
 export default Tutorial;
