@@ -32,7 +32,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/carex?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_PROFILES_ACTIVE: prd
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MYSQL_PASSWORD: ${MAIL_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_SERVER_PORT: '8080'
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 networks:
   carex-mysql-net:
 
