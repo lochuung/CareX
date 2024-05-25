@@ -21,19 +21,33 @@ if [ "$(docker volume ls -q -f name=maven-repo)" != "maven-repo" ]; then
 fi
 
 # Validate the Docker Compose file
-docker-compose -f docker-compose-prd.yml config
-if [ $? -ne 0 ]; then
-    echo "Invalid Docker Compose file"
-    exit 1
-fi
+# docker-compose -f docker-compose-prd.yml config
+# if [ $? -ne 0 ]; then
+#     echo "Invalid Docker Compose file"
+#     exit 1
+# fi
 
 # Deploy the Docker Compose file with the environment variables
-docker-compose -f docker-compose-prd.yml up -d --build
+# docker-compose -f docker-compose-prd.yml up -d --build
 
-# if ! command -v mvn &> /dev/null; then
-#     sudo apt update
-#     sudo apt install maven -y
-# fi
-# cd server
-# mvn clean package -DskipTests
-# nohup java -jar target/carex-0.0.1-SNAPSHOT.jar &
+#Deploy the client
+cd frontend
+if ! command -v npm &> /dev/null; then
+    sudo apt update
+    sudo apt install nodejs -y
+    sudo apt install npm -y
+fi
+npm install
+npm run build
+npm install -g serve
+serve -s build &
+
+# Deploy the server
+
+if ! command -v mvn &> /dev/null; then
+    sudo apt update
+    sudo apt install maven -y
+fi
+cd server
+mvn clean package -DskipTests
+nohup java -jar target/carex-0.0.1-SNAPSHOT.jar &
