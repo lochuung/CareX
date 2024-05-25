@@ -1,35 +1,56 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { router } from "./routers/router";
-import useAuth from "./hooks/useAuth";
+import React, { useEffect } from "react";
+import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
+import LoginPage from "./pages/login/LoginPage";
+import SignUpPage from "./pages/signup/SignUpPage";
 import ProtectedRouter from "./routers/ProtectedRouter";
 
+import { useUserStore } from "./store/user";
+import NotFound from "./pages/NotFound";
+
+import { router } from "./routers/router";
+import DefaultLayout from "./layouts/DefaultLayout";
+
 function App() {
+  const isLogged = useUserStore((state) => state.isLogged);
   return (
-    <BrowserRouter>
-      <Routes>
-        {router.map((item) => {
-          const Component = item.element;
-          return (
-            <Route
-              path={item.path}
-              key={item.path}
-              element={
-                item.isProtected ? (
-                  <Component />
-                ) : (
-                  <ProtectedRouter baseRole={item?.actor}>
+    <Routes>
+      {!isLogged ? (
+        <>
+          <Route path="*" element={<Navigate to="/login" />} />
+          {/* <Route path="*" element={<NotFound />} /> */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+        </>
+      ) : (
+        <>
+          <Route path="/login" element={<Navigate to="/" />} />
+          <Route path="/signup" element={<Navigate to="/" />} />
+          <Route path="*" element={<NotFound />} />
+        </>
+      )}
+      {isLogged && (
+        <Route path="/" element={<DefaultLayout />}>
+          {router.map((item) => {
+            const Component = item.element;
+            return (
+              <Route
+                path={item.path}
+                key={item.path}
+                element={
+                  !item.isProtected ? (
                     <Component />
-                  </ProtectedRouter>
-                )
-              }
-            />
-          );
-        })}
-      </Routes>
-    </BrowserRouter>
+                  ) : (
+                    <ProtectedRouter baseRole={item?.actor}>
+                      <Component />
+                    </ProtectedRouter>
+                  )
+                }
+              />
+            );
+          })}
+        </Route>
+      )}
+    </Routes>
   );
 }
 

@@ -9,7 +9,10 @@ import { useUserStore } from "../store/user";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { currentUser, setCurrentUser } = useUserStore();
+  const { currentUser, setCurrentUser, isLogged, setIsLogged } = useUserStore(
+    (state) => state
+  );
+
   const [errorsSignIn, setErrorSignin] = useState({
     type: null,
     message: null,
@@ -55,7 +58,9 @@ const Login = () => {
 
       const data = await res.json();
       localStorage.setItem("access_token", data?.data?.access_token);
-      navigate("/");
+      navigate("/home");
+      setIsLogged(true);
+      alert(true);
       if (!user.ok) {
         throw new Error(`HTTP error! status: ${user.status}`);
       }

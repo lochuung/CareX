@@ -5,9 +5,8 @@ import { useFormik } from "formik";
 import { Input } from "antd";
 import { Button } from "antd";
 import { Image } from "antd";
-import { inputProfile } from "../constants";
-import DefaultLayoutProfile from "../layouts/DefaultLayoutProfile";
-const EditProfile = () => {
+import { inputProfile } from "../../constants/profile";
+const ProfilePage = () => {
   const inputRef = useRef(null);
 
   const loginSchema = yup.object().shape({
@@ -41,8 +40,7 @@ const EditProfile = () => {
     },
   });
   return (
-    <DefaultLayoutProfile>
-      <main className="relative">
+    <main className="relative">
       <div className="flex">
         <section className="flex min-h-screen flex-1 flex-col pt-6 max-md:pb-14 sm:px-14">
           <div className="w-full">
@@ -68,7 +66,7 @@ const EditProfile = () => {
                       <span>{input.label}</span>
                       <Input
                         onChange={formik.handleChange}
-                        key ={input.label}
+                        key={input.label}
                         value={formik.values.valueInput}
                         name={input.name}
                         type={input.type}
@@ -91,9 +89,8 @@ const EditProfile = () => {
           </div>
         </section>
       </div>
-      </main>
-    </DefaultLayoutProfile>
+    </main>
   );
 };
 
-export default EditProfile;
+export default ProfilePage;

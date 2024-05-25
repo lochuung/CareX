@@ -1,62 +1,56 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useUserStore } from "../store/user";
+import { toast } from "react-toastify";
 
 function useAuth() {
-  // const [user, setUser] = useState(undefined);
-  // const [role, setRole] = useState(undefined);
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // console.log(loading, "loading");
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     setLoading(true);
-  //     const token = localStorage?.getItem("access_token");
-  //     console.log(token, "token");
-  //     if (token) {
-  //       try {
-  //         const options = {
-  //           method: "GET",
-  //           headers: {
-  //             Accept: "*/*",
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         };
+  const { setCurrentUser, logout } = useUserStore((state) => state);
 
-  //         const res = await fetch(
-  //           `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/user`,
-  //           options
-  //         );
+  useEffect(() => {
+    const fetchUser = async () => {
+      setLoading(true);
+      const token = localStorage?.getItem("access_token");
+      if (token) {
+        try {
+          const options = {
+            method: "GET",
+            headers: {
+              Accept: "*/*",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          };
 
-  //         if (!res.ok) {
-  //           throw new Error(`HTTP error! status: ${res.status}`);
-  //         }
+          const res = await fetch(
+            `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/user`,
+            options
+          );
 
-  //         const data = await res.json();
-  //         if (res.status === 200) {
-  //           console.log(data);
+          if (res.status === 200) {
+            const data = await res.json();
+            setCurrentUser(data?.data);
+            setLoading(false);
+          } else {
+            throw new Error(`Expired token, please login again.`);
+          }
+        } catch (error) {
+          toast.error(error.message);
+          logout();
+          setLoading(false);
+        }
+      } else {
+        toast.error("You need to login first.");
+        logout();
+        setLoading(false);
+      }
+    };
 
-  //           dispatch({ type: "CURRENT_USER", payload: data });
-  //           setUser(data?.data);
+    fetchUser();
+  }, []);
 
-  //           const role = data?.data?.roles[0]?.name;
-  //           console.log(role);
-  //           setRole(role);
-  //           setLoading(false);
-  //         }
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     } else {
-  //       window.location.href("/login");
-  //     }
-  //   };
-
-  //   fetchUser();
-  // }, []);
-
-  return { user, role, loading };
+  return { loading };
 }
 
 export default useAuth;

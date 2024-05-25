@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { Alert, Button, DatePicker, Form, Input, message } from "antd";
-import ImageSlider from "../components/global/ImageSlider";
-import useFetch from "../hooks/useFetch";
-import { formatDate } from "../utils/utils";
+import { Alert, Button, DatePicker, Form, Input } from "antd";
+
+import ImageSlider from "../../components/global/ImageSlider/index";
+import { formatDate } from "../../utils/utils";
 import { Link } from "react-router-dom";
 
-const Signup = () => {
+const SignUpPage = () => {
   const [errorsSignup, setErrorSignup] = useState({
     type: null,
     message: null,
@@ -54,7 +52,6 @@ const Signup = () => {
 
       const data = await res.json();
 
-      alert("REQ");
       if (res?.status === 200) {
         alert(data?.data?.access_token);
         setErrorSignup({ type: "success", message: res?.body?.message });
@@ -177,4 +174,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignUpPage;
