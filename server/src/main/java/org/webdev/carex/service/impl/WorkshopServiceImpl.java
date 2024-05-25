@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.webdev.carex.dto.ResponseDto;
 import org.webdev.carex.dto.request.workshop.WorkshopRequestDto;
 import org.webdev.carex.dto.response.workshop.JoinWorkshopResponseDto;
+import org.webdev.carex.dto.response.workshop.UserJoinResponse;
 import org.webdev.carex.dto.response.workshop.WorkshopResponseDto;
 import org.webdev.carex.entity.User;
 import org.webdev.carex.entity.Workshop;
@@ -34,6 +35,8 @@ public class WorkshopServiceImpl implements WorkshopService {
 
     //Initialize new workshop response dto
     private WorkshopResponseDto newWorkshopResponseDto(Workshop workshop) {
+        List<User> users = workshop.getParticipants();
+        List<UserJoinResponse> userJoinResponses = new ArrayList<>();
         WorkshopResponseDto workshopResponseDto = new WorkshopResponseDto();
         workshopResponseDto.setId(workshop.getId());
         workshopResponseDto.setDescription(workshop.getDescription());
@@ -45,7 +48,16 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshopResponseDto.setEndTime(workshop.getEndTime());
         workshopResponseDto.setCancelled(workshop.isCancelled());
         workshopResponseDto.setFinished(workshop.isFinished());
-        System.out.println(workshopResponseDto.getTotalPeople());
+        workshopResponseDto.setCategory(workshop.getCategory());
+        for (User user : users) {
+            UserJoinResponse userJoinResponse = new UserJoinResponse();
+            userJoinResponse.setEmail(user.getEmail());
+            userJoinResponse.setFullName(user.getFullName());
+            userJoinResponse.setBirthDay(user.getBirthday());
+            userJoinResponse.setPoint(user.getPoint());
+            userJoinResponses.add(userJoinResponse);
+        }
+        workshopResponseDto.setUserJoins(userJoinResponses);
         return workshopResponseDto;
     }
 
@@ -135,17 +147,18 @@ public class WorkshopServiceImpl implements WorkshopService {
         }
 
         Workshop workshop1 = Workshop.builder()
-                        .name("test1")
-                        .description("test1")
-                        .address("test1")
-                        .imageUrl("http://link")
-                        .host(users.get(0))
-                        .participants(users)
-                        .startTime(LocalDateTime.now())
-                        .endTime(LocalDateTime.now().plusDays(1))
-                        .cancelled(false)
-                        .finished(false)
-                        .build();
+                .name("test1")
+                .description("test1")
+                .address("test1")
+                .imageUrl("http://link")
+                .host(users.get(0))
+                .participants(users)
+                .category("health")
+                .startTime(LocalDateTime.now())
+                .endTime(LocalDateTime.now().plusDays(1))
+                .cancelled(false)
+                .finished(false)
+                .build();
         workshopRepository.save(workshop1);
         Workshop workshop2 = Workshop.builder()
                 .name("test2")
@@ -153,6 +166,7 @@ public class WorkshopServiceImpl implements WorkshopService {
                 .address("test2")
                 .imageUrl("http://link")
                 .host(users.get(0))
+                .category("health")
                 .participants(users)
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusDays(1))
@@ -168,11 +182,13 @@ public class WorkshopServiceImpl implements WorkshopService {
         User host = workshop.getHost();
         if (host.getEmail().equals(email)) {
             workshop.setName(workshopRequestDto.getName());
+            workshop.setCategory(workshopRequestDto.getCategory());
             workshop.setDescription(workshopRequestDto.getDescription());
             workshop.setAddress(workshopRequestDto.getAddress());
             workshop.setImageUrl(workshopRequestDto.getImageUrl());
             workshop.setStartTime(workshopRequestDto.getStartTime());
             workshop.setEndTime(workshopRequestDto.getEndTime());
+            workshop.setUpdatedDate(LocalDateTime.now());
             workshopRepository.save(workshop);
         } else {
             throw new RuntimeException("Wrong host");
@@ -275,7 +291,9 @@ public class WorkshopServiceImpl implements WorkshopService {
         workshop.setImageUrl(workshopRequestDto.getImageUrl());
         workshop.setStartTime(workshopRequestDto.getStartTime());
         workshop.setEndTime(workshopRequestDto.getEndTime());
+        workshop.setCategory(workshopRequestDto.getCategory());
         workshop.setParticipants(List.of(user));
+        workshop.setCreatedDate(LocalDateTime.now());
         workshop.setCancelled(false);
         workshop.setFinished(false);
         workshopRepository.save(workshop);
