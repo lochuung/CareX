@@ -30,17 +30,17 @@ fi
 # Deploy the Docker Compose file with the environment variables
 docker-compose -f docker-compose-prd.yml up -d --build
 
-# # Install mvn if not installed
-# if ! command -v mvn &> /dev/null; then
-#     sudo apt update
-#     sudo apt install maven -y
-# fi
+# Install mvn if not installed
+if ! command -v mvn &> /dev/null; then
+    sudo apt update
+    sudo apt install maven -y
+fi
 
-# # go to the project directory
-# cd server
+# go to the project directory
+cd server
 
-# # Build the JAR file
-# mvn clean package -DskipTests
+# Build the JAR file
+mvn clean package -DskipTests
 
-# # Start the jar file with the environment variables
-# java -jar target/carex-0.0.1-SNAPSHOT.jar 
+# Start the jar file in the background
+nohup java -jar target/carex-0.0.1-SNAPSHOT.jar &
