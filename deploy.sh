@@ -7,7 +7,7 @@ if [ -f .env ]; then
 fi
 
 # Check if the environment variables are set
-if [ -z "$SQL_USER" ] || [ -z "$SQL_PASSWORD" ] || [ -z "$API_URL" ] || [ -z "$MAIL_USERNAME" ] || [ -z "$MAIL_PASSWORD" ] || [ -z "$ADMIN_EMAIL" ] || [ -z "$ADMIN_PASSWORD" ] || [ -z "$JWT_SECRET_KEY" ]; then
+if [ -z "$MYSQL_USER" ] || [ -z "$MYSQL_USER" ] || [ -z "$API_URL" ] || [ -z "$MAIL_USERNAME" ] || [ -z "$MAIL_PASSWORD" ] || [ -z "$ADMIN_EMAIL" ] || [ -z "$ADMIN_PASSWORD" ] || [ -z "$JWT_SECRET_KEY" ]; then
     echo "Please set the environment variables in the .env file"
     exit 1
 fi
@@ -27,5 +27,5 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Deploy the Docker Compose file
-docker-compose -f docker-compose-prd.yml up --build -d
+# Deploy the Docker Compose file with the environment variables
+docker-compose -f docker-compose-prd.yml up -d --build
