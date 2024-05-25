@@ -49,20 +49,21 @@ const HomePage = () => {
 
   const { Meta } = Card;
   return (
-    <section className="w-full h-screen space-y-6">
+    <section className="w-full h-screen space-y-6 bg-hero-pattern bg-no-repeat object-cover">
       <div className="flex justify-center">
-        <h1 className="text-5xl font-bold">Care<span className="text-blue-500">X</span></h1>
+        <h1 className="text-5xl font-bold">Care<span className="text-blue-600">X</span></h1>
       </div>
       <motion.div className="flex flex-row gap-2 justify-center items-center">
         <motion.div variants={variantContainer} initial="hidden" animate="show" className="w-3/6 text-center">
-          <motion.p variants={variantCard} className="text-2xl font-bold">Take <span className="text-blue-500"> Health </span>Into Your Own Hands</motion.p>
-          <motion.p variants={variantCard} className="pt-2 text-lg text-slate-500">When you maintain <span className="text-blue-500">good health</span>, everything else falls into place.</motion.p>
+          <motion.p variants={variantCard} className="text-3xl font-bold bg-white">Take Health Into Your Own Hands</motion.p>
+          <motion.p variants={variantCard} className="pt-2 text-lg bg-slate-100">When you maintain good health, everything else falls into place.</motion.p>
           <motion.div variants={variantCard} className="pt-6 space-y-4">
-            <motion.p variants={variantCard}className="text-center">Let we see how good is your health by clicking the below button</motion.p>
+            <motion.p variants={variantCard}className="text-center bg-white italic">Let we see how good is your health by clicking the below button</motion.p>
             <motion.div variants={variantCard}className="flex justify-center flex-row space-x-4 items-center">
-              <FaRegHandPointRight style={{width:'30px', height: '50px'}}/>
-              <Button type='primary' danger>Check your BMI</Button>
-              <FaRegHandPointLeft style={{width:'30px', height: '50px'}}/>
+              <div className="space-x-4">
+              <Button type='primary' danger className="font-bold text-base" onClick={() => navigate('/bmiresult')}>Check your BMI</Button>
+              <Button className="font-bold text-base" onClick={() => navigate('/yoga')}>Practice Yoga</Button>
+              </div>
             </motion.div>
           </motion.div>
         </motion.div>
