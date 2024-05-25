@@ -59,12 +59,18 @@ const YogaPage = () => {
       );
 
       const data = await res.json();
+      console.log({ practiceHistory: data.data });
       setPracticeHistory(data.data);
     };
     fetchPracticeHistory();
   }, []);
   const isPracticed = (exercise) => {
-    return practiceHistory.some((item) => item.id == exercise.id);
+    console.log({ practiceHistory, exercise });
+    return false;
+
+    // return (
+    //   practiceHistory && practiceHistory.some((item) => item.id == exercise.id)
+    // );
   };
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const ExerciseList = () => {
@@ -129,9 +135,7 @@ const YogaPage = () => {
           Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify({
-          id: null,
           yogaWorkout: exercise,
-          startTime: new Date().toLocaleDateString(),
           done: true,
         }),
       }
@@ -168,7 +172,8 @@ const YogaPage = () => {
           next={async () => {
             if (currentExerciseIndex < practiceExercises.length - 1) {
               // Save to history
-              await saveToHistory(practiceExercises[currentExerciseIndex]);
+              let c = practiceExercises[currentExerciseIndex];
+              await saveToHistory(c);
               setCurrentExerciseIndex(currentExerciseIndex + 1);
             }
 

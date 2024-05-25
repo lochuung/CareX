@@ -7,17 +7,25 @@ import { useNavigate } from "react-router-dom";
 import { DatePicker, Space, Button, Select, Divider, Collapse } from "antd";
 import { useUserStore } from "../../store/user";
 import dayjs from "dayjs";
+import CustomSlider from "./CustomSlider";
+import useDietStore from "../../store/diet";
 const onChange = (date, dateString) => {
   console.log(date, dateString);
 };
 const DietPage = () => {
-  const [items, setItems] = useState([
-    "Ít hoặc không tập thể dục",
-    "Tập thể dục nhẹ nhàng 1-3 ngày/tuần",
-    "Tập thể dục trung bình 3-5 ngày mỗi tuần",
-    "Tập thể dục nặng 6-7 ngày mỗi tuần",
-    "Chế độ tập thể dục thách thức",
-  ]);
+  let activities = [
+    "Little/no exercise",
+    "Light exercise",
+    "Moderate exercise (3-5 days/wk)",
+    "Very active (6-7 days/wk)",
+    "Extra active (very active & physical job)",
+  ];
+  let plans = [
+    "Maintain weight",
+    "Mild weight loss",
+    "Weight loss",
+    "Extreme weight loss",
+  ];
   const infoHealth = [
     {
       label: "Chỉ số BMI là gì? - Định nghĩa chỉ số cơ thể BMI",
@@ -171,7 +179,13 @@ const DietPage = () => {
     setCurrentDate(currentUser.birthday);
   }, []);
 
+  const [selectGoal, setSelectGoal] = useState("Maintain weight");
+  const [selectActivity, setSelectActivity] = useState("Little/no exercise");
+
   const [currentSex, setCurrentSex] = useState("Male");
+  const [currentHeight, setCurrentHeight] = useState(0);
+  const [currentWeight, setCurrentWeight] = useState(0);
+  const [mealsPerDay, setMealsPerDay] = useState(0);
 
   return (
     //<DefaultLayout>
@@ -218,27 +232,35 @@ const DietPage = () => {
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <p>Chiều cao của bạn (cm)</p>
+            <p>Your height (cm)</p>
             <input
+              value={currentHeight}
+              onChange={(e) => setCurrentHeight(e.target.value)}
               type="number"
               className="border border-gray-300 p-2 rounded-md"
             />
           </div>
           <div className="flex flex-col gap-2">
-            <p>Cân nặng của bạn (kg)</p>
+            <p>Weight (kg)</p>
             <input
+              value={currentWeight}
+              onChange={(e) => setCurrentWeight(e.target.value)}
               type="number"
               className="border border-gray-300 p-2 rounded-md"
             />
           </div>
+
           <div className="flex flex-col gap-2">
-            <p>Chọn cường độ hoạt động thể chất của bạn</p>
+            <p>Activity level</p>
             <div className="flex  flex-row">
               <Select
                 style={{
                   width: "100%",
                 }}
-                placeholder="Cường độ tập thể dục của bạn"
+                onChange={(value) => {
+                  setSelectActivity(value);
+                }}
+                placeholder="Give CareX your activity level"
                 dropdownRender={(menu) => (
                   <>
                     {menu}
@@ -254,7 +276,51 @@ const DietPage = () => {
                     ></Space>
                   </>
                 )}
-                options={items.map((item) => ({
+                options={activities.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p>Meals per day</p>
+            <div className="flex  flex-row">
+              <CustomSlider
+                onChange={(value) => {
+                  setMealsPerDay(value);
+                }}
+                inputValue={mealsPerDay}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p>Tell CareX your goal</p>
+            <div className="flex  flex-row">
+              <Select
+                style={{
+                  width: "100%",
+                }}
+                onChange={(value) => {
+                  setSelectGoal(value);
+                }}
+                placeholder="What's your goal"
+                dropdownRender={(menu) => (
+                  <>
+                    {menu}
+                    <Divider
+                      style={{
+                        margin: "8px 0",
+                      }}
+                    />
+                    <Space
+                      style={{
+                        padding: "0 8px 4px",
+                      }}
+                    ></Space>
+                  </>
+                )}
+                options={plans.map((item) => ({
                   label: item,
                   value: item,
                 }))}
@@ -265,9 +331,24 @@ const DietPage = () => {
             value="large"
             block
             type="primary"
-            onClick={() => navigate("/bmiresult")}
+            onClick={() => {
+              // Collect all information
+              let data = {
+                age: AgeCalculate(stringToDate(currentDate)),
+                height: currentHeight,
+                weight: currentWeight,
+                gender: currentSex,
+                activity: selectActivity,
+                meals_calories_perc: 0,
+                weight_loss: selectGoal,
+              };
+
+              // Save to store
+              const setPerson = useDietStore.getState().setPerson;
+              setPerson(data);
+            }}
           >
-            Tính ngay
+            Save and get recommendation
           </Button>
 
           <div className="pt-6">
@@ -307,3 +388,4 @@ const DietPage = () => {
 };
 
 export default DietPage;
+1;
