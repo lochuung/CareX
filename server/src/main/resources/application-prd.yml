@@ -12,7 +12,6 @@ spring:
       ddl-auto: update
 server:
   port: '8000'
-
 application:
   default-admin:
     email: ${ADMIN_EMAIL}
