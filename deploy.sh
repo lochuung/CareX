@@ -47,6 +47,6 @@ if ! command -v mvn &> /dev/null; then
     sudo apt update
     sudo apt install maven -y
 fi
-cd server
+cd ../server
 mvn clean package -DskipTests
 nohup java -jar target/carex-0.0.1-SNAPSHOT.jar &
