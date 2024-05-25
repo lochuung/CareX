@@ -15,8 +15,8 @@ services:
 
     ports:
       - '8000:8080'
-    expose:
-      - '25'
+#    expose:
+#      - '25'
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/carex?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false
       SPRING_DATASOURCE_USERNAME: dev
