@@ -12,6 +12,7 @@ import DefaultLayout from "./layouts/DefaultLayout";
 
 function App() {
   const isLogged = useUserStore((state) => state.isLogged);
+  console.log(isLogged, "isLogged");
   return (
     <Routes>
       {!isLogged ? (
