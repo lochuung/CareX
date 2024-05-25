@@ -57,9 +57,12 @@ services:
   carex-web:
     container_name: carex-web
     restart: on-failure
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-prd
+    # build:
+    #   context: ./frontend
+    #   dockerfile: Dockerfile-prd
+    image: node:20.13-slim
+    working_dir: /app
+    command: bash -c "npm install && npm run build && npm run preview"
     volumes:
       - ./frontend:/app
     ports:
