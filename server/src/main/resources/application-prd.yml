@@ -9,14 +9,14 @@ server:
 
 application:
   default-admin:
-    email: admin
-    password: admin
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}
   security:
     enabled: true
     ignore:
       paths: /swagger-ui,/v3/api-docs,/api/v1/auth
     jwt:
-      secret-key: secret
+      secret-key: ${JWT_SECRET_KEY}
 springdoc:
   swagger-ui:
     enabled: false
