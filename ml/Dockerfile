@@ -2,20 +2,17 @@
 
 FROM python:3.10.8
 
-RUN mkdir -p app/backend
+RUN apt-get update
 
-COPY FastAPI_Backend/requirements.txt app/backend/requirements.txt
-COPY Data app/Data
+WORKDIR /app
 
-COPY FastAPI_Backend app/backend
-
-WORKDIR /app/backend
+COPY . /app
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-EXPOSE 8080
+EXPOSE 5050
 
-CMD ["uvicorn","main:app","--host","0.0.0.0","--port","8080","--reload"]
+CMD ["uvicorn","main:app","--host","0.0.0.0","--port","5050","--reload"]
 
-# uvicorn main:app --host 0.0.0.0 --port 8080 --reload
+# uvicorn main:app --host 0.0.0.0 --port 5050 --reload
