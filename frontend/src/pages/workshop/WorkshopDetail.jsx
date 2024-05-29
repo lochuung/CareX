@@ -1,11 +1,13 @@
-import { Table, Tabs, Tag } from "antd";
+import { Avatar, Table, Tabs, Tag, Tooltip } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import PageHeading from "../../components/global/PageHeading";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { formatDate } from "../../utils/utils";
 import { useUserStore } from "../../store/user";
-
+import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
+import { Flip, toast } from "react-toastify";
+import { IoMdArrowRoundBack } from "react-icons/io";
 const WorkshopDetail = () => {
   const [data, setData] = useState([]);
   const currentUser = useUserStore((state) => state.currentUser);
@@ -20,6 +22,7 @@ const WorkshopDetail = () => {
     return isTrue;
   }, []);
   const { id } = useParams();
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchDataWorkshop = async () => {
       const token = localStorage.getItem("access_token");
@@ -105,6 +108,13 @@ const WorkshopDetail = () => {
 
   return (
     <div className="">
+      <button
+        onClick={() => navigate(-1)}
+        className="px-3 py-2 rounded-md bg-blue-400 text-white font-bold flex hover:bg-blue-500 items-center gap-2 mb-4"
+      >
+        <IoMdArrowRoundBack className="inline-block" />
+        Quay lại
+      </button>
       <PageHeading title={data?.name} />
       <div className="">
         <Tabs
@@ -142,6 +152,7 @@ const InfoWorkshop = ({ data, isCheckRole, currentUser, reload }) => {
   const isCheckTime = "not";
 
   const handleJoin = async (checkJoined, id) => {
+    const toastId = toast.loading("Chờ ghi danh ...");
     console.log(checkJoined);
     try {
       if (checkJoined) {
@@ -166,16 +177,27 @@ const InfoWorkshop = ({ data, isCheckRole, currentUser, reload }) => {
           setIsJoin(true);
           const data = await res.json();
           console.log(data, "data");
-          alert("Ghi danh thành công");
+          toast.update(toastId, {
+            render: "Bạn đã ghi danh thành công",
+            type: "success",
+            isLoading: false,
+            autoClose: 3000,
+            transition: Flip,
+          });
           reload();
         }
       }
     } catch (error) {
       console.log(error);
+      toast.update(toastId, {
+        render: "Đã có lỗi xảy ra khi ghi danh, bạn hãy thử lại",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+        transition: Flip,
+      });
     }
   };
-
-  console.log(isCheckRole, "is check role", checkJoined, "checkJoined");
 
   return (
     <div className="">
@@ -234,15 +256,48 @@ const InfoWorkshop = ({ data, isCheckRole, currentUser, reload }) => {
               Chủ đề: {data?.category}
             </Tag>
 
+            <div className="">
+              <Avatar.Group
+                maxCount={data?.totalPeople || 5}
+                maxStyle={{
+                  color: "#f56a00",
+                  backgroundColor: "#fde3cf",
+                }}
+              >
+                <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=2" />
+                <Avatar
+                  style={{
+                    backgroundColor: "#f56a00",
+                  }}
+                >
+                  K
+                </Avatar>
+                <Tooltip title="Ant User" placement="top">
+                  <Avatar
+                    style={{
+                      backgroundColor: "#87d068",
+                    }}
+                    icon={<UserOutlined />}
+                  />
+                </Tooltip>
+                <Avatar
+                  style={{
+                    backgroundColor: "#1677ff",
+                  }}
+                  icon={<AntDesignOutlined />}
+                />
+              </Avatar.Group>
+            </div>
+
             <div className="flex flex-col">
-              <p className="text-gray-800 text-lg font-medium">Địa chỉ:</p>
+              <p className="text-gray-600 text-lg font-medium">Địa chỉ:</p>
               <p className="whitespace-pre-line font-semibold">
                 {data?.address}
               </p>
             </div>
 
             <div className="flex flex-col">
-              <p className="text-gray-800 flex items-center gap-1 text-lg font-medium whitespace-nowrap">
+              <p className="text-gray-600 flex items-center gap-1 text-lg font-medium whitespace-nowrap">
                 Mô tả Workshop:
               </p>
               <p className=" whitespace-pre-line font-semibold">

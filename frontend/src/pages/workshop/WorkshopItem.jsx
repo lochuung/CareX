@@ -1,7 +1,12 @@
-import { Progress, Tag } from "antd";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-
+import {
+  EditOutlined,
+  EllipsisOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
+import { Avatar, Card, Tag } from "antd";
+const { Meta } = Card;
 const WorkshopItem = ({ ...item }) => {
   const navigate = useNavigate();
   const formatDateTime = (isoString) => {
@@ -19,37 +24,33 @@ const WorkshopItem = ({ ...item }) => {
   };
 
   return (
-    <div
-      onClick={() => navigate(`/workshop/${item?.id}`)}
-      className="w-[300px] border-[1px] border-gray-300 rounded-xl hover:shadow-lg hover:shadow-gray-300 hover:text-white cursor-pointer"
-    >
-      <div className="">
-        <img
-          src={
-            item?.imageUrl ||
-            "https://i.pinimg.com/564x/16/89/bc/1689bcf22a03911bf3115f71b0103f33.jpg"
-          }
-          alt=""
-          className="w-full h-[200px] object-cover rounded-xl"
-        />
-      </div>
-
-      <div className="flex flex-col my-3 p-3 gap-2">
-        <p className="text-gray-800 text-lg font-semibold">{item?.name}</p>
-
-        <div className="">
-          <Tag
-            color="gold-inverse"
-            className="text-gray-500 text-sm font-semibold"
-          >
-            {formatDateTime(item?.startTime)}
-          </Tag>
+    <div className="">
+      <Card
+        onClick={() => navigate(`/workshop/${item?.id}`)}
+        style={{
+          width: 300,
+        }}
+        cover={
+          <img
+            alt="example"
+            src={
+              "https://i.pinimg.com/564x/ae/2d/42/ae2d423c2be9e1b40cfbfad29a78fbd9.jpg"
+            }
+          />
+        }
+      >
+        <Meta title={item?.name} description={item?.description} />
+        <div className="flex flex-col gap-2 w-fit mt-3">
+          <div className="flex gap-2">
+            <h1 className="font-bold text-md">Open: </h1>
+            <Tag color="green">{item?.startTime}</Tag>
+          </div>
+          <div className="flex gap-2">
+            <h1 className="font-bold text-md">Close: </h1>
+            <Tag color="yellow">{item?.endTime}</Tag>
+          </div>
         </div>
-
-        <div className="">
-          <p className="text-gray-600 font-medium">{item?.address}</p>
-        </div>
-      </div>
+      </Card>
     </div>
   );
 };

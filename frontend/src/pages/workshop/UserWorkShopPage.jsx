@@ -6,6 +6,7 @@ import {
   Form,
   Input,
   InputNumber,
+  Select,
   Tabs,
   Upload,
 } from "antd";
@@ -16,6 +17,8 @@ import WorkshopItem from "./WorkshopItem";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../hooks/useFirebase";
 import { formatDate } from "../../utils/utils";
+import { Flip, toast } from "react-toastify";
+import { dataWorkshop } from "../../constants/categoryWorkshop";
 
 const UserWorkShopPage = () => {
   const isAccess = true;
@@ -112,6 +115,15 @@ const UserWorkShopPage = () => {
         ) : (
           <div className="w-full">
             <div className="my-4 w-full justify-end flex items-center gap-3">
+              <div className="">
+                <Select className="w-[250px]">
+                  {dataWorkshop?.map((item) => (
+                    <Select.Option key={item?.id} value={item?.name}>
+                      {item?.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </div>
               <div className="w-[400px]">
                 <Input placeholder="Tìm kiếm Workshop" className="" />
               </div>
@@ -164,6 +176,7 @@ const UserWorkShopPage = () => {
 
 const FormCreateWorkshop = ({ onNewWorkshop }) => {
   const onFinish = async (values) => {
+    const toastId = toast.loading("Pending Create Workshop ...");
     console.log("Success:", values);
 
     if (!file) return;
@@ -185,6 +198,7 @@ const FormCreateWorkshop = ({ onNewWorkshop }) => {
           console.log(downloadURL, "image");
 
           const token = localStorage.getItem("access_token");
+          console.log(token, "token");
 
           fetch(
             `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/workshops/create`,
@@ -214,11 +228,24 @@ const FormCreateWorkshop = ({ onNewWorkshop }) => {
             })
             .then((data) => {
               console.log(data, "data");
-              alert("Bạn đã tạo Workshop thành công");
+              toast.update(toastId, {
+                render: "Bạn đã tạo thành công Workshop",
+                type: "success",
+                isLoading: false,
+                autoClose: 3000,
+                transition: Flip,
+              });
               onNewWorkshop();
             })
             .catch((error) => {
               console.error(error);
+              toast.update(toastId, {
+                render: "Đã có lỗi xảy ra khi tạo Workshop",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+                transition: Flip,
+              });
             });
         });
       }
@@ -256,6 +283,25 @@ const FormCreateWorkshop = ({ onNewWorkshop }) => {
         <h1 className="my-1 text-gray-900 font-semibold">Ảnh Workshop</h1>
         <Form.Item name="image" valuePropName="fileList">
           <input type="file" onChange={handleChange} />
+        </Form.Item>
+
+        <h1 className="my-1 text-gray-900 font-semibold">Thể loại</h1>
+        <Form.Item
+          name="category"
+          rules={[
+            {
+              required: true,
+              message: "Please input your address!",
+            },
+          ]}
+        >
+          <Select>
+            {dataWorkshop?.map((item) => (
+              <Select.Option value={item?.name} key={item?.id}>
+                {item?.name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <h1 className="my-1 text-gray-900 font-semibold">Địa chỉ diễn ra</h1>
