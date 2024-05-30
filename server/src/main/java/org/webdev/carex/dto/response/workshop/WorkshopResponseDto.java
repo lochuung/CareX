@@ -1,6 +1,5 @@
 package org.webdev.carex.dto.response.workshop;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

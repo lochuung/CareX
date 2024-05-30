@@ -136,48 +136,6 @@ public class WorkshopServiceImpl implements WorkshopService {
     }
 
     @Override
-    public void createWorkshop() {
-        if (workshopRepository.count() > 0) {
-            return;
-        }
-
-        List<User> users = userRepository.findAll();
-
-        if (users.isEmpty()) {
-            throw new RuntimeException("User not found");
-        }
-
-        Workshop workshop1 = Workshop.builder()
-                .name("test1")
-                .description("test1")
-                .address("test1")
-                .imageUrl("http://link")
-                .host(users.get(0))
-                .participants(users)
-                .category("health")
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusDays(1))
-                .cancelled(false)
-                .finished(false)
-                .build();
-        workshopRepository.save(workshop1);
-        Workshop workshop2 = Workshop.builder()
-                .name("test2")
-                .description("test2")
-                .address("test2")
-                .imageUrl("http://link")
-                .host(users.get(0))
-                .category("health")
-                .participants(users)
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusDays(1))
-                .cancelled(false)
-                .finished(false)
-                .build();
-        workshopRepository.save(workshop2);
-    }
-
-    @Override
     public ResponseDto<WorkshopResponseDto> editWorkshop(Long id, WorkshopRequestDto workshopRequestDto, String email) {
         Workshop workshop = workshopRepository.findById(id).orElseThrow(() -> new RuntimeException("Workshop not exist"));
         User host = workshop.getHost();

@@ -27,15 +27,13 @@ public class CareXApplication {
 	private PasswordEncoder passwordEncoder;
 
 	@Bean
-	CommandLineRunner runner(UserService userService, YogaService yogaService,
-							 WorkshopService workshopService, PostService postService,
+	CommandLineRunner runner(UserService userService, YogaService yogaService, PostService postService,
 							 HealthyService healthyService) {
 		return args -> {
 			log.info("Creating data...");
 			healthyService.createWeightPlanData();
 			userService.createData();
 			yogaService.createData();
-			workshopService.createWorkshop();
 			postService.createPost();
 		};
 	}
