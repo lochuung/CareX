@@ -40,7 +40,7 @@ fi
 npm install
 cp ../.env-frontend .env
 npm run build
-nohup npm run preview &
+scp -r build/ /var/www/carex/html
 
 # Deploy the server
 
