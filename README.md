@@ -40,8 +40,8 @@ git clone
 ```bash 
 cd CareX
 ```
-3. Edit the environment variables in the `.env` file in the root directory
-4. Edit the environment variables in the `.env` file in the `frontend` directory
+3. Edit the environment variables in the `.env`
+4. Edit the environment variables in the `.env-frontend`
 5. Run the deployment script
 ```bash
 ./deploy.sh
