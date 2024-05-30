@@ -21,7 +21,14 @@ import {
 } from "react-icons/hi";
 import Tutorial from "./Tutorial";
 import { formatTime } from "../../utils/utils";
-const YogaExercise = ({ stop, skip, next, currentExercise }) => {
+const YogaExercise = ({
+  stop,
+  skip,
+  next,
+  setComplete,
+  currentExercise,
+  isPracticed,
+}) => {
   const [
     webcamRef,
     canvasRef,
@@ -38,12 +45,24 @@ const YogaExercise = ({ stop, skip, next, currentExercise }) => {
   ] = useYogaDetector();
 
   const [initialTime, setInitialTime] = useState(currentExercise.duration);
+  const [modal, contextHolder] = Modal.useModal();
 
   useEffect(() => {
     setCurrentPose(ID_TO_CLASS[currentExercise.id]);
     setInitialTime(currentExercise.duration);
     resetTimer();
     setIsDone(false);
+
+    if (isPracticed(currentExercise)) {
+      modal.confirm({
+        title: "Start Practice",
+        content:
+          "You have practiced this exercise before, do you want to start again?",
+        onCancel() {
+          setComplete();
+        },
+      });
+    }
   }, [currentExercise]);
 
   useEffect(() => {
@@ -99,6 +118,7 @@ const YogaExercise = ({ stop, skip, next, currentExercise }) => {
 
   return (
     <div class=" h-screen flex w-full">
+      {contextHolder}
       <div className="h-full flex flex-col justify-between">
         <div className="w-full flex gap-4 items-center p-2">
           <button

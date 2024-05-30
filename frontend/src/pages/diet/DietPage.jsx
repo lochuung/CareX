@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FcBusinessman } from "react-icons/fc";
-import { FcBusinesswoman } from "react-icons/fc";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import RadioGroup from "../../components/RadioGroup";
 import { useNavigate } from "react-router-dom";
@@ -9,9 +7,7 @@ import { useUserStore } from "../../store/user";
 import dayjs from "dayjs";
 import CustomSlider from "./CustomSlider";
 import useDietStore from "../../store/diet";
-const onChange = (date, dateString) => {
-  console.log(date, dateString);
-};
+
 const DietPage = () => {
   let activities = [
     "Little/no exercise",
@@ -183,9 +179,9 @@ const DietPage = () => {
   const [selectActivity, setSelectActivity] = useState("Little/no exercise");
 
   const [currentSex, setCurrentSex] = useState("Male");
-  const [currentHeight, setCurrentHeight] = useState(0);
-  const [currentWeight, setCurrentWeight] = useState(0);
-  const [mealsPerDay, setMealsPerDay] = useState(0);
+  const [currentHeight, setCurrentHeight] = useState(170);
+  const [currentWeight, setCurrentWeight] = useState(65);
+  const [mealsPerDay, setMealsPerDay] = useState(3);
 
   return (
     //<DefaultLayout>
@@ -235,6 +231,7 @@ const DietPage = () => {
             <div className="flex flex-col gap-2">
               <p>Your height (cm)</p>
               <input
+                defaultValue={150}
                 value={currentHeight}
                 onChange={(e) => setCurrentHeight(e.target.value)}
                 type="number"
@@ -258,6 +255,7 @@ const DietPage = () => {
                   style={{
                     width: "100%",
                   }}
+                  defaultValue={selectActivity}
                   onChange={(value) => {
                     setSelectActivity(value);
                   }}
@@ -288,6 +286,8 @@ const DietPage = () => {
               <p>Meals per day</p>
               <div className="flex  flex-row">
                 <CustomSlider
+                  min={1}
+                  max={4}
                   onChange={(value) => {
                     setMealsPerDay(value);
                   }}
@@ -302,6 +302,7 @@ const DietPage = () => {
                   style={{
                     width: "100%",
                   }}
+                  defaultValue={selectGoal}
                   onChange={(value) => {
                     setSelectGoal(value);
                   }}
@@ -350,7 +351,7 @@ const DietPage = () => {
                 navigate("/bmiresult");
               }}
             >
-              Save and get recommendation
+              Get recommendation
             </Button>
 
             <div className="pt-6">
