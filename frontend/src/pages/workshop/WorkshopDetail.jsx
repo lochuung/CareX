@@ -1,4 +1,15 @@
-import { Avatar, Table, Tabs, Tag, Tooltip } from "antd";
+import {
+  Avatar,
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Select,
+  Table,
+  Tabs,
+  Tag,
+  Tooltip,
+} from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import PageHeading from "../../components/global/PageHeading";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,7 +18,11 @@ import { formatDate } from "../../utils/utils";
 import { useUserStore } from "../../store/user";
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 import { Flip, toast } from "react-toastify";
-import { IoMdArrowRoundBack } from "react-icons/io";
+import { IoIosSend, IoMdArrowRoundBack, IoMdSettings } from "react-icons/io";
+import { dataWorkshop } from "../../constants/categoryWorkshop";
+import TextArea from "antd/es/input/TextArea";
+import { storage } from "../../hooks/useFirebase";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 const WorkshopDetail = () => {
   const [data, setData] = useState([]);
   const currentUser = useUserStore((state) => state.currentUser);
@@ -20,7 +35,7 @@ const WorkshopDetail = () => {
     let isTrue;
     emailHost === emailLocal ? (isTrue = true) : (isTrue = false);
     return isTrue;
-  }, []);
+  }, [data]);
   const { id } = useParams();
   const navigate = useNavigate();
   useEffect(() => {
@@ -102,6 +117,12 @@ const WorkshopDetail = () => {
         />
       ),
     },
+
+    {
+      key: 3,
+      label: "Cài đặt",
+      children: <SettingWorkshop data={data} isCheckRole={checkRoleMenu} />,
+    },
   ];
   let items;
   checkRoleMenu ? (items = itemsAdmin) : (items = itemsUser);
@@ -136,20 +157,18 @@ const InfoWorkshop = ({ data, isCheckRole, currentUser, reload }) => {
   }, [data, currentUser]);
   const [isJoin, setIsJoin] = useState(checkJoined);
 
-  //   const isCheckTime = useMemo(() => {
-  //     let value;
-  //     const now = new Date();
-  //     const startTime = new Date(data?.startTime);
-  //     const endTime = new Date(data?.endTime);
-  //     now <= startTime
-  //       ? (value = "not")
-  //       : now >= endTime
-  //       ? (value = "finished")
-  //       : (value = "now");
-  //     return value;
-  //   }, []);
-
-  const isCheckTime = "not";
+  const isCheckTime = useMemo(() => {
+    let value;
+    const now = new Date();
+    const startTime = new Date(data?.startTime);
+    const endTime = new Date(data?.endTime);
+    now <= startTime
+      ? (value = "not")
+      : now >= endTime
+      ? (value = "finished")
+      : (value = "now");
+    return value;
+  }, []);
 
   const handleJoin = async (checkJoined, id) => {
     const toastId = toast.loading("Chờ ghi danh ...");
@@ -206,7 +225,7 @@ const InfoWorkshop = ({ data, isCheckRole, currentUser, reload }) => {
           <div className="flex items-center gap-4">
             <div className="mt-4 w-1/2">
               <img
-                src="https://i.pinimg.com/564x/16/89/bc/1689bcf22a03911bf3115f71b0103f33.jpg"
+                src={data?.imageUrl}
                 alt=""
                 className="w-full h-[300px] object-cover rounded-xl"
               />
@@ -353,6 +372,171 @@ const ListUserInWorkshop = ({ data, isCheckRole }) => {
           <Table dataSource={data?.userJoins} columns={columns} />
         </div>
       </div>
+    </div>
+  );
+};
+
+const SettingWorkshop = ({ data, isCheckRole }) => {
+  const [file, setFile] = useState([]);
+  const [url, setUrl] = useState("");
+
+  const handleChange = (e) => {
+    if (e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+  const onSubmit = async (values) => {
+    const toastId = toast.loading("Pending Edit Workshop ...");
+    console.log("Success:", values);
+
+    if (!file) return;
+
+    const storageRef = ref(storage, `images/${file?.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Progress function can be added here if needed
+      },
+      (error) => {
+        console.error(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setUrl(downloadURL);
+          console.log(downloadURL, "image");
+
+          const token = localStorage.getItem("access_token");
+          console.log(token, "token");
+
+          fetch(
+            `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/workshops/${
+              data?.id
+            }/edit`,
+            {
+              method: "PUT",
+              headers: {
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                name: values.name,
+                startTime: values?.time[0],
+                endTime: values?.time[1],
+                imageUrl: downloadURL,
+                address: values?.address,
+                category: values?.category,
+                description: values?.descriptionWorkshop,
+              }),
+            }
+          )
+            .then((res) => {
+              if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+              }
+              return res.json();
+            })
+            .then((data) => {
+              console.log(data, "data");
+              toast.update(toastId, {
+                render: "Bạn đã cập nhật thành công Workshop",
+                type: "success",
+                isLoading: false,
+                autoClose: 3000,
+                transition: Flip,
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+              toast.update(toastId, {
+                render: "Đã có lỗi xảy ra khi cập nhật Workshop",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+                transition: Flip,
+              });
+            });
+        });
+      }
+    );
+  };
+
+  const { RangePicker } = DatePicker;
+  return (
+    <div className="">
+      <Form onFinish={onSubmit}>
+        <div className="flex gap-4">
+          <div className="flex flex-col w-1/2">
+            <h1 className="font-bold text-lg">Tên Workshop</h1>
+            <Form.Item name="name">
+              <Input defaultValue={data?.name} />
+            </Form.Item>
+          </div>
+
+          <div className="flex flex-col w-1/2">
+            <h1 className="font-bold text-lg">Thể loại</h1>
+            <Form.Item name="category">
+              <Select defaultValue={data?.category}>
+                {dataWorkshop?.map((item) => (
+                  <Select.Option key={item?.id} value={item?.name}>
+                    {item?.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="flex flex-col w-1/2">
+            <h1 className="font-bold text-lg">Địa chỉ</h1>
+            <Form.Item name="address">
+              <Input defaultValue={data?.address} />
+            </Form.Item>
+          </div>
+
+          <div className="flex flex-col w-1/2">
+            <h1 className="font-bold text-lg">Thời gian</h1>
+            <Form.Item name="time">
+              <RangePicker
+                showTime
+                // defaultValue={[data?.startTime, data?.endTime]}
+              />
+            </Form.Item>
+          </div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="flex flex-col w-1/2">
+            <h1 className="font-bold text-lg">Nội dung</h1>
+            <Form.Item name="description">
+              <TextArea
+                value={data?.description}
+                defaultValue={data?.description}
+              />
+            </Form.Item>
+          </div>
+
+          <div className="flex flex-col w-1/2">
+            <h1 className="font-bold text-lg">Ảnh</h1>
+            <Form.Item name="imageUrl">
+              <input type="file" onChange={handleChange} />
+            </Form.Item>
+          </div>
+        </div>
+
+        <Form.Item>
+          <Button
+            icon={<IoIosSend />}
+            className="bg-yellow-200 text-orange-500 font-bold"
+            htmlType="submit"
+          >
+            Edit
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

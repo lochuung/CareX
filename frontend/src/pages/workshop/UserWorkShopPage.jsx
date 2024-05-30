@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 // import { empty, not } from "../utils/Images";
 import {
   DatePicker,
@@ -26,6 +26,36 @@ const UserWorkShopPage = () => {
 
   const [action, setAction] = useState({ createWorkshop: false });
   const [data, setData] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [inputSearch, setInputSearch] = useState(null);
+
+  const handleSelectChange = (value) => {
+    setSelectedItem(value);
+  };
+
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setInputSearch(value);
+    // Now you can use 'value' for your search logic
+  };
+
+  const filterData = useMemo(() => {
+    let result = [...data];
+
+    if (selectedItem) {
+      result = result.filter((item) => item?.category === selectedItem);
+    }
+
+    if (inputSearch) {
+      result = result.filter((item) =>
+        item?.name.toLowerCase().includes(inputSearch.toLowerCase())
+      );
+    }
+
+    return result;
+  }, [selectedItem, inputSearch]);
+
+  console.log(inputSearch, "input");
   useEffect(() => {
     const fetchDataWorkshop = async () => {
       const token = localStorage.getItem("access_token");
@@ -89,7 +119,7 @@ const UserWorkShopPage = () => {
       />
       <div className="">
         <div className="my-4">
-          <Tabs
+          {/* <Tabs
             defaultActiveKey="1"
             size={4}
             type="card"
@@ -97,7 +127,7 @@ const UserWorkShopPage = () => {
               marginBottom: 32,
             }}
             items={items}
-          />
+          /> */}
         </div>
         {!isAccess ? (
           <div className="flex items-center flex-col gap-3">
@@ -116,7 +146,7 @@ const UserWorkShopPage = () => {
           <div className="w-full">
             <div className="my-4 w-full justify-end flex items-center gap-3">
               <div className="">
-                <Select className="w-[250px]">
+                <Select onChange={handleSelectChange} className="w-[250px]">
                   {dataWorkshop?.map((item) => (
                     <Select.Option key={item?.id} value={item?.name}>
                       {item?.name}
@@ -125,7 +155,11 @@ const UserWorkShopPage = () => {
                 </Select>
               </div>
               <div className="w-[400px]">
-                <Input placeholder="Tìm kiếm Workshop" className="" />
+                <Input
+                  onChange={handleInputChange}
+                  placeholder="Tìm kiếm Workshop"
+                  className=""
+                />
               </div>
 
               <div className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-semibold">
@@ -137,9 +171,29 @@ const UserWorkShopPage = () => {
             {data?.length > 0 ? (
               //   Có dữ liệu
               <div className="flex justify-start flex-wrap gap-4">
-                {data?.map((item, index) => (
-                  <WorkshopItem key={index} {...item} />
-                ))}
+                {selectedItem !== null && selectedItem !== "Tất cả" ? (
+                  filterData?.length === 0 ? (
+                    <div className="flex items-center flex-col gap-3 justify-center w-full">
+                      <img
+                        src="https://i.pinimg.com/564x/77/66/72/7766726589ece0d7c133eaf6e87d2b6e.jpg"
+                        width={400}
+                        height={400}
+                        alt="No Workshops"
+                      />
+                      <h1 className="text-lg">
+                        Không có Workshop nào trong danh mục này
+                      </h1>
+                    </div>
+                  ) : (
+                    filterData?.map((item, index) => (
+                      <WorkshopItem key={index} {...item} />
+                    ))
+                  )
+                ) : (
+                  data?.map((item, index) => (
+                    <WorkshopItem key={index} {...item} />
+                  ))
+                )}
               </div>
             ) : (
               //   Không có dữ liệu
