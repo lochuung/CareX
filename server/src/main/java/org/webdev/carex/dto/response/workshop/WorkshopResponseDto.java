@@ -1,6 +1,5 @@
 package org.webdev.carex.dto.response.workshop;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,9 +22,7 @@ public class WorkshopResponseDto {
     private String category;
     private int totalPeople;
     List<UserJoinResponse> userJoins;
-    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private LocalDateTime startTime;
-    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private LocalDateTime endTime;
     private boolean isCancelled;
     private boolean isFinished;
