@@ -30,10 +30,23 @@ fi
 # Deploy the Docker Compose file with the environment variables
 docker-compose -f docker-compose-prd.yml up -d --build
 
+#Deploy the client
+cd frontend
+if ! command -v npm &> /dev/null; then
+    sudo apt update
+    sudo apt install nodejs -y
+    sudo apt install npm -y
+fi
+npm install
+npm run build
+nohup npm run preview &
+
+# Deploy the server
+
 # if ! command -v mvn &> /dev/null; then
 #     sudo apt update
 #     sudo apt install maven -y
 # fi
-# cd server
+# cd ../server
 # mvn clean package -DskipTests
 # nohup java -jar target/carex-0.0.1-SNAPSHOT.jar &
