@@ -12,8 +12,6 @@ public interface WorkshopService {
 
     ResponseDto<WorkshopResponseDto> getWorkshopById(Long id);
 
-    void createWorkshop();
-
     ResponseDto<WorkshopResponseDto> editWorkshop(Long id, WorkshopRequestDto workshopRequestDto, String email);
 
     ResponseDto<String> deleteWorkshop(Long id, String email);

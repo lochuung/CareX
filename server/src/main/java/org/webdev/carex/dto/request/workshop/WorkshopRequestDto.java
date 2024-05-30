@@ -25,9 +25,7 @@ public class WorkshopRequestDto{
     @NotNull(message = "Category is required")
     private String category;
     @NotNull(message = "Start time is required")
-    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private LocalDateTime startTime;
     @NotNull(message = "End time is required")
-    @JsonFormat(pattern = "HH:mm:ss dd/MM/yyyy")
     private LocalDateTime endTime;
 }

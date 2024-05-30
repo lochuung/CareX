@@ -38,8 +38,9 @@ if ! command -v npm &> /dev/null; then
     sudo apt install npm -y
 fi
 npm install
+cp ../.env-frontend .env
 npm run build
-nohup npm run preview &
+scp -r dist/* /var/www/carex/html
 
 # Deploy the server
 
