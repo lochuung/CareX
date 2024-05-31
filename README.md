@@ -1,5 +1,11 @@
 # CareX
 
+
+
+https://github.com/lochuung/CareX/assets/60417892/f6601ef7-2b07-443e-bf28-792bf52f3257
+
+
+
 CareX is a comprehensive web app designed to empower you to take charge of your well-being, focusing on aspects that you can actively control. It supports both physical and mental health by providing personalized guidance on balanced nutrition and in-home yoga practices to help you rediscover inner peace.
 
 When life gets overwhelming, CareX is your ideal companion. It offers a diverse range of healing workshops and knowledge-sharing sessions tailored to your interests, helping you alleviate stress and enhance your quality of life.
