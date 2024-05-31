@@ -1,4 +1,4 @@
-import { Input, Space } from "antd";
+import { Input } from "antd";
 const { Search } = Input;
 import Collection from "./Collection";
 import { useEffect, useState } from "react";
@@ -42,35 +42,31 @@ const YogaPage = () => {
   const [showPractice, setShowPractice] = useState(false);
 
   const [practiceHistory, setPracticeHistory] = useState([]);
+  const fetchPracticeHistory = async () => {
+    const access_token = localStorage.getItem("access_token");
+    const res = await fetch(
+      `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/yoga-workouts/history`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
 
+    const data = await res.json();
+    setPracticeHistory(data.data);
+  };
   useEffect(() => {
-    const fetchPracticeHistory = async () => {
-      const access_token = localStorage.getItem("access_token");
-      const res = await fetch(
-        `${import.meta.env.VITE_PUBLIC_API_URL}/api/v1/yoga-workouts/history`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-      console.log({ practiceHistory: data.data });
-      setPracticeHistory(data.data);
-    };
     fetchPracticeHistory();
   }, []);
   const isPracticed = (exercise) => {
-    console.log({ practiceHistory, exercise });
-    return false;
-
-    // return (
-    //   practiceHistory && practiceHistory.some((item) => item.id == exercise.id)
-    // );
+    if (!practiceHistory) return false;
+    return practiceHistory.some(
+      (history) => history.yogaWorkout.id === exercise.id
+    );
   };
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const ExerciseList = () => {
@@ -92,10 +88,13 @@ const YogaPage = () => {
             );
             // Sort exercise that has't been practiced
             exercises = exercises.sort((a, b) => {
-              if (isPracticed(a)) return 1;
+              if (isPracticed(a)) {
+                return 1;
+              }
               if (isPracticed(b)) return -1;
               return 0;
             });
+
             setCurrentExerciseIndex(0);
             setPracticeExercises(exercises);
             setShowPractice(true);
@@ -135,7 +134,9 @@ const YogaPage = () => {
           Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify({
-          yogaWorkout: exercise,
+          yogaWorkout: {
+            id: exercise.id,
+          },
           done: true,
         }),
       }
@@ -145,10 +146,16 @@ const YogaPage = () => {
     setPracticeHistory([...practiceHistory, data.data]);
   };
 
+  const setComplete = () => {
+    setDoneAll(true);
+    setShowPractice(false);
+    setPracticeExercises([]);
+  };
+
   const [doneAll, setDoneAll] = useState(false);
   return (
     <div className="h-screen">
-      {!showPractice ? (
+      {!showPractice && !doneAll ? (
         <ExerciseList />
       ) : doneAll ? (
         <DoneExercise
@@ -159,6 +166,7 @@ const YogaPage = () => {
         />
       ) : (
         <YogaExercise
+          isPracticed={isPracticed}
           currentExercise={practiceExercises[currentExerciseIndex]}
           stop={() => {
             setShowPractice(false);
@@ -169,6 +177,7 @@ const YogaPage = () => {
               setCurrentExerciseIndex(currentExerciseIndex + 1);
             }
           }}
+          setComplete={setComplete}
           next={async () => {
             if (currentExerciseIndex < practiceExercises.length - 1) {
               // Save to history
@@ -179,9 +188,7 @@ const YogaPage = () => {
 
             // Congrats you have finished all exercises
             if (currentExerciseIndex == practiceExercises.length - 1) {
-              setDoneAll(true);
-              setShowPractice(false);
-              setPracticeExercises([]);
+              setComplete();
             }
           }}
         />

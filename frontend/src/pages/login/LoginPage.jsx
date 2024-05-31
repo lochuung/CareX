@@ -35,6 +35,7 @@ const LoginPage = () => {
           }
         );
 
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         if (res.status === 400) {
           throw new Error(`Email or password is incorrect`);
         }

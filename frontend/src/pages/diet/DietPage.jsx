@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FcBusinessman } from "react-icons/fc";
-import { FcBusinesswoman } from "react-icons/fc";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import RadioGroup from "../../components/RadioGroup";
 import { useNavigate } from "react-router-dom";
@@ -8,10 +6,7 @@ import { DatePicker, Space, Button, Select, Divider, Collapse } from "antd";
 import { useUserStore } from "../../store/user";
 import dayjs from "dayjs";
 import CustomSlider from "./CustomSlider";
-import useDietStore from "../../store/diet";
-const onChange = (date, dateString) => {
-  console.log(date, dateString);
-};
+import { useDietStore } from "../../store/diet";
 const DietPage = () => {
   let activities = [
     "Little/no exercise",
@@ -180,12 +175,22 @@ const DietPage = () => {
   }, []);
 
   const [selectGoal, setSelectGoal] = useState("Maintain weight");
-  const [selectActivity, setSelectActivity] = useState("Little/no exercise");
+  const [selectActivity, setSelectActivity] = useState(null);
 
   const [currentSex, setCurrentSex] = useState("Male");
-  const [currentHeight, setCurrentHeight] = useState(0);
-  const [currentWeight, setCurrentWeight] = useState(0);
-  const [mealsPerDay, setMealsPerDay] = useState(0);
+  const [currentHeight, setCurrentHeight] = useState(170);
+  const [currentWeight, setCurrentWeight] = useState(65);
+  const [mealsPerDay, setMealsPerDay] = useState(3);
+
+  const { person, setPerson } = useDietStore((state) => state);
+  useEffect(() => {
+    if (!person) return;
+    setCurrentWeight(parseInt(person.weight) || 65);
+    setCurrentHeight(parseInt(person.height) || 170);
+    setMealsPerDay(parseInt(person.meals_calories_perc || 3));
+    setSelectActivity(person.activity);
+    setSelectGoal(person.weight_loss);
+  }, [person]);
 
   return (
     //<DefaultLayout>
@@ -235,6 +240,7 @@ const DietPage = () => {
             <div className="flex flex-col gap-2">
               <p>Your height (cm)</p>
               <input
+                defaultValue={150}
                 value={currentHeight}
                 onChange={(e) => setCurrentHeight(e.target.value)}
                 type="number"
@@ -258,6 +264,7 @@ const DietPage = () => {
                   style={{
                     width: "100%",
                   }}
+                  value={selectActivity}
                   onChange={(value) => {
                     setSelectActivity(value);
                   }}
@@ -288,6 +295,8 @@ const DietPage = () => {
               <p>Meals per day</p>
               <div className="flex  flex-row">
                 <CustomSlider
+                  min={1}
+                  max={4}
                   onChange={(value) => {
                     setMealsPerDay(value);
                   }}
@@ -302,6 +311,7 @@ const DietPage = () => {
                   style={{
                     width: "100%",
                   }}
+                  value={selectGoal}
                   onChange={(value) => {
                     setSelectGoal(value);
                   }}
@@ -340,12 +350,11 @@ const DietPage = () => {
                   weight: currentWeight,
                   gender: currentSex,
                   activity: selectActivity,
-                  meals_calories_perc: 0,
+                  meals_calories_perc: mealsPerDay,
                   weight_loss: selectGoal,
                 };
 
                 // Save to store
-                const setPerson = useDietStore.getState().setPerson;
                 setPerson(data);
                 navigate("/bmiresult");
               }}

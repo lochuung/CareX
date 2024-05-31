@@ -1,5 +1,6 @@
 import { FaCheckCircle, FaClock, FaStar } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
+import { BsArrowRepeat, BsPlay } from "react-icons/bs";
 import { formatTime } from "../../utils/utils";
 import {
   Avatar,
@@ -23,6 +24,11 @@ const SubCollection = ({
   data,
   selectCollectionHandler,
 }) => {
+  const getProgress = () => {
+    let total = data.length;
+    let practiced = data.filter((item) => isPracticed(item)).length;
+    return (practiced / total) * 100;
+  };
   return (
     <div className="border-[1px] rounded-xl m-2">
       {/* <Switch checked={!loading} onChange={onChange} /> */}
@@ -37,15 +43,27 @@ const SubCollection = ({
             width: 300,
           }}
         >
-          <Progress percent={50} />
+          <Progress percent={getProgress()} />
         </Flex>
-
-        <Button
-          type="primary m-2"
-          onClick={() => selectCollectionHandler(attr)}
-        >
-          Practice now
-        </Button>
+        {getProgress() == 100 ? (
+          <Button
+            className="flex items-center justify-between gap-2 bg-green-500 hover:bg-green-600 m-2  text-white font-bold"
+            type="m-2"
+            onClick={() => selectCollectionHandler(attr)}
+          >
+            <span>Practice again</span>
+            <BsArrowRepeat />
+          </Button>
+        ) : (
+          <Button
+            className="flex items-center justify-between gap-2  m-2  text-white font-bold"
+            type="primary m-2"
+            onClick={() => selectCollectionHandler(attr)}
+          >
+            <span>Practice now</span>
+            <BsPlay />
+          </Button>
+        )}
       </div>
       <Divider />
       <div className="flex flex-wrap  gap-4 max-h-[500px] overflow-auto p-2">
@@ -105,7 +123,7 @@ const SubCollection = ({
                       <>
                         <div className="flex gap-2">
                           <button className="border-[1px] flex items-center gap-2 px-2 py-1 rounded-xl font-bold text-blue-500">
-                            <span>Duration: {item.point}</span>
+                            <span>Duration: {formatTime(item.duration)}</span>
                             <FaClock />
                           </button>
                           <button className="border-[1px] flex items-center gap-2 px-2 py-1 rounded-xl text-orange-400 font-bold">
