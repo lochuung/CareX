@@ -1,10 +1,17 @@
 from fastapi import FastAPI
 from pydantic import BaseModel,conlist
+from fastapi.responses import FileResponse
+
 from typing import List,Optional
 import pandas as pd
 from model import recommend,output_recommended_recipes
 from bmi import Person, meals_percentage, weight_loss_plans
 from fastapi.middleware.cors import CORSMiddleware
+
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.pyplot as plt
+import pandas as pd
+
 
 dataset=pd.read_csv('./Data/dataset.csv',compression='gzip')
 
@@ -76,6 +83,12 @@ class BMIOut(BaseModel):
     category:str
     color:str
     calories:Optional[List[dict]] = None
+    
+    
+class TextIn(BaseModel):
+    text:str
+    
+    
 
 @app.get("/")
 def home():
@@ -114,3 +127,19 @@ def calculate_calories(person:PersonIn):
     recommendations = person.generate_recommendations(recommender)
     return {"output":recommendations}
     
+# Create post route for receive text and return image
+@app.post("/wordcloud/make")
+def text_to_image(data: TextIn):
+    # Do something with text
+    text = data.text
+    stopwords = set(STOPWORDS)
+    wordcloud = WordCloud(width = 800, height = 800,
+                    background_color ='white',
+                    stopwords = stopwords,
+                    min_font_size = 10).generate(text)
+    
+    # Save image
+    wordcloud_filename = "wordcloud.png"
+    wordcloud.to_file(wordcloud_filename)
+
+    return FileResponse(wordcloud_filename, media_type="image/png", filename="wordcloud.png")

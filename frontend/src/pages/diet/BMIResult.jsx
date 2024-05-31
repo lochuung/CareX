@@ -3,7 +3,8 @@ import { HeartOutlined, LikeOutlined } from "@ant-design/icons";
 import Loading from "../../components/Loading";
 import { Breadcrumb, Skeleton, Tabs } from "antd";
 import { FaArrowDown, FaGlassWater, FaS } from "react-icons/fa6";
-import useDietStore from "../../store/diet";
+import { useDietStore } from "../../store/diet";
+
 import BMIWeight from "./bodies";
 import MealContainer from "./Meals/MealContainer";
 const BMIResult = () => {
@@ -31,6 +32,7 @@ const BMIResult = () => {
     setMeals(mealPartition(data.output));
     setIsLoadingMeals(false);
   };
+  const { setHealthInfo } = useDietStore((state) => state);
   useEffect(() => {
     if (!person) return;
     (async () => {
@@ -51,6 +53,7 @@ const BMIResult = () => {
       setIsLoadingCalories(false);
       setBmiData(data);
       setBMI(data.bmi);
+      setHealthInfo(data);
       generateMeals();
     })();
   }, [person]);

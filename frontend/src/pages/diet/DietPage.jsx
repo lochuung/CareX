@@ -6,8 +6,7 @@ import { DatePicker, Space, Button, Select, Divider, Collapse } from "antd";
 import { useUserStore } from "../../store/user";
 import dayjs from "dayjs";
 import CustomSlider from "./CustomSlider";
-import useDietStore from "../../store/diet";
-
+import { useDietStore } from "../../store/diet";
 const DietPage = () => {
   let activities = [
     "Little/no exercise",
@@ -176,12 +175,22 @@ const DietPage = () => {
   }, []);
 
   const [selectGoal, setSelectGoal] = useState("Maintain weight");
-  const [selectActivity, setSelectActivity] = useState("Little/no exercise");
+  const [selectActivity, setSelectActivity] = useState(null);
 
   const [currentSex, setCurrentSex] = useState("Male");
   const [currentHeight, setCurrentHeight] = useState(170);
   const [currentWeight, setCurrentWeight] = useState(65);
   const [mealsPerDay, setMealsPerDay] = useState(3);
+
+  const { person, setPerson } = useDietStore((state) => state);
+  useEffect(() => {
+    if (!person) return;
+    setCurrentWeight(parseInt(person.weight) || 65);
+    setCurrentHeight(parseInt(person.height) || 170);
+    setMealsPerDay(parseInt(person.meals_calories_perc || 3));
+    setSelectActivity(person.activity);
+    setSelectGoal(person.weight_loss);
+  }, [person]);
 
   return (
     //<DefaultLayout>
@@ -255,7 +264,7 @@ const DietPage = () => {
                   style={{
                     width: "100%",
                   }}
-                  defaultValue={selectActivity}
+                  value={selectActivity}
                   onChange={(value) => {
                     setSelectActivity(value);
                   }}
@@ -302,7 +311,7 @@ const DietPage = () => {
                   style={{
                     width: "100%",
                   }}
-                  defaultValue={selectGoal}
+                  value={selectGoal}
                   onChange={(value) => {
                     setSelectGoal(value);
                   }}
@@ -341,17 +350,16 @@ const DietPage = () => {
                   weight: currentWeight,
                   gender: currentSex,
                   activity: selectActivity,
-                  meals_calories_perc: 0,
+                  meals_calories_perc: mealsPerDay,
                   weight_loss: selectGoal,
                 };
 
                 // Save to store
-                const setPerson = useDietStore.getState().setPerson;
                 setPerson(data);
                 navigate("/bmiresult");
               }}
             >
-              Get recommendation
+              Save and get recommendation
             </Button>
 
             <div className="pt-6">

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useUserStore } from "../../store/user";
 import {
   HiCog,
@@ -45,6 +45,8 @@ const ROUTING_COMMANDS = {
 
 const Sidebar = ({ collapsed, onCollapsed }) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -84,11 +86,7 @@ const Sidebar = ({ collapsed, onCollapsed }) => {
         ROUTING_COMMANDS.NOTIFICATIONS_COMMAND,
         <IoIosNotifications />
       ),
-      getItem(
-        "Choose Plan",
-        ROUTING_COMMANDS.CHOOSEPLAN_COMMAND,
-        <GrPlan />
-      ),
+      getItem("Choose Plan", ROUTING_COMMANDS.CHOOSEPLAN_COMMAND, <GrPlan />),
       getItem(
         "Password & Security",
         ROUTING_COMMANDS.PASSWORDANDSECURITY_COMMAND,
@@ -101,7 +99,6 @@ const Sidebar = ({ collapsed, onCollapsed }) => {
 
   function handleClick(e) {
     // Check if the key is a command key
-
     if (Object.values(EXECUTE_COMMANDS).includes(e.key)) {
       switch (e.key) {
         case EXECUTE_COMMANDS.LOGOUT_COMMAND:
@@ -117,6 +114,11 @@ const Sidebar = ({ collapsed, onCollapsed }) => {
 
   const setIsLogged = useUserStore((state) => state.setIsLogged);
 
+  useEffect(() => {
+    // if (pathname === "/bmiresult") {
+    //   handleClick({ key: "/diet" });
+    // }
+  }, [pathname]);
   return (
     <div className="flex flex-col gap-1 h-full bg-red-500">
       <ConfirmModal
