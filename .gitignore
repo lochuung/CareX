@@ -1,2 +1,8 @@
 /.vscode
 /.idea
+
+
+*/__pycache__/*
+# Remove all 
+__pycache__/
+*.pyc
