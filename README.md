@@ -40,7 +40,7 @@ When life gets overwhelming, CareX is your ideal companion. It offers a diverse 
 ### Setup
 1. Clone the repository
 ```bash
-git clone
+git clone https://github.com/lochuung/CareX.git
 ```
 2. Change directory
 ```bash 
